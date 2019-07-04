@@ -22,22 +22,6 @@ class Paciente extends Pessoa {
         return $this->Telefone;
     }
 
-    public function setRa(int $ra) {
-        $this->ra = $ra;
-    }
-
-    public function setDataNascimento(DateTime $dataNascimento) {
-        $this->dataNascimento = $dataNascimento;
-    }
-
-    public function setEmail(string $Email) {
-        $this->Email = $Email;
-    }
-
-    public function setTelefone(string $Telefone) {
-        $this->Telefone = $Telefone;
-    }
-
     public function __construct(int $id, string $nome, int $ra, 
             DateTime $dataNascimento, string $Email, string $Telefone) {
         parent::__construct($id, $nome);

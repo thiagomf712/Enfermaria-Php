@@ -48,42 +48,6 @@ class Endereco {
         return $this->cep;
     }
 
-    public function setId(int $id) {
-        $this->id = $id;
-    }
-
-    public function setRegime(Regime $regime) {
-        $this->regime = $regime;
-    }
-
-    public function setLogradouro(string $logradouro) {
-        $this->logradouro = $logradouro;
-    }
-
-    public function setNumero(string $numero) {
-        $this->numero = $numero;
-    }
-
-    public function setComplemento(string $complemento) {
-        $this->complemento = $complemento;
-    }
-
-    public function setBairro(string $bairro) {
-        $this->bairro = $bairro;
-    }
-
-    public function setCidade(string $cidade) {
-        $this->cidade = $cidade;
-    }
-
-    public function setEstado(string $estado) {
-        $this->estado = $estado;
-    }
-
-    public function setCep(string $cep) {
-        $this->cep = $cep;
-    }
-
     public function __construct(int $id, Regime $regime = Regime::Interno,
             string $logradouro = "Estr. Mun Pastor Walter Boger", string $numero = "s/n",
             string $complemento = null, string $bairro = "Lagoa Bonita",
