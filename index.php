@@ -11,10 +11,7 @@ and open the template in the editor.
     </head>
     <body>
         <?php
-            include 'models\Pessoa.php';
-        
-            $pessoa = new Pessoa(1, "João");
-            echo $pessoa->getNome();
+      
         ?>
     </body>
 </html>

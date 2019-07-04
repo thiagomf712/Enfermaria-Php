@@ -23,8 +23,8 @@ class Paciente extends Pessoa {
     }
 
     public function __construct(int $id, string $nome, int $ra, 
-            DateTime $dataNascimento, string $Email, string $Telefone) {
-        parent::__construct($id, $nome);
+            DateTime $dataNascimento, string $Email, string $Telefone, Usuario $usuario) {
+        parent::__construct($id, $nome, $usuario);
         $this->ra = $ra;
         $this->dataNascimento = $dataNascimento;
         $this->Email = $Email;

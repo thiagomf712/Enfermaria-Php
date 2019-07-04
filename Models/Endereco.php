@@ -11,6 +11,10 @@ class Endereco {
     private $cidade;
     private $estado;
     private $cep;
+    
+    //Relacionamentos
+    private $paciente;
+    
 
     public function getId() {
         return $this->id;
@@ -47,12 +51,17 @@ class Endereco {
     public function getCep() {
         return $this->cep;
     }
+    
+    public function getPaciente() {
+        return $this->paciente;
+    }
 
+    
     public function __construct(int $id, Regime $regime = Regime::Interno,
             string $logradouro = "Estr. Mun Pastor Walter Boger", string $numero = "s/n",
             string $complemento = null, string $bairro = "Lagoa Bonita",
             string $cidade = "Engenheiro Coelho", string $estado = "São Paulo",
-            string $cep = "13448-900") {
+            string $cep = "13448-900", Paciente $paciente) {
         $this->id = $id;
         $this->regime = $regime;
         $this->logradouro = $logradouro;
@@ -62,6 +71,7 @@ class Endereco {
         $this->cidade = $cidade;
         $this->estado = $estado;
         $this->cep = $cep;
+        $this->paciente = $paciente;
     }
 
 }

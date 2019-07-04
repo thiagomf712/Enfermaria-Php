@@ -8,6 +8,9 @@ class FichaMedica {
     private $alergias;
     private $cirurgias;
     
+    //relacionamentos
+    private $paciente;
+    
     public function getId() {
         return $this->id;
     }
@@ -31,15 +34,21 @@ class FichaMedica {
     public function getCirurgias() {
         return $this->cirurgias;
     }
+    
+    public function getPaciente() {
+        return $this->paciente;
+    }
 
+    
     public function __construct(int $id, string $planoSaude, string $problemasSaude, 
-            string $medicamentos, string $alergias, string $cirurgias) {
+            string $medicamentos, string $alergias, string $cirurgias, Paciente $paciente) {
         $this->id = $id;
         $this->planoSaude = $planoSaude;
         $this->problemasSaude = $problemasSaude;
         $this->medicamentos = $medicamentos;
         $this->alergias = $alergias;
         $this->cirurgias = $cirurgias;
+        $this->paciente = $paciente;
     }
 
 }
