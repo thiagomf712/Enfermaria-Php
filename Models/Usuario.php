@@ -22,15 +22,15 @@ class Usuario {
         return $this->nivelAcesso;
     }
 
-    public function __construct(int $id, string $login, string $senha, NivelAcesso $nivelAcesso) {
+    public function __construct(int $id, string $login = "", string $senha = "",
+            int $nivelAcesso = NivelAcesso::Vizualizar) {
         $this->id = $id;
         $this->login = $login;
         $this->senha = $senha;
         $this->nivelAcesso = $nivelAcesso;
     }
     
-    public function DefinirUsuarioPadrao(int $id, Paciente $paciente) {
-        $this->id = $id;
+    public function DefinirUsuarioPadrao(Paciente $paciente) {
         $this->login = "ec." . $paciente->getRa();
         $this->senha = (string) $paciente->getRa();
         $this->nivelAcesso = NivelAcesso::Vizualizar;

@@ -1,10 +1,8 @@
 <?php
 
-class NivelAcesso extends SplEnum{
-    const __default = self::Vizualizar;
-    
+class NivelAcesso {    
     const Vizualizar = 1;
-    const EditarAdicioar = 2;
-    const Excluir = 3;
+    const Adicionar = 2;
+    const Editar = 3;
     const Master = 4;
 }
