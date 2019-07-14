@@ -23,10 +23,9 @@ class UsuarioController {
         try {           
             $usuario = UsuarioService::ValidarLogin($login, $senha);
             $_SESSION['usuario'] = serialize($usuario);
-            header("Location: ../Views/Usuario/Login.php");
+            header("Location: ../Views/Menu.php");
             exit();
         } catch (Exception $e) {
-            $e->getMessage();
             $_SESSION['erro'] = $e->getMessage();
             header("Location: ".$_SERVER['HTTP_REFERER']."");
             exit();

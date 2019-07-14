@@ -2,6 +2,8 @@
 require_once '../../Models/Usuario.php';
 
 session_start();
+
+unset($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>
