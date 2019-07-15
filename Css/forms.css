@@ -1,0 +1,15 @@
+#loginForm {   
+    width: 500px;    
+}
+
+#funcionarioCadastro {
+    width: 700px;
+}
+
+.formGeral {
+    background-color: #414141;
+    box-shadow: black 3px 3px 10px;
+    margin-top: 5em;
+    margin-bottom: 5em;
+    border-radius: 30px;
+}

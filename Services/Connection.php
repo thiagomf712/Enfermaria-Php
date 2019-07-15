@@ -11,6 +11,6 @@ function Connection() {
         $connection = new PDO($dns, $user, $password);
         return $connection;
     } catch (Exception $e) {
-        throw new Exception("Erro ao conectar ao banco de dados: " . $e);
+        throw new Exception("Erro ao conectar ao banco de dados: ");
     }
 }

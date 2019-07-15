@@ -55,7 +55,7 @@ $usuario = unserialize($_SESSION['usuario']);
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Funcionario</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Lista de funcionarios</a>
-                                <a class="dropdown-item" href="#">Cadastrar novo funcionario</a>
+                                <a class="dropdown-item" href="Funcionario/Cadastrar.php">Cadastrar novo funcionario</a>
                             </div>         
                         </li>
                         <li class="nav-item dropdown">
@@ -73,6 +73,13 @@ $usuario = unserialize($_SESSION['usuario']);
             </div>
         </nav>
 
+        
+        <div class="mx-auto text-center" style="font-size: 30px; margin-top: 7.5em; margin-bottom: 7.5em;">
+            Bem Vindo, eu não sei oq colocar aq
+        </div>
+        
+        <?php include_once 'Compartilhado/Footer.php';?>
+        
         <script src="../JavaScript/bootstrap.js"></script>
     </body>
 </html>

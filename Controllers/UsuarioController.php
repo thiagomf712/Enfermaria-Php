@@ -1,8 +1,9 @@
 <?php
 
 require_once '../Services/UsuarioService.php';
+require_once '../Models/Usuario.php';
 
-session_start();
+session_start(); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodo'])) {
     $metodo = $_POST['metodo'];
@@ -15,21 +16,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodo'])) {
 }
 
 class UsuarioController {
-        
-    static function login($dados) {
+
+    public static function Login($dados) {
         $login = $dados['login'];
         $senha = $dados['senha'];
-        
-        try {           
+
+        try {
             $usuario = UsuarioService::ValidarLogin($login, $senha);
             $_SESSION['usuario'] = serialize($usuario);
             header("Location: ../Views/Menu.php");
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header("Location: ".$_SERVER['HTTP_REFERER']."");
+            echo "<script language='javascript'>history.go(-1);</script>";
             exit();
-        } 
+        }
+    }
+
+    public static function CriarUsuario($dados) {
+        $login = $dados['login'];
+        $senha = $dados['senha'];
+        $nivelAcesso = $dados['nivelAcesso'];
+        
+        $usuario = new Usuario(0, $login, $senha, $nivelAcesso);
+
+        try {
+            UsuarioService::CadastrarUsuario($usuario);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
 }
