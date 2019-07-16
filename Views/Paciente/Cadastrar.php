@@ -9,7 +9,7 @@ $usuario = unserialize($_SESSION['usuario']);
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Cadastro - Funcionarios</title>
+        <title>Cadastro - Paciente</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charset="UTF-8">
 
@@ -20,7 +20,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
     </head>
     <body>
-        <?php include_once '../Compartilhado/Navbar.php'; ?>              
+        <?php include_once '../Compartilhado/Navbar.php';?>
 
         <div class="mx-auto p-4 formGeral" id="funcionarioCadastro">
             <form method="POST" action="../../Controllers/FuncionarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm('nome', 'login', 'senha', 'confirmarSenha')">

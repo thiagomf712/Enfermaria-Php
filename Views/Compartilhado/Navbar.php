@@ -1,25 +1,8 @@
-<?php
-require_once '../Models/Usuario.php';
-
-session_start();
-
-$usuario = unserialize($_SESSION['usuario']);
-?>
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Enfermaria</title>
-
-        <link rel="stylesheet" href="../Css/bootstrap.css" />   
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-            <a class="navbar-brand mb-0 h1" href="#">Enfermaria</a>
+            <a class="navbar-brand mb-0 h1" href="../Geral/Home.php">Enfermaria</a>
             <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarItens" aria-controls="navbarItens" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -37,7 +20,7 @@ $usuario = unserialize($_SESSION['usuario']);
                                 <a class="dropdown-item" href="#">Informações pessoais</a>                    
                             <?php elseif ($usuario->getNivelAcesso() >= 2) : ?>
                                 <a class="dropdown-item" href="#">Lista de pacientes</a>
-                                <a class="dropdown-item" href="#">Cadastrar novo paciente</a>                           
+                                <a class="dropdown-item" href="../Paciente/Cadastrar.php">Cadastrar novo paciente</a>                           
                             <?php endif; ?>
                         </div>         
                     </li>
@@ -55,7 +38,7 @@ $usuario = unserialize($_SESSION['usuario']);
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Funcionario</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Lista de funcionarios</a>
-                                <a class="dropdown-item" href="Funcionario/Cadastrar.php">Cadastrar novo funcionario</a>
+                                <a class="dropdown-item" href="../Funcionario/Cadastrar.php">Cadastrar novo funcionario</a>
                             </div>         
                         </li>
                         <li class="nav-item dropdown">
@@ -67,19 +50,10 @@ $usuario = unserialize($_SESSION['usuario']);
                         </li>
                     <?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="Usuario/Login.php">Sair</a>
+                        <a class="nav-link" href="../Usuario/Login.php">Sair</a>
                     </li>
                 </ul>
             </div>
         </nav>
-
-        
-        <div class="mx-auto text-center" style="font-size: 30px; margin-top: 7.5em; margin-bottom: 7.5em;">
-            Bem Vindo, eu não sei oq colocar aq
-        </div>
-        
-        <?php include_once 'Compartilhado/Footer.php';?>
-        
-        <script src="../JavaScript/bootstrap.js"></script>
     </body>
 </html>

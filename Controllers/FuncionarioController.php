@@ -32,7 +32,8 @@ class FuncionarioController {
             
             FuncionarioService::CadastrarFuncionario($funcionario);
             
-            header("Location: ../Views/Menu.php");
+            header("Location: ../Views/Funcionario/Cadastrar.php");
+            $_SESSION['sucesso'] = "Funcionario cadastrado com sucesso";
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
