@@ -5,8 +5,8 @@ require_once '../Models/Usuario.php';
 
 session_start(); 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodo'])) {
-    $metodo = $_POST['metodo'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoUsuario'])) {
+    $metodo = $_POST['metodoUsuario'];
 
     if (method_exists('UsuarioController', $metodo)) {
         UsuarioController::$metodo($_POST);
@@ -46,5 +46,7 @@ class UsuarioController {
             throw new Exception($e->getMessage());
         }
     }
+    
+    
 
 }

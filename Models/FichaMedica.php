@@ -3,10 +3,10 @@
 class FichaMedica {
     private $id;
     private $planoSaude;
-    private $problemasSaude;
-    private $medicamentos;
-    private $alergias;
-    private $cirurgias;
+    private $problemaSaude;
+    private $medicamento;
+    private $alergia;
+    private $cirurgia;
     
     //relacionamentos
     private $paciente;
@@ -19,20 +19,20 @@ class FichaMedica {
         return $this->planoSaude;
     }
 
-    public function getProblemasSaude() {
-        return $this->problemasSaude;
+    public function getProblemaSaude() {
+        return $this->problemaSaude;
     }
 
-    public function getMedicamentos() {
-        return $this->medicamentos;
+    public function getMedicamento() {
+        return $this->medicamento;
     }
 
-    public function getAlergias() {
-        return $this->alergias;
+    public function getAlergia() {
+        return $this->alergia;
     }
 
-    public function getCirurgias() {
-        return $this->cirurgias;
+    public function getCirurgia() {
+        return $this->cirurgia;
     }
     
     public function getPaciente() {
@@ -40,14 +40,14 @@ class FichaMedica {
     }
 
     
-    public function __construct(int $id, string $planoSaude, string $problemasSaude, 
-            string $medicamentos, string $alergias, string $cirurgias, Paciente $paciente) {
+    public function __construct(int $id, string $planoSaude, string $problemaSaude, 
+            string $medicamento, string $alergia, string $cirurgia, Paciente $paciente) {
         $this->id = $id;
         $this->planoSaude = $planoSaude;
-        $this->problemasSaude = $problemasSaude;
-        $this->medicamentos = $medicamentos;
-        $this->alergias = $alergias;
-        $this->cirurgias = $cirurgias;
+        $this->problemaSaude = $problemaSaude;
+        $this->medicamento = $medicamento;
+        $this->alergia = $alergia;
+        $this->cirurgia = $cirurgia;
         $this->paciente = $paciente;
     }
 

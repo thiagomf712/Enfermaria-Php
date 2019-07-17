@@ -57,11 +57,8 @@ class Endereco {
     }
 
     
-    public function __construct(int $id, Regime $regime = Regime::Interno,
-            string $logradouro = "Estr. Mun Pastor Walter Boger", string $numero = "s/n",
-            string $complemento = null, string $bairro = "Lagoa Bonita",
-            string $cidade = "Engenheiro Coelho", string $estado = "São Paulo",
-            string $cep = "13448-900", Paciente $paciente) {
+    public function __construct(int $id, int $regime, string $logradouro, string $numero, string $complemento, string $bairro,
+            string $cidade, string $estado, string $cep, Paciente $paciente) {
         $this->id = $id;
         $this->regime = $regime;
         $this->logradouro = $logradouro;

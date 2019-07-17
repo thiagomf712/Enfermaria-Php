@@ -1,8 +1,6 @@
 <?php
 
-class Regime extends SplEnum{
-    const __default = self::Interno;
-    
+class Regime {    
     const Interno = 1;
     const Externo = 2;
 }

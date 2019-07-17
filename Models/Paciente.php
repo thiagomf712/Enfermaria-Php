@@ -1,11 +1,14 @@
 <?php
 
+require_once 'Pessoa.php';
+
 class Paciente extends Pessoa {
+
     private $ra;
     private $dataNascimento;
-    private $Email;
-    private $Telefone;
-    
+    private $email;
+    private $telefone;
+
     public function getRa() {
         return $this->ra;
     }
@@ -15,20 +18,20 @@ class Paciente extends Pessoa {
     }
 
     public function getEmail() {
-        return $this->Email;
+        return $this->email;
     }
 
     public function getTelefone() {
-        return $this->Telefone;
+        return $this->telefone;
     }
 
-    public function __construct(int $id, string $nome, int $ra, 
-            DateTime $dataNascimento, string $Email, string $Telefone, Usuario $usuario) {
-        parent::__construct($id, $nome, $usuario);
+    public function __construct(int $id, string $nome, int $ra,
+            $dataNascimento, string $email, string $telefone) {
+        parent::__construct($id, $nome, null);
         $this->ra = $ra;
         $this->dataNascimento = $dataNascimento;
-        $this->Email = $Email;
-        $this->Telefone = $Telefone;
+        $this->email = $email;
+        $this->telefone = $telefone;
     }
 
 }

@@ -6,6 +6,14 @@
     width: 700px;
 }
 
+#pacienteCadastro {
+    width: 850px;
+}
+
+#usuarioCadastro {
+    width: 700px;
+}
+
 .formGeral {
     background-color: #414141;
     box-shadow: black 3px 3px 10px;

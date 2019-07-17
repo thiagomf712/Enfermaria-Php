@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Enums/NivelAcesso.php';
+
 class Usuario {
     private $id;
     private $login;
@@ -32,7 +34,7 @@ class Usuario {
     
     public function DefinirUsuarioPadrao(Paciente $paciente) {
         $this->login = "ec." . $paciente->getRa();
-        $this->senha = (string) $paciente->getRa();
+        $this->senha = "ec." . $paciente->getRa();
         $this->nivelAcesso = NivelAcesso::Vizualizar;
     }
 }

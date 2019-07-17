@@ -5,8 +5,10 @@ require_once '../Services/UsuarioService.php';
 require_once '../Services/FuncionarioService.php';
 require_once '../Models/Funcionario.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodo2'])) {
-    $metodo = $_POST['metodo2'];
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoFuncionario'])) {
+    $metodo = $_POST['metodoFuncionario'];
 
     if (method_exists('FuncionarioController', $metodo)) {
         FuncionarioController::$metodo($_POST);
@@ -14,8 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodo2'])) {
         throw new Exception("Metodo não existe");
     }
 }
-
-session_start();
 
 class FuncionarioController {
 

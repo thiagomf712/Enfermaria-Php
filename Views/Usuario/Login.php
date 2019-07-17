@@ -19,9 +19,10 @@ unset($_SESSION['usuario']);
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     </head>
     <body>
+
         <div class="mx-auto p-4 formGeral" id="loginForm">
             <form method="POST" action="../../Controllers/UsuarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm('login', 'senha')">
-                <input type="hidden" name="metodo" value="Login"/>
+                <input type="hidden" name="metodoUsuario" value="Login"/>
                 <div class="form-group">
                     <label for="login" >Usuario</label>
                     <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4"/>
@@ -38,37 +39,10 @@ unset($_SESSION['usuario']);
             </form>
         </div>        
 
-        <?php if (isset($_SESSION['erro'])) : ?>
-            <script>
-                $(document).ready(function () {
-                    $("#modal").modal();
-                });
-            </script>
-        <?php endif; ?>
+        <?php include_once '../Compartilhado/ModalErro.php'; ?>
 
-        <div class="modal fade" id="modal">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger p-2">
-                        <h5 class="modal-title">Erro</h5>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            <?php
-                            echo $_SESSION['erro'];
-                            unset($_SESSION['erro']);
-                            ?>
-                        </p>
-                    </div>
-                    <div class="modal-footer p-2">
-                        <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script src="../../JavaScript/bootstrap.js"></script>
-        <script src="../../JavaScript/bootstrapValidation.js"></script>       
-        <script src="../../JavaScript/login.js?version=12"></script>  
+        <script src="../../JavaScript/Geral/bootstrap.js"></script>
+        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>       
+        <script src="../../JavaScript/Usuario/login.js?version=15"></script>  
     </body>
 </html>

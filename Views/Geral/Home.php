@@ -8,7 +8,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
 <!DOCTYPE html>
 <html>
-    <head>
+    <head lang="pt-br">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Enfermaria</title>
@@ -26,6 +26,6 @@ $usuario = unserialize($_SESSION['usuario']);
         
         <?php include_once '../Compartilhado/Footer.php';?>
         
-        <script src="../../JavaScript/bootstrap.js"></script>
+        <script src="../../JavaScript/Geral/bootstrap.js"></script>
     </body>
 </html>
