@@ -75,6 +75,6 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
-        <script src="../../JavaScript/Funcionario/cadastroUsuario.js?version=13"></script> 
+        <script src="../../JavaScript/Usuario/cadastroUsuario.js?version=13"></script> 
     </body>
 </html>
