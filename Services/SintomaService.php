@@ -1,7 +1,12 @@
 <?php
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 2));
+}
 
-require_once 'Connection.php';
-require_once '../Models/Sintoma.php';
+require_once(__ROOT__ . '/Models/Sintoma.php');
+
+require_once(__ROOT__ . '/Services/Connection.php');
+
 
 class SintomaService {
 
@@ -26,4 +31,7 @@ class SintomaService {
         }
     }
 
+    public static function ListarSintomas(){
+        
+    }
 }

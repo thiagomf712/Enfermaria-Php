@@ -18,6 +18,10 @@
     
 }
 
+#funcionarioLista {
+    width: 1000px;
+}
+
 .formGeral {
     background-color: #414141;
     box-shadow: black 3px 3px 10px;

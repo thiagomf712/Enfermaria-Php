@@ -25,7 +25,7 @@ class Pessoa {
     }
 
             
-    public function __construct(int $id, string $nome, $usuario) {
+    public function __construct(int $id, string $nome, $usuario = null) {
         $this->id = $id;
         $this->nome = $nome;
         $this->usuario = $usuario;

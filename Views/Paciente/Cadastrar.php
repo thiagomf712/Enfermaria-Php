@@ -1,5 +1,6 @@
 <?php
-require_once '../../Models/Usuario.php';
+define('__ROOT__', dirname(__FILE__, 3));
+require_once(__ROOT__ . '/Models/Usuario.php');
 
 session_start();
 

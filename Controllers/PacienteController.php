@@ -1,16 +1,21 @@
 <?php
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 2));
+}
 
-require_once '../Services/UsuarioService.php';
-require_once '../Services/PacienteService.php';
-require_once '../Services/EnderecoService.php';
-require_once '../Services/FichaMedicaService.php';
+require_once(__ROOT__ . '/Models/Paciente.php');
+require_once(__ROOT__ . '/Models/Endereco.php');
+require_once(__ROOT__ . '/Models/FichaMedica.php');
+require_once(__ROOT__ . '/Models/Usuario.php');
 
-require_once '../Models/Paciente.php';
-require_once '../Models/Endereco.php';
-require_once '../Models/FichaMedica.php';
-require_once '../Models/Usuario.php';
+require_once(__ROOT__ . '/Services/UsuarioService.php');
+require_once(__ROOT__ . '/Services/PacienteService.php');
+require_once(__ROOT__ . '/Services/EnderecoService.php');
+require_once(__ROOT__ . '/Services/FichaMedicaService.php');
 
-session_start();
+if (session_id() == '') {
+    session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoPaciente'])) {
     $metodo = $_POST['metodoPaciente'];

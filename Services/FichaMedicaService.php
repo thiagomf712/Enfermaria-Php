@@ -1,8 +1,12 @@
 <?php
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 2));
+}
 
-require_once 'Connection.php';
-require_once '../Models/FichaMedica.php';
-require_once '../Models/Paciente.php';
+require_once(__ROOT__ . '/Models/FichaMedica.php');
+require_once(__ROOT__ . '/Models/Paciente.php');
+
+require_once(__ROOT__ . '/Services/Connection.php');
 
 class FichaMedicaService {
 

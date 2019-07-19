@@ -34,7 +34,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Funcionario</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Lista de funcionarios</a>
+                        <a class="dropdown-item" href="../Funcionario/Listar.php">Lista de funcionarios</a>
                         <a class="dropdown-item" href="../Funcionario/Cadastrar.php">Cadastrar novo funcionario</a>
                     </div>         
                 </li>

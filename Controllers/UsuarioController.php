@@ -1,9 +1,15 @@
 <?php
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 2));
+}
 
-require_once '../Services/UsuarioService.php';
-require_once '../Models/Usuario.php';
+require_once(__ROOT__ . '/Models/Usuario.php');
 
-session_start();
+require_once(__ROOT__ . '/Services/UsuarioService.php');
+
+if (session_id() == '') {
+    session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoUsuario'])) {
     $metodo = $_POST['metodoUsuario'];
@@ -55,6 +61,21 @@ class UsuarioController {
 
         try {
             UsuarioService::CadastrarUsuario($usuario);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+    
+    public static function EditarUsuario($dados) {
+        $id = $dados['usuarioId'];
+        $login = $dados['login'];
+        $senha = ($dados['senha'] !== '') ? $dados['senha'] : $dados['senhaAtual'];
+        $nivelAcesso = $dados['nivelAcesso'];
+
+        $usuario = new Usuario($id, $login, $senha, $nivelAcesso);
+
+        try {
+            UsuarioService::EditarUsuario($usuario);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

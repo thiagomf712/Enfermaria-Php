@@ -1,7 +1,12 @@
 <?php
 
-require_once 'Connection.php';
-require_once '../Models/Usuario.php';
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 2));
+}
+
+require_once(__ROOT__ . '/Models/Usuario.php');
+
+require_once(__ROOT__ . '/Services/Connection.php');
 
 class UsuarioService {
 
@@ -32,12 +37,12 @@ class UsuarioService {
         $conn = Connection();
 
         UsuarioService::VerificarLoginExiste($usuario->getLogin());
-        
+
         $id = $usuario->getId();
         $login = $usuario->getLogin();
         $senha = $usuario->getSenha();
         $nivelAcesso = $usuario->getNivelAcesso();
-        
+
         $sql = "INSERT INTO usuario VALUES (:id, :login, :senha, :nivelAcesso)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $id);
@@ -45,12 +50,35 @@ class UsuarioService {
         $stmt->bindParam(':senha', $senha);
         $stmt->bindParam(':nivelAcesso', $nivelAcesso);
 
-        try {   
+        try {
             $stmt->execute();
         } catch (Exception $e) {
             throw new Exception("Erro ao tentar cadastrar o usuario");
         }
     }
+
+    public static function EditarUsuario(Usuario $usuario) {
+        $conn = Connection();
+        
+        $id = $usuario->getId();
+        $login = $usuario->getLogin();
+        $senha = $usuario->getSenha();
+        $nivelAcesso = $usuario->getNivelAcesso();
+        
+        $sql = "UPDATE usuario SET Login = :login, Senha = :senha, NivelAcesso = :nivelAcesso WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':login', $login);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':nivelAcesso', $nivelAcesso);
+        
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao tentar editar o usuario");
+        }
+    }
+
 
     private static function VerificarLoginExiste(string $login) {
         $conn = Connection();
@@ -77,13 +105,31 @@ class UsuarioService {
         $stmt->execute();
 
         $resultado = $stmt->fetch();
-        
+
         if (empty($resultado)) {
             throw new Exception("Um erro inesperado aconteceu");
         } else {
             return new Usuario($resultado['Id'], $resultado['Login'],
                     $resultado['Senha'], $resultado['NivelAcesso']);
         }
+    }
+
+    public static function RetornarLoginId(int $id) {
+        $conn = Connection();
+
+        $sql = "SELECT * FROM usuario WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch();
+
+        if (empty($resultado)) {
+            throw new Exception("Usuario não encontrado");
+        }
+
+        return new Usuario($resultado['Id'], $resultado['Login'],
+                $resultado['Senha'], $resultado['NivelAcesso']);
     }
 
 }
