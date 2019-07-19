@@ -64,6 +64,21 @@ class FuncionarioService {
         return $resultado;
     }
     
+    public static function Excluir($id) {
+        $conn = Connection();
+
+        $sql = "DELETE FROM funcionario WHERE Id = :id";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse funcionario");
+        }
+    }
+    
     public static function RetornarFuncionario(int $id) {
         $conn = Connection();
 

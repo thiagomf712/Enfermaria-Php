@@ -78,7 +78,21 @@ class UsuarioService {
             throw new Exception("Erro ao tentar editar o usuario");
         }
     }
+    
+    public static function Excluir($id) {
+        $conn = Connection();
 
+        $sql = "DELETE FROM usuario WHERE Id = :id";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse usuario");
+        }
+    }
 
     private static function VerificarLoginExiste(string $login) {
         $conn = Connection();

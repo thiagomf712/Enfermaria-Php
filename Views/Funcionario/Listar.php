@@ -35,7 +35,7 @@ $usuario = unserialize($_SESSION['usuario']);
                 <h2>Lista de funcionarios</h2>
             </header>
 
-            <table class="table table-hover table-striped">
+            <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">#</th>
@@ -46,7 +46,7 @@ $usuario = unserialize($_SESSION['usuario']);
                 </thead>
                 <tbody>
                     <?php for ($i = 0; $i < count($lista); $i++) { ?>
-                        <tr class = "<?php echo ($i % 2 == 0) ? 'table-default' : 'table-default'; ?>">
+                        <tr class = "<?php echo ($i % 2 == 0) ? 'table-dark' : 'table-dark '; ?>">
                             <td><?php echo $i + 1; ?></td>
                             <td><?php echo $lista[$i]['Nome']; ?></td>
                             <td>
@@ -72,8 +72,11 @@ $usuario = unserialize($_SESSION['usuario']);
                             </td>
                             <td>
                                 <a href="Detalhes.php?funcionario=<?php echo $lista[$i]['Id']; ?>&usuario=<?php echo $lista[$i]['UsuarioId']; ?>"class="btn btn-primary btn-sm">Detalhes</a>
-                                <a href="Editar.php?funcionario=<?php echo $lista[$i]['Id']; ?>&usuario=<?php echo $lista[$i]['UsuarioId']; ?>"class="btn btn-primary btn-sm">Editar</a>
-                                <button class="btn btn-primary btn-sm">Excluir</button>
+                                <a href="Editar.php?funcionario=<?php echo $lista[$i]['Id']; ?>&usuario=<?php echo $lista[$i]['UsuarioId']; ?>"class="btn btn-primary btn-sm">Editar</a>                     
+                                <button type="submit" class="btn btn-primary btn-sm" form="<?php echo 'index' . $i; ?>">Excluir</button> 
+                                <form method="GET" id="<?php echo 'index' . $i; ?>">
+                                    <input type="hidden" name="i" value="<?php echo $i; ?>" />                                   
+                                </form>
                             </td>
                         </tr>
                     <?php } ?>
@@ -81,12 +84,47 @@ $usuario = unserialize($_SESSION['usuario']);
             </table> 
         </div>  
 
+        <?php if (isset($_GET['i'])) { ?>
+            <script>
+                $(document).ready(function () {
+                    $("#modalAlerta").modal();
+                });
+            </script>  
+            <?php
+            $index = $_GET['i'];
+        }
+        ?>
+
+        <div class="modal fade" id="modalAlerta">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning p-2">
+                        <h5 class="modal-title">Atenção</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que quer deletar o funcionario <strong><?php echo $lista[$index]['Nome']; ?> </strong></p>
+                    </div>
+                    <div class="modal-footer p-2">
+                        <button type="submit" class="btn btn-primary" form="Deletar">Deletar</button>
+
+                        <form method="POST" id="Deletar" action="../../Controllers/FuncionarioController.php">
+                            <input type="hidden" name="metodoFuncionario" value="Deletar"/>
+                            <input type="hidden" name="funcionarioId" value="<?php echo $lista[$index]['Id']; ?>" />   
+                            <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
+                        </form>
+
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
         <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?>
 
         <?php include_once '../Compartilhado/Footer.php'; ?>
 
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
+        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>    
         <script src="../../JavaScript/Funcionario/listaFuncionario.js"></script>  
     </body>
 </html>

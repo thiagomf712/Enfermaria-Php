@@ -83,6 +83,26 @@ class FuncionarioController {
         }
     }
     
+    public static function Deletar($dados) {
+        
+        $id = $dados['funcionarioId'];
+        $usuarioId = $dados['usuarioId'];
+        
+        try {
+            FuncionarioService::Excluir($id);
+            
+            UsuarioService::Excluir($usuarioId);
+            
+            header("Location: ../Views/Funcionario/Listar.php");
+            $_SESSION['sucesso'] = "Funcionario deletado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
     public static function RetornarFuncionario($id, $usuarioId) {
         try {
             $usuario = UsuarioService::RetornarLoginId($usuarioId);
