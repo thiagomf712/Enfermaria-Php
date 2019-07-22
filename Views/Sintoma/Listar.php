@@ -10,6 +10,12 @@ if (session_id() == '') {
 
 $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : SintomaController::Listar();
 
+$numeroPaginas = ceil(count($lista) / 25);
+$paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
+$posMax = $paginaAtual * 25;
+$inicio = $posMax - 25;
+$limite = (count($lista) >= $posMax) ? $posMax : count($lista);
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 
@@ -22,7 +28,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <link rel="stylesheet" href="../../Css/forms.css?version=20" /> 
         <link rel="stylesheet" href="../../Css/bootstrap.css" />   
-        <script src="https://kit.fontawesome.com/f3a7ec9ee6.js"></script>
+
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>          
     </head>
@@ -62,15 +68,8 @@ $usuario = unserialize($_SESSION['usuario']);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    $numeroPaginas = ceil(count($lista) / 25);
-                    $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
-                    $posMax = $paginaAtual * 25;
-                    $inicio = $posMax - 25;
-                    $limite = (count($lista) >= $posMax) ? $posMax : count($lista);
-                    ?>
                     <?php for ($i = $inicio; $i < $limite; $i++) : ?>
-                        <tr class = "table-dark">
+                        <tr class="table-dark">
                             <td><?php echo $i + 1; ?></td>
                             <td><?php echo $lista[$i]['Nome']; ?></td>
                             <td>
@@ -85,25 +84,7 @@ $usuario = unserialize($_SESSION['usuario']);
                 </tbody>
             </table> 
 
-            <?php if (count($lista) > 25) : ?>
-                <form method="GET" class="form-inline">    
-                    <?php if ($paginaAtual > 1) : ?>
-                        <button class="btn btn-primary mr-2" type="submit" onclick="document.getElementById('pagina').value = <?php echo $paginaAtual; ?> - 1"><i class="fas fa-arrow-left"></i></button> 
-                    <?php endif; ?>
-
-                    <select class="custom-select my-1 mr-2" name="pagina" id="pagina">
-                        <?php for ($i = 1; $i <= $numeroPaginas; $i++) : ?>
-                            <option value="<?php echo $i; ?>" <?php echo ($i == $paginaAtual) ? 'selected' : ''; ?>><?php echo 'Pagina ' . $i; ?></option>
-                        <?php endfor; ?>
-                    </select>
-
-                    <input class="btn btn-primary mr-2" type="submit" value="Ir" />  
-
-                    <?php if ($paginaAtual < $numeroPaginas) : ?>
-                        <button class="btn btn-primary" type="submit" onclick="document.getElementById('pagina').value = <?php echo $paginaAtual; ?> + 1"><i class="fas fa-arrow-right"></i></button> 
-                    <?php endif; ?>
-                </form>
-            <?php endif; ?>
+            <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
         <?php if (isset($_GET['i'])) { ?>
@@ -131,7 +112,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <form method="POST" id="Deletar" action="../../Controllers/SintomaController.php">
                             <input type="hidden" name="metodoSintoma" value="Deletar"/>
-                            <input type="hidden" name="Id" value="<?php echo $lista[$index]['Id']; ?>" />
+                            <input type="hidden" name="id" value="<?php echo $lista[$index]['Id']; ?>" />
                         </form>
 
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>

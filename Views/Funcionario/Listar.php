@@ -9,7 +9,13 @@ if (session_id() == '') {
     session_start();
 }
 
-$lista = FuncionarioController::Listar();
+$lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : FuncionarioController::Listar();
+
+$numeroPaginas = ceil(count($lista) / 25);
+$paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
+$posMax = $paginaAtual * 25;
+$inicio = $posMax - 25;
+$limite = (count($lista) >= $posMax) ? $posMax : count($lista);
 
 $usuario = unserialize($_SESSION['usuario']);
 ?>
@@ -38,15 +44,43 @@ $usuario = unserialize($_SESSION['usuario']);
             <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">Nivel de acesso</th>
+                        <?php
+                        $filtro = (isset($_SESSION['coluna'])) ? $_SESSION['coluna'] : '';
+                        $ordem = (isset($_SESSION['estado'])) ? $_SESSION['estado'] : '';
+                        ?>
+                        <th scope="col">
+                            <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
+                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                                <input type="hidden" name="coluna" value="Id"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
+                                <button type="submit" class="border-0 bg-transparent">#</button>
+                            </form>
+                        </th>
+
+                        <th scope="col">
+                            <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
+                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                                <input type="hidden" name="coluna" value="f.Nome"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                <button type="submit" class="border-0 bg-transparent">Nome</button>
+                            </form>
+                        </th>
+
+                        <th scope="col">
+                            <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
+                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                                <input type="hidden" name="coluna" value="u.NivelAcesso"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "NivelAcesso" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                <button type="submit" class="border-0 bg-transparent">Nivel de Acesso</button>
+                            </form>
+                        </th>
+
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php for ($i = 0; $i < count($lista); $i++) { ?>
-                        <tr class = "<?php echo ($i % 2 == 0) ? 'table-dark' : 'table-dark '; ?>">
+                    <?php for ($i = $inicio; $i < $limite; $i++) : ?>
+                        <tr class="table-dark">
                             <td><?php echo $i + 1; ?></td>
                             <td><?php echo $lista[$i]['Nome']; ?></td>
                             <td>
@@ -79,9 +113,11 @@ $usuario = unserialize($_SESSION['usuario']);
                                 </form>
                             </td>
                         </tr>
-                    <?php } ?>
+                    <?php endfor; ?>
                 </tbody>
             </table> 
+
+            <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
         <?php if (isset($_GET['i'])) { ?>
@@ -118,7 +154,7 @@ $usuario = unserialize($_SESSION['usuario']);
                 </div>
             </div>
         </div>
-            
+
         <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?>
 
         <?php include_once '../Compartilhado/Footer.php'; ?>

@@ -41,6 +41,41 @@ class SintomaController {
             exit();
         }
     }
+    
+    public static function Editar($dados) {
+        $id = $dados['id'];
+        $nome = $dados['nome'];
+
+        try {
+            $sintoma = new Sintoma($id, $nome);
+
+            SintomaService::EditarSintoma($sintoma);
+
+            header("Location: ../Views/Sintoma/Listar.php");
+            $_SESSION['sucesso'] = "Sintoma editado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
+    public static function Deletar($dados) {     
+        $id = $dados['id'];
+        
+        try {
+            SintomaService::Excluir($id);
+
+            header("Location: ../Views/Sintoma/Listar.php");
+            $_SESSION['sucesso'] = "sintoma deletado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
 
     public static function Filtrar($dados) {
         $coluna = $dados['coluna'];
@@ -67,4 +102,15 @@ class SintomaController {
         }
     }
 
+    public static function RetornarSintoma($id) {
+        try {
+            $sintoma = SintomaService::RetornarSintoma($id);
+            
+            return $sintoma;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
 }

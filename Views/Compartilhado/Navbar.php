@@ -53,11 +53,26 @@
     </div>
 </nav>
 
+<?php
+if (isset($_SESSION['sucesso'])) {
+    if (isset($_SESSION['ordenado'])) {
+        unset($_SESSION['ordenado']);
+    }
+
+    if (isset($_SESSION['coluna'])) {
+        unset($_SESSION['coluna']);
+    }
+
+    if (isset($_SESSION['estado'])) {
+        unset($_SESSION['estado']);
+    }
+}
+?>
 
 <script src="../../JavaScript/jquery-3.4.1.js"></script>
 <script>
     var links = document.getElementsByClassName('navegacao');
-    
+
     for (var i = 0; i < links.length; i++) {
         links[i].addEventListener("click", chamarPhp);
     }

@@ -23,7 +23,7 @@ $usuario = unserialize($_SESSION['usuario']);
     <body>
         <?php include_once '../Compartilhado/Navbar.php'; ?>
 
-        <div class="mx-auto p-4 formGeral" id="pacienteCadastro">
+        <div class="mx-auto p-4 formGeral form-grande">
             <form method="POST" action="../../Controllers/PacienteController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
                 <input type="hidden" name="metodoPaciente" value="Cadastrar"/>
                 <fieldset>

@@ -28,6 +28,39 @@ class SintomaService {
             throw new Exception("Erro ao tentar cadastrar o sintoma");
         }
     }
+    
+    public static function EditarSintoma(Sintoma $sintoma) {
+        $conn = Connection();
+
+        $id = $sintoma->getId();
+        $nome = $sintoma->getNome();
+
+        $sql = "UPDATE sintoma SET Nome = :nome WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nome', $nome);
+
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao tentar editar o sintoma");
+        }
+    }
+    
+    public static function Excluir($id) {
+        $conn = Connection();
+
+        $sql = "DELETE FROM sintoma WHERE Id = :id";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse sintoma");
+        }
+    }
 
     public static function ListarSintomas(){
         $conn = Connection();
@@ -53,5 +86,22 @@ class SintomaService {
         $resultado = $stmt->fetchAll();
         
         return $resultado;
+    }
+    
+    public static function RetornarSintoma(int $id) {
+        $conn = Connection();
+
+        $sql = "SELECT * FROM sintoma WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch();
+        
+        if (empty($resultado)) {
+            throw new Exception("Sintoma não encontrado");
+        } 
+          
+        return new Sintoma($resultado['Id'], $resultado['Nome']); 
     }
 }

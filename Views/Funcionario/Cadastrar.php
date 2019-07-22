@@ -14,7 +14,7 @@ $usuario = unserialize($_SESSION['usuario']);
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" href="../../Css/forms.css?version=12" /> 
+        <link rel="stylesheet" href="../../Css/forms.css?version=13" /> 
         <link rel="stylesheet" href="../../Css/bootstrap.css?version=12" />
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>    
@@ -23,7 +23,7 @@ $usuario = unserialize($_SESSION['usuario']);
     <body>
         <?php include_once '../Compartilhado/Navbar.php'; ?>              
 
-        <div class="mx-auto p-4 formGeral" id="funcionarioCadastro">
+        <div class="mx-auto p-4 formGeral form-medio">
             <form method="POST" action="../../Controllers/FuncionarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
                 <input type="hidden" name="metodoFuncionario" value="Cadastrar"/>
                 <fieldset>

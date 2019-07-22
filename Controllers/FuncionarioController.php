@@ -53,7 +53,6 @@ class FuncionarioController {
     public static function Editar($dados) {
         $id = $dados['funcionarioId'];
         $nome = $dados['nome'];
-        $login = $dados['login'];
 
         try {
             UsuarioController::EditarUsuario($dados);
@@ -81,6 +80,20 @@ class FuncionarioController {
             echo "<script language='javascript'>history.go(-1);</script>";
             exit();
         }
+    }
+    
+    public static function Filtrar($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $funcionario = FuncionarioService::ListarFuncionarioOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($funcionario);
+        header("Location: ../Views/Funcionario/Listar.php");
+        exit();
     }
     
     public static function Deletar($dados) {

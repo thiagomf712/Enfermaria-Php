@@ -1,20 +1,12 @@
-#loginForm {   
+.form-pequeno {   
     width: 500px;    
 }
 
-#funcionarioCadastro {
-    width: 700px;
-}
-
-#pacienteCadastro {
+.form-grande {
     width: 850px;
 }
 
-#usuarioCadastro {
-    width: 700px;
-}
-
-#sintomaCadastro {
+.form-medio {
     width: 700px;
 }
 

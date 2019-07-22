@@ -39,7 +39,7 @@ $usuario = unserialize($_SESSION['usuario']);
     <body>
         <?php include_once '../Compartilhado/Navbar.php'; ?>    
 
-        <div class="mx-auto p-4 formGeral" id="funcionarioCadastro">
+        <div class="mx-auto p-4 formGeral form-medio">
             <form>
                 <fieldset>
                     <legend class="mb-4">Informações do funcionario</legend>

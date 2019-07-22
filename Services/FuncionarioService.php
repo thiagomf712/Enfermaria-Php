@@ -64,6 +64,20 @@ class FuncionarioService {
         return $resultado;
     }
     
+    public static function ListarFuncionarioOrdenado($coluna, $ordem){
+        $conn = Connection();
+
+        $sql = "SELECT f.Id, f.Nome, f.UsuarioId, u.NivelAcesso FROM funcionario f "
+                . "INNER JOIN usuario u ON f.UsuarioId = u.Id ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
     public static function Excluir($id) {
         $conn = Connection();
 

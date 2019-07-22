@@ -21,7 +21,7 @@ unset($_SESSION['usuario']);
     </head>
     <body>
 
-        <div class="mx-auto p-4 formGeral" id="loginForm">
+        <div class="mx-auto p-4 formGeral form-pequeno">
             <form method="POST" action="../../Controllers/UsuarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm('login', 'senha')">
                 <input type="hidden" name="metodoUsuario" value="Login"/>
                 <div class="form-group">
