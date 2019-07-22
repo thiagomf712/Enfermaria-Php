@@ -42,6 +42,8 @@ unset($_SESSION['usuario']);
 
         <?php include_once '../Compartilhado/ModalErro.php'; ?>
 
+        <?php include_once '../Compartilhado/Footer.php'; ?>
+
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>       
         <script src="../../JavaScript/Usuario/login.js?version=15"></script>  

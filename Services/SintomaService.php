@@ -15,14 +15,12 @@ class SintomaService {
 
         $id = $sintoma->getId();
         $nome = $sintoma->getNome();
-        $procedimento = $sintoma->getProcedimento();
 
 
-        $sql = "INSERT INTO sintoma VALUES (:id, :nome, :procedimento)";
+        $sql = "INSERT INTO sintoma VALUES (:id, :nome)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':procedimento', $procedimento);
 
         try {
             $stmt->execute();
@@ -32,6 +30,28 @@ class SintomaService {
     }
 
     public static function ListarSintomas(){
+        $conn = Connection();
+
+        $sql = "SELECT * FROM sintoma";
         
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function ListarSintomasOrdenado($coluna, $ordem){
+        $conn = Connection();
+
+        $sql = "SELECT * FROM sintoma ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
     }
 }

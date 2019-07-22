@@ -34,11 +34,6 @@ $usuario = unserialize($_SESSION['usuario']);
                         <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
                         <div class="invalid-feedback" id="erroNome"></div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="procedimento" >Procedimento Padrão</label>
-                        <textarea class="form-control" id="procedimento" name="procedimento" rows="3" maxlength="100" placeholder="Deixa em branco caso não possua um procedimento padrão"></textarea>
-                    </div>
                 </fieldset>
 
                 <div class="form-row">
@@ -59,6 +54,6 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
-        <script src="../../JavaScript/Usuario/cadastroSintoma.js?version=13"></script> 
+        <script src="../../JavaScript/Sintoma/cadastroSintoma.js?version=13"></script> 
     </body>
 </html>

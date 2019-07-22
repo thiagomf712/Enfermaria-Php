@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
@@ -25,9 +26,8 @@ class SintomaController {
 
     static function Cadastrar($dados) {
         $nome = $dados['nome'];
-        $procedimento = $dados['procedimento'];
 
-        $sintoma = new Sintoma(0, $nome, $procedimento);
+        $sintoma = new Sintoma(0, $nome);
 
         try {
             SintomaService::CadastrarSintoma($sintoma);
@@ -42,8 +42,29 @@ class SintomaController {
         }
     }
 
-    static function Listar() {
-        
+    public static function Filtrar($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $sintomas = SintomaService::ListarSintomasOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Listar.php");
+        exit();
+    }
+
+    public static function Listar() {
+        try {
+            $sintomas = SintomaService::ListarSintomas();
+            return $sintomas;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
     }
 
 }

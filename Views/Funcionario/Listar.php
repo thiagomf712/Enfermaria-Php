@@ -22,7 +22,7 @@ $usuario = unserialize($_SESSION['usuario']);
         <meta charset="UTF-8">
 
         <link rel="stylesheet" href="../../Css/forms.css" /> 
-        <link rel="stylesheet" href="../../Css/bootstrap.css" />   
+        <link rel="stylesheet" href="../../Css/bootstrap.css?version=12" />   
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>    
 
@@ -30,7 +30,7 @@ $usuario = unserialize($_SESSION['usuario']);
     <body>
         <?php include_once '../Compartilhado/Navbar.php'; ?>              
 
-        <div class="mx-auto p-4 formGeral" id="funcionarioLista">
+        <div class="mx-auto p-4 formGeral listas">
             <header class="mb-4">
                 <h2>Lista de funcionarios</h2>
             </header>
@@ -125,6 +125,5 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>    
-        <script src="../../JavaScript/Funcionario/listaFuncionario.js"></script>  
     </body>
 </html>

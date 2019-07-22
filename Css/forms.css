@@ -3,7 +3,7 @@
 }
 
 #funcionarioCadastro {
-    
+    width: 700px;
 }
 
 #pacienteCadastro {
@@ -11,14 +11,14 @@
 }
 
 #usuarioCadastro {
-    
+    width: 700px;
 }
 
 #sintomaCadastro {
-    
+    width: 700px;
 }
 
-#funcionarioLista {
+.listas {
     width: 1000px;
 }
 
@@ -28,5 +28,4 @@
     margin-top: 5em;
     margin-bottom: 5em;
     border-radius: 30px;
-    width: 700px;
 }
