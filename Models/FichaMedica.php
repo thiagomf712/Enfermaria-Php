@@ -39,9 +39,9 @@ class FichaMedica {
         return $this->paciente;
     }
 
-    
+        
     public function __construct(int $id, string $planoSaude, string $problemaSaude, 
-            string $medicamento, string $alergia, string $cirurgia, Paciente $paciente) {
+            string $medicamento, string $alergia, string $cirurgia, $paciente = null) {
         $this->id = $id;
         $this->planoSaude = $planoSaude;
         $this->problemaSaude = $problemaSaude;

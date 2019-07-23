@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
@@ -70,12 +71,128 @@ class PacienteController {
             $fichaMedica = new FichaMedica(0, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia, $pacientebd);
             $endereco = new Endereco(0, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep, $pacientebd);
 
-            FichaMedicaService::CadastrarEndereco($fichaMedica);
+            FichaMedicaService::CadastrarFichaMedica($fichaMedica);
             EnderecoService::CadastrarEndereco($endereco);
-            
+
             $_SESSION['sucesso'] = "Paciente cadastrado com sucesso";
-            header("Location: ../Views/Paciente/Cadastrar.php");    
+            header("Location: ../Views/Paciente/Cadastrar.php");
             exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function Editar($dados) {
+        //Informações gerais
+        $id = $dados['id'];
+        $nome = $dados['nome'];
+        $ra = $dados['ra'];
+        $dataNascimento = $dados['dataNascimento'];
+        $email = $dados['email'];
+        $telefone = $dados['telefone'];
+
+        //Ficha médica
+        $fichaMedicaId = $dados['fichaMedicaId'];
+        $planoSaude = $dados['planoSaude'];
+        $problemaSaude = $dados['problemaSaude'];
+        $medicamento = $dados['medicamento'];
+        $alergia = $dados['alergia'];
+        $cirurgia = $dados['cirurgia'];
+
+        //Endereço
+        $enderecoId = $dados['enderecoId'];
+        $regime = $dados['regime'];
+        $logradouro = $dados['rua'];
+        $numero = $dados['numero'];
+        $complemento = $dados['complemento'];
+        $bairro = $dados['bairro'];
+        $cidade = $dados['cidade'];
+        $estado = $dados['estado'];
+        $cep = $dados['cep'];
+
+        try {
+            $paciente = new Paciente($id, $nome, $ra, $dataNascimento, $email, $telefone);
+            PacienteService::EditarPaciente($paciente);
+            
+            $fichaMedica = new FichaMedica($fichaMedicaId, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia);
+            FichaMedicaService::EditarFichaMedica($fichaMedica);
+            
+            $endereco = new Endereco($enderecoId, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep);
+            EnderecoService::EditarEndereco($endereco);
+
+            header("Location: ../Views/Paciente/Listar.php");
+            $_SESSION['sucesso'] = "Paciente editado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function Deletar($dados) {
+        
+        $id = $dados['pacienteId'];
+        $usuarioId = $dados['usuarioId'];
+        $fichaMedicaId = $dados['fichaMedicaId'];
+        $enderecoId = $dados['enderecoId'];
+      
+        try {         
+            FichaMedicaService::Excluir($fichaMedicaId);  
+            
+            EnderecoService::Excluir($enderecoId);
+            
+            PacienteService::Excluir($id);
+            
+            UsuarioService::Excluir($usuarioId);
+                     
+            header("Location: ../Views/Paciente/Listar.php");
+            $_SESSION['sucesso'] = "Paciente deletado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
+    public static function Listar() {
+        try {
+            $pacientes = PacienteService::ListarPacientes();
+            return $pacientes;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function Ordenar($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $paciente = PacienteService::ListarPacientesOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($paciente);
+        header("Location: ../Views/Paciente/Listar.php");
+        exit();
+    }
+
+    public static function RetornarPaciente($id, $enderecoId, $fichaMedicaId) {
+        try {
+            $paciente = PacienteService::RetornarPacienteCompleto($id);
+            $endereco = EnderecoService::RetornarEndereco($enderecoId);
+            $fichaMedica = FichaMedicaService::RetornarFichaMedica($fichaMedicaId);
+
+            $paciente->setEndereco($endereco);
+            $paciente->setFichaMedica($fichaMedica);
+
+            return $paciente;
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             echo "<script language='javascript'>history.go(-1);</script>";

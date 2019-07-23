@@ -9,6 +9,10 @@ class Paciente extends Pessoa {
     private $email;
     private $telefone;
 
+    //relacionamentos
+    private $endereco;
+    private $fichaMedica;
+    
     public function getRa() {
         return $this->ra;
     }
@@ -24,7 +28,24 @@ class Paciente extends Pessoa {
     public function getTelefone() {
         return $this->telefone;
     }
+    
+    public function getEndereco() {
+        return $this->endereco;
+    }
 
+    public function getFichaMedica() {
+        return $this->fichaMedica;
+    }
+
+    public function setEndereco($endereco) {
+        $this->endereco = $endereco;
+    }
+
+    public function setFichaMedica($fichaMedica) {
+        $this->fichaMedica = $fichaMedica;
+    }
+
+    
     public function __construct(int $id, string $nome, int $ra,
             $dataNascimento, string $email, string $telefone) {
         parent::__construct($id, $nome, null);

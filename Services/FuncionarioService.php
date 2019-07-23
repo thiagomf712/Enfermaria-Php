@@ -27,6 +27,10 @@ class FuncionarioService {
 
         try {
             $stmt->execute();
+            
+            if($stmt->rowCount() == 0){
+                throw new Exception("Não foi possivel deletar esse paciente");
+            }
         } catch (Exception $e) {
             throw new Exception("Erro ao tentar cadastrar o funcionario");
         }

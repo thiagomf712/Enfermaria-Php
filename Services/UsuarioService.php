@@ -89,7 +89,11 @@ class UsuarioService {
         
         try {
             $stmt->execute();
-        } catch (Exception $e) {
+            
+            if($stmt->rowCount() == 0){
+                throw new Exception("Não foi possivel deletar esse usuario");
+            }
+        } catch (PDOException $e) {
             throw new Exception("Não foi possivel deletar esse usuario");
         }
     }

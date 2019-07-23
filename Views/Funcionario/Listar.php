@@ -50,27 +50,27 @@ $usuario = unserialize($_SESSION['usuario']);
                         ?>
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
-                                <input type="hidden" name="coluna" value="Id"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
+                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
+                                <input type="hidden" name="coluna" value="f.Id"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "f.Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">#</button>
                             </form>
                         </th>
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
                                 <input type="hidden" name="coluna" value="f.Nome"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "f.Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nome</button>
                             </form>
                         </th>
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
                                 <input type="hidden" name="coluna" value="u.NivelAcesso"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "NivelAcesso" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "u.NivelAcesso" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nivel de Acesso</button>
                             </form>
                         </th>
@@ -120,7 +120,7 @@ $usuario = unserialize($_SESSION['usuario']);
             <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
-        <?php if (isset($_GET['i'])) { ?>
+        <?php if (isset($_GET['i'])  && !(isset($_SESSION['erro']))) { ?>
             <script>
                 $(document).ready(function () {
                     $("#modalAlerta").modal();

@@ -77,7 +77,7 @@ class SintomaController {
         }
     }
 
-    public static function Filtrar($dados) {
+    public static function Ordenar($dados) {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
 

@@ -58,7 +58,7 @@ class Endereco {
 
     
     public function __construct(int $id, int $regime, string $logradouro, string $numero, string $complemento, string $bairro,
-            string $cidade, string $estado, string $cep, Paciente $paciente) {
+            string $cidade, string $estado, string $cep, $paciente = null) {
         $this->id = $id;
         $this->regime = $regime;
         $this->logradouro = $logradouro;

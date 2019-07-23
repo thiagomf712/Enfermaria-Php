@@ -50,7 +50,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="Filtrar"/>
+                                <input type="hidden" name="metodoSintoma" value="Ordenar"/>
                                 <input type="hidden" name="coluna" value="Id"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">#</button>
@@ -58,7 +58,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         </th>
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="Filtrar"/>
+                                <input type="hidden" name="metodoSintoma" value="Ordenar"/>
                                 <input type="hidden" name="coluna" value="Nome"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nome</button>
@@ -87,7 +87,7 @@ $usuario = unserialize($_SESSION['usuario']);
             <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
-        <?php if (isset($_GET['i'])) { ?>
+        <?php if (isset($_GET['i']) && !(isset($_SESSION['erro']))) { ?>
             <script>
                 $(document).ready(function () {
                     $("#modalAlerta").modal();

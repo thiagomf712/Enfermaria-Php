@@ -41,7 +41,7 @@ $usuario = unserialize($_SESSION['usuario']);
     <body>
         <?php include_once '../Compartilhado/Navbar.php'; ?>    
 
-        <div class="mx-auto p-4 formGeral">
+        <div class="mx-auto p-4 formGeral form-medio">
             <form method="POST" action="../../Controllers/FuncionarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
                 <input type="hidden" name="metodoFuncionario" value="Editar"/>
                 <fieldset>

@@ -16,7 +16,7 @@
                     <?php if ($usuario->getNivelAcesso() == 1) : ?>
                         <a class="dropdown-item navegacao" href="#">Informações pessoais</a>                    
                     <?php elseif ($usuario->getNivelAcesso() >= 2) : ?>
-                        <a class="dropdown-item navegacao" href="#">Lista de pacientes</a>
+                        <a class="dropdown-item navegacao" href="../Paciente/Listar.php">Lista de pacientes</a>
                         <a class="dropdown-item navegacao" href="../Paciente/Cadastrar.php">Cadastrar novo paciente</a>                           
                     <?php endif; ?>
                 </div>         
