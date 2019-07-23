@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoFuncionario'])) 
 
 class FuncionarioController {
 
-    static function Cadastrar($dados) {
+    public static function Cadastrar($dados) {
         $nome = $dados['nome'];
         $login = $dados['login'];
 

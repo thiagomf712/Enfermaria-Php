@@ -110,7 +110,7 @@ $usuario = unserialize($_SESSION['usuario']);
                                 <button type="submit" class="btn btn-primary btn-sm" form="<?php echo 'index' . $i; ?>">Excluir</button> 
                                 <form method="GET" id="<?php echo 'index' . $i; ?>">
                                     <input type="hidden" name="i" value="<?php echo $i; ?>" />                                   
-                                </form>
+                                </form>                 
                             </td>
                         </tr>
                     <?php endfor; ?>
@@ -120,7 +120,7 @@ $usuario = unserialize($_SESSION['usuario']);
             <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
-        <?php if (isset($_GET['i'])  && !(isset($_SESSION['erro']))) { ?>
+        <?php if (isset($_GET['i']) && !(isset($_SESSION['erro']))) { ?>
             <script>
                 $(document).ready(function () {
                     $("#modalAlerta").modal();

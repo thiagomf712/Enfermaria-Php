@@ -66,6 +66,23 @@ class UsuarioController {
         }
     }
     
+    public static function Editar($dados) {
+        $id = $dados['id'];
+        $senha = $dados['senha'];
+        
+        try {
+            UsuarioService::AlterarSenha($id, $senha);
+            
+            header("Location: ../Views/Usuario/Listar.php");
+            $_SESSION['sucesso'] = "Senha alterada com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
     public static function EditarUsuario($dados) {
         $id = $dados['usuarioId'];
         $login = $dados['login'];
@@ -80,5 +97,41 @@ class UsuarioController {
             throw new Exception($e->getMessage());
         }
     }
+    
+    public static function Listar() {
+        try {
+            $usuario = UsuarioService::ListarUsuarios();
+            return $usuario;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
+    public static function Ordenar($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
 
+        $usuarios = UsuarioService::ListarUsuariosOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($usuarios);
+        header("Location: ../Views/Usuario/Listar.php");
+        exit();
+    }
+    
+    public static function RetornarUsuario($id) {
+        try {
+            $usuario = UsuarioService::RetornarLoginId($id);
+            
+            return $usuario;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
 }

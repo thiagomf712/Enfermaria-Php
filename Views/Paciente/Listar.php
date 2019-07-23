@@ -1,6 +1,7 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
 require_once(__ROOT__ . '/Models/Usuario.php');
+require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
 require_once(__ROOT__ . '/Models/Enums/Regime.php');
 
 require_once(__ROOT__ . '/Controllers/PacienteController.php');
@@ -75,7 +76,7 @@ $usuario = unserialize($_SESSION['usuario']);
                                 <button type="submit" class="border-0 bg-transparent">Ra</button>
                             </form>
                         </th>
-                        
+
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/PacienteController.php">
                                 <input type="hidden" name="metodoPaciente" value="Ordenar"/>
@@ -111,11 +112,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             </td>
                             <td>
                                 <a href="Detalhes.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&endereco=<?php echo $lista[$i]['Id']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm">Detalhes</a>
-                                <a href="Editar.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&endereco=<?php echo $lista[$i]['Id']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm">Editar</a>                     
-                                <button type="submit" class="btn btn-primary btn-sm" form="<?php echo 'index' . $i; ?>">Excluir</button> 
-                                <form method="GET" id="<?php echo 'index' . $i; ?>">
-                                    <input type="hidden" name="i" value="<?php echo $i; ?>" />                                   
-                                </form>
+                                <?php if ($usuario->getNivelAcesso() >= NivelAcesso::Editar) : ?>
+                                    <a href="Editar.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&endereco=<?php echo $lista[$i]['Id']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm">Editar</a>                     
+                                    <button type="submit" class="btn btn-primary btn-sm" form="<?php echo 'index' . $i; ?>">Excluir</button> 
+                                    <form method="GET" id="<?php echo 'index' . $i; ?>">
+                                        <input type="hidden" name="i" value="<?php echo $i; ?>" />                                   
+                                    </form>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endfor; ?>
@@ -151,7 +154,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         <form method="POST" id="Deletar" action="../../Controllers/PacienteController.php">
                             <input type="hidden" name="metodoPaciente" value="Deletar"/>
                             <input type="hidden" name="pacienteId" value="<?php echo $lista[$index]['PacienteId']; ?>" />   
-                                <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
+                            <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
                             <input type="hidden" name="enderecoId" value="<?php echo $lista[$index]['Id']; ?>" />
                             <input type="hidden" name="fichaMedicaId" value="<?php echo $lista[$index][1]; ?>" />
                         </form>

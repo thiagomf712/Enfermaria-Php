@@ -79,6 +79,21 @@ class UsuarioService {
         }
     }
     
+    public static function AlterarSenha(int $id, string $senha) {
+        $conn = Connection();
+        
+        $sql = "UPDATE usuario SET Senha = :senha WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':senha', $senha);
+        
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao tentar alterar a senha");
+        }
+    }
+    
     public static function Excluir($id) {
         $conn = Connection();
 
@@ -96,6 +111,32 @@ class UsuarioService {
         } catch (PDOException $e) {
             throw new Exception("Não foi possivel deletar esse usuario");
         }
+    }
+    
+    public static function ListarUsuarios(){
+        $conn = Connection();
+
+        $sql = "SELECT Id, Login, NivelAcesso FROM usuario";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function ListarUsuariosOrdenado($coluna, $ordem){
+        $conn = Connection();
+
+        $sql = "SELECT Id, Login, NivelAcesso FROM usuario ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
     }
 
     private static function VerificarLoginExiste(string $login) {
