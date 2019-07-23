@@ -8,7 +8,11 @@ if (session_id() == '') {
     session_start();
 }
 
-$lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : SintomaController::Listar();
+if (isset($_SESSION['filtro'])) {
+    $lista = (isset($_SESSION['filtroOrdenado'])) ? unserialize($_SESSION['filtroOrdenado']) : unserialize($_SESSION['filtro']);
+} else {
+    $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : SintomaController::Listar();
+}
 
 $numeroPaginas = ceil(count($lista) / 25);
 $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
@@ -40,6 +44,30 @@ $usuario = unserialize($_SESSION['usuario']);
                 <h2>Lista de sintoma</h2>
             </header>
 
+            <form class="form-inline mt-5 my-3" action="../../Controllers/SintomaController.php" method="POST">
+                <input type="hidden" name="metodoSintoma" value="Filtrar"/>
+                <div class="input-group">
+                    <label for="nome" class="mr-2 my-2">Nome: </label>
+                    <input class="form-control mr-2 my-2" type="text" id="nome" name="nome"/>
+                </div>             
+                <button class="btn btn-primary mr-2 my-2" type="submit">Procurar</button>
+                <button class="btn btn-primary navegacao my-2" type="button" onclick="location.reload();" id="remover">Remover Filtro</button>
+            </form>
+
+            <script src="../../JavaScript/jquery-3.4.1.js"></script>
+            <script>
+                    var button = document.getElementById('remover');
+
+                        button.addEventListener("click", chamarPhp);
+
+                    function chamarPhp() {
+                        $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarFiltro'}, function (response) {
+                            console.log(response);
+                        });
+                    }
+            </script>
+
+
             <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
@@ -50,7 +78,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="Ordenar"/>
+                                <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="Id"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">#</button>
@@ -58,7 +86,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         </th>
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="Ordenar"/>
+                                <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="Nome"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nome</button>

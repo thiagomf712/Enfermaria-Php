@@ -81,6 +81,18 @@ if (isset($_SESSION['sucesso'])) {
     if (isset($_SESSION['estado'])) {
         unset($_SESSION['estado']);
     }
+
+    if (isset($_SESSION['filtro'])) {
+        unset($_SESSION['filtro']);
+    }
+    
+    if (isset($_SESSION['filtroOrdenado'])) {
+        unset($_SESSION['filtroOrdenado']);
+    }
+    
+    if (isset($_SESSION['valorFiltrado'])) {
+        unset($_SESSION['valorFiltrado']);
+    }
 }
 ?>
 

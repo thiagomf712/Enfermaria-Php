@@ -41,7 +41,7 @@ class SintomaController {
             exit();
         }
     }
-    
+
     public static function Editar($dados) {
         $id = $dados['id'];
         $nome = $dados['nome'];
@@ -60,10 +60,10 @@ class SintomaController {
             exit();
         }
     }
-    
-    public static function Deletar($dados) {     
+
+    public static function Deletar($dados) {
         $id = $dados['id'];
-        
+
         try {
             SintomaService::Excluir($id);
 
@@ -91,6 +91,35 @@ class SintomaController {
         exit();
     }
 
+    public static function Filtrar($dados) {
+        $nome = $dados['nome'];
+
+        if ($nome === '') {
+            header("Location: ../Views/Sintoma/Listar.php");
+            exit();
+        }
+
+        $sintomas = SintomaService::Filtrar($nome);
+        
+        $_SESSION['filtro'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Listar.php");
+        exit();
+    }
+    
+    public static function OrdenarFiltro($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $sintomas = SintomaService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['filtroOrdenado'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Listar.php");
+        exit();
+    }
+
     public static function Listar() {
         try {
             $sintomas = SintomaService::ListarSintomas();
@@ -105,7 +134,7 @@ class SintomaController {
     public static function RetornarSintoma($id) {
         try {
             $sintoma = SintomaService::RetornarSintoma($id);
-            
+
             return $sintoma;
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
@@ -113,4 +142,5 @@ class SintomaController {
             exit();
         }
     }
+
 }

@@ -3,6 +3,10 @@ if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
 
+if (session_id() == '') {
+    session_start();
+}
+
 require_once(__ROOT__ . '/Models/Sintoma.php');
 
 require_once(__ROOT__ . '/Services/Connection.php');
@@ -92,6 +96,34 @@ class SintomaService {
         return $resultado;
     }
     
+    public static function Filtrar($valor) {
+        $conn = Connection();
+        
+        $sql = "SELECT * FROM sintoma WHERE Nome LIKE '%" . $valor . "%'";
+        
+        $_SESSION['valorFiltrado'] = $sql;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function FiltrarOrdenado($coluna, $ordem) {
+        $conn = Connection();
+        
+        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+
     public static function RetornarSintoma(int $id) {
         $conn = Connection();
 
