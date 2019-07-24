@@ -3,6 +3,10 @@ if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
 
+if (session_id() == '') {
+    session_start();
+}
+
 require_once(__ROOT__ . '/Models/Funcionario.php');
 require_once(__ROOT__ . '/Models/Usuario.php');
 
@@ -73,6 +77,60 @@ class FuncionarioService {
 
         $sql = "SELECT f.Id, f.Nome, f.UsuarioId, u.NivelAcesso FROM funcionario f "
                 . "INNER JOIN usuario u ON f.UsuarioId = u.Id ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function Filtrar($valor) {
+        $conn = Connection();
+        
+        if(count($valor) >= 2) {  
+            $sql = "SELECT f.Id, f.Nome, f.UsuarioId, u.NivelAcesso FROM funcionario f INNER JOIN usuario u"
+                    . " ON f.UsuarioId = u.Id WHERE ";
+            
+            for ($i = 0; $i < count($valor); $i++) {
+                $sql .= $valor[$i][0];
+                
+                if($valor[$i][0] == "u.NivelAcesso") {
+                    $sql .= " = " . $valor[$i][1];
+                } else {
+                    $sql .= " LIKE '%" . $valor[$i][1] . "%'";
+                }
+                
+                if($i !== count($valor) - 1) {
+                    $sql .= ' AND ';
+                }
+            }
+        } else {
+            $sql = "SELECT f.Id, f.Nome, f.UsuarioId, u.NivelAcesso FROM funcionario f INNER JOIN usuario u "
+                    . " ON f.UsuarioId = u.Id WHERE " . $valor[0][0];
+            
+            if($valor[0][0] == "NivelAcesso") {
+                $sql .= " = " . $valor[0][1];
+            } else {
+                $sql .= " LIKE '%" . $valor[0][1] . "%'";
+            }
+        }
+        
+        $_SESSION['valorFiltrado'] = $sql;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function FiltrarOrdenado($coluna, $ordem) {
+        $conn = Connection();
+        
+        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
         
         $stmt = $conn->prepare($sql);
         $stmt->execute();

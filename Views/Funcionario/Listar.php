@@ -9,7 +9,11 @@ if (session_id() == '') {
     session_start();
 }
 
-$lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : FuncionarioController::Listar();
+if (isset($_SESSION['filtro'])) {
+    $lista = (isset($_SESSION['filtroOrdenado'])) ? unserialize($_SESSION['filtroOrdenado']) : unserialize($_SESSION['filtro']);
+} else {
+    $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : FuncionarioController::Listar();
+}
 
 $numeroPaginas = ceil(count($lista) / 25);
 $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
@@ -41,6 +45,41 @@ $usuario = unserialize($_SESSION['usuario']);
                 <h2>Lista de funcionarios</h2>
             </header>
 
+            <form class="form-inline mt-5 my-3" action="../../Controllers/FuncionarioController.php" method="POST">
+                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
+                <div class="input-group">
+                    <label for="nome" class="mr-2 my-2">Nome: </label>
+                    <input class="form-control mr-2 my-2" type="text" id="nome" name="nome"/>
+                </div>    
+                <div class="input-group">
+                    <label for="nome" class="mr-2 my-2">Nivel Acesso: </label>
+                    <select class="custom-select mr-2 my-2" id="nivelAcesso" name="nivelAcesso">
+                        <option value="<?php echo NivelAcesso::Vizualizar;?>">Visualizar</option>
+                        <option value="<?php echo NivelAcesso::Adicionar;?>">Adicionar</option>
+                        <option value="<?php echo NivelAcesso::Editar;?>">Editar / Remover</option>
+                        <option value="<?php echo NivelAcesso::Master;?>">Master</option>
+                        <option value="0" selected>Sem filtro</option>
+                    </select>
+                </div> 
+                <button class="btn btn-primary mr-2 my-2" type="submit" name="remover">Procurar</button>
+                <button class="btn btn-primary my-2" type="button" name="remover" onclick="location.reload();">Remover Filtro</button>
+            </form>
+
+            <script src="../../JavaScript/jquery-3.4.1.js"></script>
+            <script>
+                    var buttons = document.getElementsByName('remover');
+
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].addEventListener("click", chamarPhp);
+                    }
+
+                    function chamarPhp() {
+                        $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarFiltro'}, function (response) {
+                            console.log(response);
+                        });
+                    }
+            </script>
+
             <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
@@ -50,7 +89,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         ?>
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
+                                <input type="hidden" name="metodoFuncionario" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="f.Id"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "f.Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">#</button>
@@ -59,7 +98,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
+                                <input type="hidden" name="metodoFuncionario" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="f.Nome"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "f.Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nome</button>
@@ -68,7 +107,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/FuncionarioController.php">
-                                <input type="hidden" name="metodoFuncionario" value="Ordenar"/>
+                                <input type="hidden" name="metodoFuncionario" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="u.NivelAcesso"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "u.NivelAcesso" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nivel de Acesso</button>

@@ -123,6 +123,44 @@ class UsuarioController {
         exit();
     }
     
+    public static function Filtrar($dados) {
+        $login = $dados['login'];
+        $nivelAcesso = $dados['nivelAcesso'];
+
+        if ($login === '' && $nivelAcesso === "0") {
+            header("Location: ../Views/Usuario/Listar.php");
+            exit();
+        }
+        
+        if ($login !== '') {
+            $valor[] = array('Login', $login);
+        }
+        
+        if ($nivelAcesso !== "0") {
+            $valor[] = array('NivelAcesso', $nivelAcesso);
+        }
+
+        $usuarios = UsuarioService::Filtrar($valor);
+
+        $_SESSION['filtro'] = serialize($usuarios);
+        header("Location: ../Views/Usuario/Listar.php");
+        exit();
+    }
+
+    public static function OrdenarFiltro($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $usuarios = UsuarioService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['filtroOrdenado'] = serialize($usuarios);
+        header("Location: ../Views/Usuario/Listar.php");
+        exit();
+    }
+    
     public static function RetornarUsuario($id) {
         try {
             $usuario = UsuarioService::RetornarLoginId($id);

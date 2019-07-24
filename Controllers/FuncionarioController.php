@@ -49,7 +49,7 @@ class FuncionarioController {
             exit();
         }
     }
-    
+
     public static function Editar($dados) {
         $id = $dados['funcionarioId'];
         $nome = $dados['nome'];
@@ -81,7 +81,7 @@ class FuncionarioController {
             exit();
         }
     }
-    
+
     public static function Ordenar($dados) {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
@@ -95,17 +95,55 @@ class FuncionarioController {
         header("Location: ../Views/Funcionario/Listar.php");
         exit();
     }
-    
-    public static function Deletar($dados) {
+
+    public static function Filtrar($dados) {
+        $nome = $dados['nome'];
+        $nivelAcesso = $dados['nivelAcesso'];
+
+        if ($nome === '' && $nivelAcesso === "0") {
+            header("Location: ../Views/Funcionario/Listar.php");
+            exit();
+        }
         
+        if ($nome !== '') {
+            $valor[] = array('f.Nome', $nome);
+        }
+        
+        if ($nivelAcesso !== "0") {
+            $valor[] = array('u.NivelAcesso', $nivelAcesso);
+        }
+
+        $funcionarios = FuncionarioService::Filtrar($valor);
+
+        $_SESSION['filtro'] = serialize($funcionarios);
+        header("Location: ../Views/Funcionario/Listar.php");
+        exit();
+    }
+
+    public static function OrdenarFiltro($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $funcionario = FuncionarioService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['filtroOrdenado'] = serialize($funcionario);
+        header("Location: ../Views/Funcionario/Listar.php");
+        exit();
+    }
+
+    public static function Deletar($dados) {
+
         $id = $dados['funcionarioId'];
         $usuarioId = $dados['usuarioId'];
-        
+
         try {
             FuncionarioService::Excluir($id);
-            
+
             UsuarioService::Excluir($usuarioId);
-            
+
             header("Location: ../Views/Funcionario/Listar.php");
             $_SESSION['sucesso'] = "Funcionario deletado com sucesso";
             exit();
@@ -115,14 +153,14 @@ class FuncionarioController {
             exit();
         }
     }
-    
+
     public static function RetornarFuncionario($id, $usuarioId) {
         try {
             $usuario = UsuarioService::RetornarLoginId($usuarioId);
             $funcionario = FuncionarioService::RetornarFuncionario($id);
-            
+
             $funcionario->setUsuario($usuario);
-            
+
             return $funcionario;
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();

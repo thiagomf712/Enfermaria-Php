@@ -1,6 +1,7 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
 require_once(__ROOT__ . '/Models/Usuario.php');
+require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
 
 session_start();
 
@@ -59,10 +60,10 @@ $usuario = unserialize($_SESSION['usuario']);
                     <div class="form-group">
                         <label for="nivelAcesso">Nivel de acesso</label>
                         <select class="form-control" id="nivelAcesso" name="nivelAcesso">
-                            <option value="1">Visualizar</option>
-                            <option value="2">Adicionar</option>
-                            <option value="3">Editar / Remover</option>
-                            <option value="4">Master</option>
+                            <option value="<?php echo NivelAcesso::Vizualizar;?>">Visualizar</option>
+                            <option value="<?php echo NivelAcesso::Adicionar;?>">Adicionar</option>
+                            <option value="<?php echo NivelAcesso::Editar;?>">Editar / Remover</option>
+                            <option value="<?php echo NivelAcesso::Master;?>">Master</option>
                         </select>
                     </div>
                 </fieldset>

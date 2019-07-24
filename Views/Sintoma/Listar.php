@@ -50,15 +50,17 @@ $usuario = unserialize($_SESSION['usuario']);
                     <label for="nome" class="mr-2 my-2">Nome: </label>
                     <input class="form-control mr-2 my-2" type="text" id="nome" name="nome"/>
                 </div>             
-                <button class="btn btn-primary mr-2 my-2" type="submit">Procurar</button>
-                <button class="btn btn-primary navegacao my-2" type="button" onclick="location.reload();" id="remover">Remover Filtro</button>
+                <button class="btn btn-primary mr-2 my-2" type="submit" name="remover">Procurar</button>
+                <button class="btn btn-primary my-2" type="button" name="remover" onclick="location.reload();" id="remover">Remover Filtro</button>
             </form>
 
             <script src="../../JavaScript/jquery-3.4.1.js"></script>
             <script>
-                    var button = document.getElementById('remover');
+                    var buttons = document.getElementsByName('remover');
 
-                        button.addEventListener("click", chamarPhp);
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].addEventListener("click", chamarPhp);
+                    }
 
                     function chamarPhp() {
                         $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarFiltro'}, function (response) {
