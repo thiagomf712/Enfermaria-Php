@@ -18,7 +18,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                         <a class="dropdown-item navegacao" href="#">Atendimentos</a>                    
                     <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
                         <a class="dropdown-item navegacao" href="#">Lista de atendimentos</a>
-                        <a class="dropdown-item navegacao" href="#">Cadastrar novo atendimento</a>                           
+                        <a class="dropdown-item navegacao" href="../Atendimento/ListaPacientes.php">Cadastrar novo atendimento</a>                           
                     <?php endif; ?>
                 </div>         
             </li>
