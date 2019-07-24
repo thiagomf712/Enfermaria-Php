@@ -10,8 +10,12 @@ if (session_id() == '') {
     session_start();
 }
 
-$lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : PacienteController::Listar();
-//O Id da ficha medica ficou na posição 1 do vetor
+if (isset($_SESSION['filtro'])) {
+    $lista = (isset($_SESSION['filtroOrdenado'])) ? unserialize($_SESSION['filtroOrdenado']) : unserialize($_SESSION['filtro']);
+} else {
+    $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : PacienteController::Listar();
+}
+//O Id da ficha medica ficou na posição 1 do vetor (vetor[i][1])
 
 $numeroPaginas = ceil(count($lista) / 25);
 $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
@@ -43,6 +47,51 @@ $usuario = unserialize($_SESSION['usuario']);
                 <h2>Lista de Pacientes</h2>
             </header>
 
+            <form action="../../Controllers/PacienteController.php" method="POST">
+                <input type="hidden" name="metodoPaciente" value="Filtrar"/>
+
+                <div class="form-row">
+                    <div class="form-group col-sm">
+                        <label for="nome">Nome: </label>
+                        <input class="form-control" type="text" id="nome" name="nome"/>
+                    </div>    
+
+                    <div class="form-group col-sm">
+                        <label for="ra">Ra: </label>
+                        <input class="form-control" type="number" id="ra" name="ra"/>
+                    </div> 
+
+                    <div class="form-group col-sm">
+                        <label for="regime">Regime: </label>
+                        <select class="form-control" id="regime" name="regime">
+                            <option value="<?php echo Regime::Interno; ?>">Interno</option>
+                            <option value="<?php echo Regime::Externo; ?>">Externo</option>
+                            <option value="0" selected>Sem filtro</option>
+                        </select>
+                    </div> 
+                </div>
+
+                <div class="form-group float-right">
+                    <button class="btn btn-primary mr-2" type="submit" name="remover">Procurar</button>
+                    <button class="btn btn-primary " type="button" name="remover" onclick="location.reload();">Remover Filtro</button>
+                </div>
+            </form>
+
+            <script src="../../JavaScript/jquery-3.4.1.js"></script>
+            <script>
+                        var buttons = document.getElementsByName('remover');
+
+                        for (var i = 0; i < buttons.length; i++) {
+                            buttons[i].addEventListener("click", chamarPhp);
+                        }
+
+                        function chamarPhp() {
+                            $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarFiltro'}, function (response) {
+                                console.log(response);
+                            });
+                        }
+            </script>
+
             <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
@@ -52,7 +101,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         ?>
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/PacienteController.php">
-                                <input type="hidden" name="metodoPaciente" value="Ordenar"/>
+                                <input type="hidden" name="metodoPaciente" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="p.Id"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">#</button>
@@ -61,7 +110,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/PacienteController.php">
-                                <input type="hidden" name="metodoPaciente" value="Ordenar"/>
+                                <input type="hidden" name="metodoPaciente" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="p.Nome"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Nome</button>
@@ -70,7 +119,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/PacienteController.php">
-                                <input type="hidden" name="metodoPaciente" value="Ordenar"/>
+                                <input type="hidden" name="metodoPaciente" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="p.Ra"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Ra" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Ra</button>
@@ -79,7 +128,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
                         <th scope="col">
                             <form class="form-inline" method="POST" action="../../Controllers/PacienteController.php">
-                                <input type="hidden" name="metodoPaciente" value="Ordenar"/>
+                                <input type="hidden" name="metodoPaciente" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltro' : 'Ordenar'; ?>"/>
                                 <input type="hidden" name="coluna" value="e.Regime"/>
                                 <input type="hidden" name="ordem" value="<?php echo ($filtro == "e.Regime" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
                                 <button type="submit" class="border-0 bg-transparent">Regime</button>

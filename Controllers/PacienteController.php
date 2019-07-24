@@ -182,6 +182,50 @@ class PacienteController {
         header("Location: ../Views/Paciente/Listar.php");
         exit();
     }
+    
+    public static function Filtrar($dados) {
+        $nome = $dados['nome'];
+        $ra = $dados['ra'];
+        $regime = $dados['regime'];
+
+        if ($nome === '' && $regime === "0" && $ra == null) {
+            header("Location: ../Views/Paciente/Listar.php");
+            exit();
+        }
+        
+        if ($nome !== '') {
+            $valor[] = array('p.Nome', $nome);
+        }
+        
+        if ($regime !== "0") {
+            $valor[] = array('e.Regime', $regime);
+        }
+        
+        if($ra !== null) {
+            $valor[] = array('p.Ra', $ra);
+        }
+
+        $pacientes = PacienteService::Filtrar($valor);
+        
+
+        $_SESSION['filtro'] = serialize($pacientes);
+        header("Location: ../Views/Paciente/Listar.php");
+        exit();
+    }
+
+    public static function OrdenarFiltro($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $pacientes = PacienteService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['filtroOrdenado'] = serialize($pacientes);
+        header("Location: ../Views/Paciente/Listar.php");
+        exit();
+    }
 
     public static function RetornarPaciente($id, $enderecoId, $fichaMedicaId) {
         try {

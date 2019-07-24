@@ -114,6 +114,60 @@ class PacienteService {
 
         return $resultado;
     }
+    
+    public static function Filtrar($valor) {
+        $conn = Connection();
+        
+        $sql = "SELECT e.Id, f.Id, e.PacienteId, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
+                . "INNER JOIN endereco e ON e.PacienteId = p.Id "
+                . "INNER JOIN fichamedica f ON f.PacienteId = p.Id WHERE ";
+        
+        if(count($valor) >= 2) {  
+            for ($i = 0; $i < count($valor); $i++) {
+                $sql .= $valor[$i][0];
+                
+                if($valor[$i][0] == "e.Regime") {
+                    $sql .= " = " . $valor[$i][1];
+                } else {
+                    $sql .= " LIKE '%" . $valor[$i][1] . "%'";
+                }
+                
+                if($i !== count($valor) - 1) {
+                    $sql .= ' AND ';
+                }
+            }
+        } else {
+            $sql .= $valor[0][0];
+            
+            if($valor[0][0] == "e.Regime") {
+                $sql .= " = " . $valor[0][1];
+            } else {
+                $sql .= " LIKE '%" . $valor[0][1] . "%'";
+            }
+        }
+        
+        $_SESSION['valorFiltrado'] = $sql;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
+    
+    public static function FiltrarOrdenado($coluna, $ordem) {
+        $conn = Connection();
+        
+        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
 
     private static function VerificarRaExiste(string $ra) {
         $conn = Connection();
