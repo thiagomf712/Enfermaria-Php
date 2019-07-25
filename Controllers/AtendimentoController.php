@@ -77,6 +77,80 @@ class AtendimentoController {
         }
     }
 
+    
+    public static function Listar() {
+        try {
+            $atendimentos = AtendimentoService::ListarAtendimentos();
+            return $atendimentos;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+    
+    public static function Ordenar($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($atendimento);
+        header("Location: ../Views/Atendimento/Listar.php");
+        exit();
+    }
+    
+    public static function Filtrar($dados) {
+        $paciente = $dados['paciente'];
+        $funcionario = $dados['funcionario'];
+        $inicio = $dados['inicio'];
+        $fim = $dados['fim'];
+
+        if ($paciente === '' && $funcionario === "" && $inicio == null && $fim == null) {
+            header("Location: ../Views/Atendimento/Listar.php");
+            exit();
+        }
+        
+        if ($paciente !== '') {
+            $valor[] = array('p.Nome', $paciente);
+        }
+        
+        if ($funcionario !== '') {
+            $valor[] = array('f.Nome', $funcionario);
+        }
+        
+        if($inicio != null && $fim != null) {
+            $valor[] = array('a.Data', $inicio, $fim, 'ope' => 'entre');
+        } else if($inicio != null) {
+            $valor[] = array('a.Data', $inicio, 'ope' => 'maior');
+        } else if($fim != null) {
+            $valor[] = array('a.Data', $fim, 'ope' => 'menor');
+        }
+
+        $atendimentos = AtendimentoService::Filtrar($valor);
+        
+        $_SESSION['filtro'] = serialize($atendimentos);
+        header("Location: ../Views/Atendimento/Listar.php");
+        exit();
+    }
+    
+    public static function OrdenarFiltro($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $atendimentos = AtendimentoService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['filtroOrdenado'] = serialize($atendimentos);
+        header("Location: ../Views/Atendimento/Listar.php");
+        exit();
+    }
+    
     public static function RetornarFichaMedica($id) {
         try {
             $fichaMedica = FichaMedicaService::RetornarFichaMedica($id);
@@ -88,7 +162,7 @@ class AtendimentoController {
             exit();
         }
     }
-
+    
     public static function ListarPacientes() {
         try {
             $pacientes = PacienteService::ListarPacientes();

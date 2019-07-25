@@ -208,7 +208,7 @@ $usuario = unserialize($_SESSION['usuario']);
                             <input type="hidden" name="fichaMedicaId" value="<?php echo $lista[$index][1]; ?>" />
                         </form>
 
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="history.go(-1);">Fechar</button>
                     </div>
                 </div>
             </div>
