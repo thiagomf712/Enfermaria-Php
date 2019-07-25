@@ -159,8 +159,8 @@ $usuario = unserialize($_SESSION['usuario']);
                                 ?>
                             </td>
                             <td>
-                                <a href="Cadastrar.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>" class="btn btn-primary btn-sm">Adicionar Atendimento</a>  
-                                <a href="FichaMedica.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm">Ficha medica</a>
+                                <a href="Cadastrar.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&nome=<?php echo $lista[$i]['Nome']; ?>&ra=<?php echo $lista[$i]['Ra']; ?>" class="btn btn-primary btn-sm">Adicionar Atendimento</a>  
+                                <a href="FichaMedica.php?paciente=<?php echo $lista[$i]['Nome']; ?>&ra=<?php echo $lista[$i]['Ra']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm">Ficha medica</a>
                             </td>
                         </tr>
                     <?php endfor; ?>

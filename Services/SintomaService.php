@@ -140,4 +140,17 @@ class SintomaService {
           
         return new Sintoma($resultado['Id'], $resultado['Nome']); 
     }
+    
+    public static function RetornarNomesSintomas() {
+        $conn = Connection();
+
+        $sql = "SELECT Id, Nome FROM sintoma ORDER BY Nome";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
 }

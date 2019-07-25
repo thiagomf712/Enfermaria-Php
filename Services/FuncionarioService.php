@@ -171,5 +171,18 @@ class FuncionarioService {
           
         return new Funcionario($resultado['Id'], $resultado['Nome']); 
     }
+    
+    public static function RetornarNomesFuncionarios() {
+        $conn = Connection();
+
+        $sql = "SELECT Id, Nome, UsuarioId FROM funcionario ORDER BY Nome";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        return $resultado;
+    }
 
 }

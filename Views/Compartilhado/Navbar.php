@@ -93,6 +93,14 @@ if (isset($_SESSION['sucesso'])) {
     if (isset($_SESSION['valorFiltrado'])) {
         unset($_SESSION['valorFiltrado']);
     }
+    
+    if (isset($_SESSION['sintomas'])) {
+        unset($_SESSION['sintomas']);
+    }
+    
+    if (isset($_SESSION['listaSintomas'])) {
+        unset($_SESSION['listaSintomas']);
+    }
 }
 ?>
 

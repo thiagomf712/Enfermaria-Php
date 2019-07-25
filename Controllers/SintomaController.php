@@ -142,5 +142,16 @@ class SintomaController {
             exit();
         }
     }
+    
+    public static function RetornarNomesSintomas(){
+        try {
+            $sintomas = SintomaService::RetornarNomesSintomas();
 
+            return $sintomas;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
 }

@@ -169,4 +169,15 @@ class FuncionarioController {
         }
     }
 
+    public static function RetornarNomeFuncionarios() {
+        try {
+            $funcionarios = FuncionarioService::RetornarNomesFuncionarios();
+
+            return $funcionarios;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
 }

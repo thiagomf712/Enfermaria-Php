@@ -7,6 +7,7 @@ if (!defined('__ROOT__')) {
 require_once(__ROOT__ . '/Models/Paciente.php');
 
 require_once(__ROOT__ . '/Services/PacienteService.php');
+require_once(__ROOT__ . '/Services/FichaMedicaService.php');
 
 
 if (session_id() == '') {
@@ -28,7 +29,17 @@ class AtendimentoController {
     
     
     
-    
+    public static function RetornarFichaMedica($id) {
+        try {
+            $fichaMedica = FichaMedicaService::RetornarFichaMedica($id);
+
+            return $fichaMedica;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
     
     public static function ListarPacientes() {
         try {
