@@ -3,8 +3,8 @@
 class AtendimentoSintoma {
     private $id;
     private $especificacao;
-    private $Atendimento;
-    private $Sintoma;
+    private $atendimento;
+    private $sintoma;
     
     public function getId() {
         return $this->id;
@@ -15,19 +15,23 @@ class AtendimentoSintoma {
     }
 
     public function getAtendimento() {
-        return $this->Atendimento;
+        return $this->atendimento;
     }
 
     public function getSintoma() {
-        return $this->Sintoma;
+        return $this->sintoma;
+    }
+    
+    public function setAtendimento($atendimento) {
+        $this->atendimento = $atendimento;
     }
 
-    public function __construct(int $id, string $especificacao, Atendimento $Atendimento,
-            Sintoma $Sintoma) {
+    
+    public function __construct(int $id, string $especificacao, $sintoma, $atendimento = null) {
         $this->id = $id;
         $this->especificacao = $especificacao;
-        $this->Atendimento = $Atendimento;
-        $this->Sintoma = $Sintoma;
+        $this->atendimento = $atendimento;
+        $this->sintoma = $sintoma;
     }
 
 }

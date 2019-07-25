@@ -45,19 +45,20 @@ $usuario = unserialize($_SESSION['usuario']);
         <div class="mx-auto p-4 formGeral form-grande">
             <form method="POST" action="../../Controllers/AtendimentoController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
                 <input type="hidden" name="metodoAtendimento" value="Cadastrar"/>
+                
+                <input type="hidden" name="pacienteId" value="<?php echo $id; ?>"/>
+                
                 <fieldset disabled>
                     <legend class="mb-4">Informações do paciente</legend>
-                    
-                    <input type="hidden" name="idPaciente" value="<?php echo $id; ?>"/>
-                    
+ 
                     <div class="form-row">
                         <div class="form-group col-md">
-                            <label for="nome" >Nome</label>
+                            <label>Nome</label>
                             <input type="text" class="form-control" value="<?php echo $nome; ?>"/>
                         </div>
 
                         <div class="form-group col-md">
-                            <label for="ra" >Ra</label>
+                            <label>Ra</label>
                             <input type="number" class="form-control" value="<?php echo $ra; ?>"/>
                         </div>
                     </div>
@@ -119,7 +120,7 @@ $usuario = unserialize($_SESSION['usuario']);
                         <input name="desabilitar" class="btn btn-primary btn-block btn-lg" type="submit" value="Cadastrar Atendimento" />
                     </div>
                     <div class="form-group mt-4 col-md">
-                        <button name="desabilitar" type="button" class="btn btn-primary btn-block btn-lg" onclick="history.go(-1);">Cancelar</button>
+                        <a name="desabilitar" class="btn btn-primary btn-block btn-lg" href="ListaPacientes.php">Cancelar</a>
                     </div>
                 </div>
             </form>

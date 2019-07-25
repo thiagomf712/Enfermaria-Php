@@ -2,19 +2,23 @@
 
 class Atendimento {
     private $id;
-    private $data; //Data e hora
+    private $data; 
+    private $hora; 
     private $procedimento;
     
     //Relacionamentos
     private $paciente;
     private $funcionario;
     
-    private $listaSintomas;
-    
     public function getId() {
         return $this->id;
     }
+    
+    public function setId($id) {
+        $this->id = $id;
+    }
 
+    
     public function getData() {
         return $this->data;
     }
@@ -31,31 +35,20 @@ class Atendimento {
         return $this->funcionario;
     }
 
-    public function getListaSintomas() {
-        return $this->listaSintomas;
+    public function getHora() {
+        return $this->hora;
     }
 
+    
         
-    public function __construct(int $id, DateTime $data, string $procedimento,
-            Paciente $paciente, Funcionario $funcionario) {
+    public function __construct(int $id, $data, $hora, string $procedimento,
+            $paciente, $funcionario) {
         $this->id = $id;
+        $this->hora = $hora;
         $this->data = $data;
         $this->procedimento = $procedimento;
         $this->paciente = $paciente;
         $this->funcionario = $funcionario;  
         
-        $this->listaSintomas = array();
-    }
-
-    public function AdicionarSintoma(AtendimentoSintoma $sintoma) {
-        $this->listaSintomas[] = $sintoma;
-    }
-    
-    public function RemoverSintoma(AtendimentoSintoma $sintoma) {
-        foreach ($this->listaSintomas as $value) {
-            if ($value == $sintoma) {
-                unset($this->listaSintomas[]);
-            }
-        }    
     }
 }
