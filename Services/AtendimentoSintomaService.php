@@ -74,6 +74,24 @@ class AtendimentoSintomaService {
         }
     }
     
+    public static function ExcluirAtendimento($atendimentoId) {
+        $conn = Connection();
+
+        $sql = "DELETE FROM atendimentosintoma WHERE AtendimentoId = :atendimentoId";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':atendimentoId', $atendimentoId);
+
+        try {
+            $stmt->execute();
+            if($stmt->rowCount() == 0){
+                throw new Exception("Erro inexperado");
+            }
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse sintoma");
+        }
+    }
+    
     public static function RetornarSintomas(int $atendimentoId) {
         $conn = Connection();
 

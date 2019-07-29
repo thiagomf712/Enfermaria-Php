@@ -63,6 +63,24 @@ class AtendimentoService {
             throw new Exception("Erro ao tentar editar o atendiemnto");
         }
     }
+    
+    public static function Excluir($id) {
+        $conn = Connection();
+
+        $sql = "DELETE FROM atendimento WHERE Id = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+
+        try {
+            $stmt->execute();
+            if($stmt->rowCount() == 0){
+                throw new Exception("Não foi possivel deletar esse atendimento");
+            }
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse atendimento");
+        }
+    }
 
     public static function ListarAtendimentos() {
         $conn = Connection();

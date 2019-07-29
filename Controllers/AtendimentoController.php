@@ -89,7 +89,7 @@ class AtendimentoController {
         $numeroSintomasbd = $dados['numeroSintomasbd'];
 
         for ($i = 1; $i <= $numeroSintomas; $i++) {
-            $id[] = isset($dados['idRegistro' . $i]) ? $dados['idRegistro' . $i] : null ; //Armazena o Id do registro
+            $id[] = isset($dados['idRegistro' . $i]) ? $dados['idRegistro' . $i] : null; //Armazena o Id do registro
             $sintomas[] = $dados['sintoma' . $i]; //Armazena o Id do sintoma
             $especificacoes[] = $dados['especificacao' . $i]; //Armazena o texto da especificação
         }
@@ -121,15 +121,33 @@ class AtendimentoController {
 
             if ($numeroSintomas < $numeroSintomasbd) {
                 $sintomaDeletado = explode("/", $dados['sintomaDeletado']);
-                
+
 
                 for ($i = 1; $i < count($sintomaDeletado); $i++) {
                     AtendimentoSintomaService::Excluir($sintomaDeletado[$i]);
-                }             
+                }
             }
 
             header("Location: ../Views/Atendimento/Listar.php");
             $_SESSION['sucesso'] = "Atendimento editado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function Deletar($dados) {
+
+        $id = $dados['id'];
+
+        try {
+            AtendimentoSintomaService::ExcluirAtendimento($id);
+            AtendimentoService::Excluir($id);
+
+            header("Location: ../Views/Atendimento/Listar.php");
+            $_SESSION['sucesso'] = "Atendimento deletado com sucesso";
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();

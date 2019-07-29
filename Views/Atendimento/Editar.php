@@ -208,7 +208,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <script src="../../JavaScript/Geral/bootstrap.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
-        <script src="../../JavaScript/Paciente/cadastroPaciente.js"></script>  
+        <script src="../../JavaScript/Atendimento/cadastroAtendimento.js"></script>  
     </body>
 </html>
 
