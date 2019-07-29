@@ -109,7 +109,7 @@ $usuario = unserialize($_SESSION['usuario']);
                 </fieldset>
 
                 <div class="form-group">
-                    <a name="desabilitar" class="btn btn-primary btn-block btn-lg" href="Listar.php">Voltar</a>
+                    <button type="button" name="desabilitar" class="btn btn-primary btn-block btn-lg" onclick="history.go(-1);">Voltar</button>
                 </div>
 
             </form>

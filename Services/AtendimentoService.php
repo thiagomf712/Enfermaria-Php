@@ -82,16 +82,22 @@ class AtendimentoService {
         }
     }
 
-    public static function ListarAtendimentos() {
+    public static function ListarAtendimentos($pacienteId = null) {
         $conn = Connection();
-
+    
         $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
                 . "FROM atendimento a "
                 . "INNER JOIN paciente p ON a.PacienteId = p.Id "
-                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "
-                . "ORDER BY a.Id";
+                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id ";
+        
+        if($pacienteId != null) {
+            $sql .= "WHERE a.PacienteId = :pacienteId ";
+        }
+                
+        $sql .= "ORDER BY a.Id";
 
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam("pacienteId", $pacienteId);
         $stmt->execute();
 
         $resultado = $stmt->fetchAll();
@@ -99,16 +105,22 @@ class AtendimentoService {
         return $resultado;
     }
 
-    public static function ListarAtendimentosOrdenado($coluna, $ordem) {
+    public static function ListarAtendimentosOrdenado($coluna, $ordem, $pacienteId = null) {
         $conn = Connection();
 
         $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
                 . "FROM atendimento a "
                 . "INNER JOIN paciente p ON a.PacienteId = p.Id "
-                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "
-                . "ORDER BY " . $coluna . " " . $ordem;
+                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id ";
+        
+        if($pacienteId != null) {
+            $sql .= "WHERE a.PacienteId = :pacienteId ";
+        }
+        
+        $sql .= "ORDER BY " . $coluna . " " . $ordem;
 
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam("pacienteId", $pacienteId);
         $stmt->execute();
 
         $resultado = $stmt->fetchAll();
@@ -116,7 +128,7 @@ class AtendimentoService {
         return $resultado;
     }
 
-    public static function Filtrar($valor) {
+    public static function Filtrar($valor, $pacienteId = null) {
         $conn = Connection();
 
         $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
@@ -125,6 +137,10 @@ class AtendimentoService {
                 . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "
                 . "WHERE ";
 
+        if($pacienteId != null) {
+            $sql .= "a.PacienteId = :pacienteId AND ";
+        }
+        
         if (count($valor) >= 2) {
             for ($i = 0; $i < count($valor); $i++) {
                 $sql .= $valor[$i][0];
@@ -152,6 +168,7 @@ class AtendimentoService {
         $_SESSION['valorFiltrado'] = $sql;
 
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam("pacienteId", $pacienteId);
         $stmt->execute();
 
         $resultado = $stmt->fetchAll();

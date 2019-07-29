@@ -235,5 +235,22 @@ class PacienteService {
 
         return $resultado;
     }
+    
+    public static function RetornarId(int $usuarioId) {
+        $conn = Connection();
+
+        $sql = "SELECT Id FROM paciente WHERE UsuarioId = :usuarioId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':usuarioId', $usuarioId);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch();
+
+        if (empty($resultado)) {
+            throw new Exception("Paciente não encontrado");
+        }
+
+        return $resultado;
+    }
 
 }

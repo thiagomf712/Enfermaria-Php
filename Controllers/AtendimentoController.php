@@ -156,9 +156,14 @@ class AtendimentoController {
         }
     }
 
-    public static function Listar() {
+    public static function Listar($pacienteId = null) {
         try {
-            $atendimentos = AtendimentoService::ListarAtendimentos();
+            if ($pacienteId != null) {
+                $atendimentos = AtendimentoService::ListarAtendimentos($pacienteId);
+            } else {
+                $atendimentos = AtendimentoService::ListarAtendimentos();
+            }
+
             return $atendimentos;
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
@@ -171,24 +176,42 @@ class AtendimentoController {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
 
-        $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem);
+        $pacienteId = isset($dados['pacienteId']) ? $dados['pacienteId'] : null;
+
+        if ($pacienteId != null) {
+            $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem, $pacienteId);
+        } else {
+            $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem);
+        }
 
         $_SESSION['coluna'] = $coluna;
         $_SESSION['estado'] = $ordem;
 
         $_SESSION['ordenado'] = serialize($atendimento);
-        header("Location: ../Views/Atendimento/Listar.php");
+
+        if ($pacienteId != null) {
+            header("Location: ../Views/Atendimento/ListaPessoal.php");
+        } else {
+            header("Location: ../Views/Atendimento/Listar.php");
+        }
+
         exit();
     }
 
     public static function Filtrar($dados) {
-        $paciente = $dados['paciente'];
+        $paciente = isset($dados['paciente']) ? $dados['paciente'] : '';
         $funcionario = $dados['funcionario'];
         $inicio = $dados['inicio'];
         $fim = $dados['fim'];
 
+        $pacienteId = isset($dados['pacienteId']) ? $dados['pacienteId'] : null;
+
         if ($paciente === '' && $funcionario === "" && $inicio == null && $fim == null) {
-            header("Location: ../Views/Atendimento/Listar.php");
+            if ($pacienteId != null) {
+                header("Location: ../Views/Atendimento/ListaPessoal.php");
+            } else {
+                header("Location: ../Views/Atendimento/Listar.php");
+            }
             exit();
         }
 
@@ -207,11 +230,21 @@ class AtendimentoController {
         } else if ($fim != null) {
             $valor[] = array('a.Data', $fim, 'ope' => 'menor');
         }
-
-        $atendimentos = AtendimentoService::Filtrar($valor);
+        
+        if ($pacienteId != null) {
+            $atendimentos = AtendimentoService::Filtrar($valor, $pacienteId);
+        } else {
+            $atendimentos = AtendimentoService::Filtrar($valor);
+        }  
 
         $_SESSION['filtro'] = serialize($atendimentos);
-        header("Location: ../Views/Atendimento/Listar.php");
+        
+        if ($pacienteId != null) {
+            header("Location: ../Views/Atendimento/ListaPessoal.php");
+        } else {
+            header("Location: ../Views/Atendimento/Listar.php");
+        }
+        
         exit();
     }
 

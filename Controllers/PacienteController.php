@@ -115,10 +115,10 @@ class PacienteController {
         try {
             $paciente = new Paciente($id, $nome, $ra, $dataNascimento, $email, $telefone);
             PacienteService::EditarPaciente($paciente);
-            
+
             $fichaMedica = new FichaMedica($fichaMedicaId, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia);
             FichaMedicaService::EditarFichaMedica($fichaMedica);
-            
+
             $endereco = new Endereco($enderecoId, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep);
             EnderecoService::EditarEndereco($endereco);
 
@@ -133,21 +133,21 @@ class PacienteController {
     }
 
     public static function Deletar($dados) {
-        
+
         $id = $dados['pacienteId'];
         $usuarioId = $dados['usuarioId'];
         $fichaMedicaId = $dados['fichaMedicaId'];
         $enderecoId = $dados['enderecoId'];
-      
-        try {         
-            FichaMedicaService::Excluir($fichaMedicaId);  
-            
+
+        try {
+            FichaMedicaService::Excluir($fichaMedicaId);
+
             EnderecoService::Excluir($enderecoId);
-            
+
             PacienteService::Excluir($id);
-            
+
             UsuarioService::Excluir($usuarioId);
-                     
+
             header("Location: ../Views/Paciente/Listar.php");
             $_SESSION['sucesso'] = "Paciente deletado com sucesso";
             exit();
@@ -157,7 +157,7 @@ class PacienteController {
             exit();
         }
     }
-    
+
     public static function Listar() {
         try {
             $pacientes = PacienteService::ListarPacientes();
@@ -182,7 +182,7 @@ class PacienteController {
         header("Location: ../Views/Paciente/Listar.php");
         exit();
     }
-    
+
     public static function Filtrar($dados) {
         $nome = $dados['nome'];
         $ra = $dados['ra'];
@@ -192,21 +192,21 @@ class PacienteController {
             header("Location: ../Views/Paciente/Listar.php");
             exit();
         }
-        
+
         if ($nome !== '') {
             $valor[] = array('p.Nome', $nome);
         }
-        
+
         if ($regime !== "0") {
             $valor[] = array('e.Regime', $regime);
         }
-        
-        if($ra !== null) {
+
+        if ($ra !== null) {
             $valor[] = array('p.Ra', $ra);
         }
 
         $pacientes = PacienteService::Filtrar($valor);
-        
+
 
         $_SESSION['filtro'] = serialize($pacientes);
         header("Location: ../Views/Paciente/Listar.php");
@@ -237,6 +237,18 @@ class PacienteController {
             $paciente->setFichaMedica($fichaMedica);
 
             return $paciente;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function RetornarIdPaciente($usuarioId) {
+        try {
+            $pacienteId = PacienteService::RetornarId($usuarioId);
+            
+            return $pacienteId[0];
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             echo "<script language='javascript'>history.go(-1);</script>";

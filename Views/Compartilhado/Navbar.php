@@ -15,7 +15,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Atendimento</a>
                 <div class="dropdown-menu">
                     <?php if ($usuario->getNivelAcesso() == NivelAcesso::Vizualizar) : ?>
-                        <a class="dropdown-item navegacao" href="#">Atendimentos</a>                    
+                    <a class="dropdown-item navegacao" href="../Atendimento/ListaPessoal.php">Atendimentos</a>                    
                     <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
                         <a class="dropdown-item navegacao" href="../Atendimento/Listar.php">Lista de atendimentos</a>
                         <a class="dropdown-item navegacao" href="../Atendimento/ListaPacientes.php">Cadastrar novo atendimento</a>                           
