@@ -40,6 +40,30 @@ class AtendimentoService {
         }
     }
 
+    public static function EditarAtendimento(Atendimento $atendimento) {
+        $conn = Connection();
+
+        $id = $atendimento->getId();
+        $data = $atendimento->getData();
+        $hora = $atendimento->getHora();
+        $procedimento = $atendimento->getProcedimento();
+        $funcionarioId = $atendimento->getFuncionario();
+
+        $sql = "UPDATE atendimento SET Data = :data, Hora = :hora, Procedimento = :procedimento, FuncionarioId = :funcionarioId WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':data', $data);
+        $stmt->bindParam(':hora', $hora);
+        $stmt->bindParam(':procedimento', $procedimento);
+        $stmt->bindParam(':funcionarioId', $funcionarioId);
+
+        try {
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao tentar editar o atendiemnto");
+        }
+    }
+
     public static function ListarAtendimentos() {
         $conn = Connection();
 
@@ -116,17 +140,17 @@ class AtendimentoService {
 
         return $resultado;
     }
-    
+
     public static function FiltrarOrdenado($coluna, $ordem) {
         $conn = Connection();
-        
+
         $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        
+
         $resultado = $stmt->fetchAll();
-        
+
         return $resultado;
     }
 
@@ -167,6 +191,23 @@ class AtendimentoService {
         $atendimento->setId($resultado['Id']);
 
         return $atendimento;
+    }
+
+    public static function RetornarAtendimentoCompleto(int $id) {
+        $conn = Connection();
+
+        $sql = "SELECT * FROM atendimento WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch();
+
+        if (empty($resultado)) {
+            throw new Exception("atendimento não encontrado");
+        }
+
+        return new Atendimento($resultado['Id'], $resultado['Data'], $resultado['Hora'], $resultado['Procedimento'], $resultado['PacienteId'], $resultado['FuncionarioId']);
     }
 
 }

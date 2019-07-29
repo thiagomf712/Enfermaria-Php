@@ -19,7 +19,7 @@ if (session_id() == '') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoAtendimento'])) {
     $metodo = $_POST['metodoAtendimento'];
-    
+
     if (method_exists('AtendimentoController', $metodo)) {
         AtendimentoController::$metodo($_POST);
     } else {
@@ -63,13 +63,13 @@ class AtendimentoController {
 
             for ($i = 0; $i < count($atendimentoSintoma); $i++) {
                 $atendimentoSintoma[$i]->setAtendimento($atendimentodb->getId());
-                
+
                 AtendimentoSintomaService::CadastrarAtendimentoSintoma($atendimentoSintoma[$i]);
             }
 
             $_SESSION['sucesso'] = "Atendimento cadastrado com sucesso";
             header("Location: ../Views/Atendimento/ListaPacientes.php");
-            exit(); 
+            exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             echo "<script language='javascript'>history.go(-1);</script>";
@@ -77,7 +77,67 @@ class AtendimentoController {
         }
     }
 
-    
+    public static function Editar($dados) {
+        //Atendimento
+        $atendimentoId = $dados['atendimentoId'];
+        $funcionarioId = $dados['atendente'];
+        $hora = $dados['hora'];
+        $data = $dados['data'];
+
+        //sintomas
+        $numeroSintomas = $dados['numeroSintomas'];
+        $numeroSintomasbd = $dados['numeroSintomasbd'];
+
+        for ($i = 1; $i <= $numeroSintomas; $i++) {
+            $id[] = isset($dados['idRegistro' . $i]) ? $dados['idRegistro' . $i] : null ; //Armazena o Id do registro
+            $sintomas[] = $dados['sintoma' . $i]; //Armazena o Id do sintoma
+            $especificacoes[] = $dados['especificacao' . $i]; //Armazena o texto da especificação
+        }
+
+        //Procedimento
+        $procedimento = $dados['procedimento'];
+
+
+        $atendimento = new Atendimento($atendimentoId, $data, $hora, $procedimento, null, $funcionarioId);
+
+        for ($i = 1; $i <= $numeroSintomas; $i++) {
+            if ($id[($i - 1)] != null) {
+                $atendimentoSintomaEditado[] = new AtendimentoSintoma($id[($i - 1)], $especificacoes[($i - 1)], $sintomas[($i - 1)], $atendimentoId);
+            } else {
+                $atendimentoSintomaNovo[] = new AtendimentoSintoma(0, $especificacoes[($i - 1)], $sintomas[($i - 1)], $atendimentoId);
+            }
+        }
+
+        try {
+            AtendimentoService::EditarAtendimento($atendimento);
+
+            for ($i = 0; $i < count($atendimentoSintomaEditado); $i++) {
+                AtendimentoSintomaService::EditarAtendimentoSintoma($atendimentoSintomaEditado[$i]);
+            }
+
+            for ($i = 0; $i < count($atendimentoSintomaNovo); $i++) {
+                AtendimentoSintomaService::CadastrarAtendimentoSintoma($atendimentoSintomaNovo[$i]);
+            }
+
+            if ($numeroSintomas < $numeroSintomasbd) {
+                $sintomaDeletado = explode("/", $dados['sintomaDeletado']);
+                
+
+                for ($i = 1; $i < count($sintomaDeletado); $i++) {
+                    AtendimentoSintomaService::Excluir($sintomaDeletado[$i]);
+                }             
+            }
+
+            header("Location: ../Views/Atendimento/Listar.php");
+            $_SESSION['sucesso'] = "Atendimento editado com sucesso";
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
     public static function Listar() {
         try {
             $atendimentos = AtendimentoService::ListarAtendimentos();
@@ -88,7 +148,7 @@ class AtendimentoController {
             exit();
         }
     }
-    
+
     public static function Ordenar($dados) {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
@@ -102,7 +162,7 @@ class AtendimentoController {
         header("Location: ../Views/Atendimento/Listar.php");
         exit();
     }
-    
+
     public static function Filtrar($dados) {
         $paciente = $dados['paciente'];
         $funcionario = $dados['funcionario'];
@@ -113,30 +173,30 @@ class AtendimentoController {
             header("Location: ../Views/Atendimento/Listar.php");
             exit();
         }
-        
+
         if ($paciente !== '') {
             $valor[] = array('p.Nome', $paciente);
         }
-        
+
         if ($funcionario !== '') {
             $valor[] = array('f.Nome', $funcionario);
         }
-        
-        if($inicio != null && $fim != null) {
+
+        if ($inicio != null && $fim != null) {
             $valor[] = array('a.Data', $inicio, $fim, 'ope' => 'entre');
-        } else if($inicio != null) {
+        } else if ($inicio != null) {
             $valor[] = array('a.Data', $inicio, 'ope' => 'maior');
-        } else if($fim != null) {
+        } else if ($fim != null) {
             $valor[] = array('a.Data', $fim, 'ope' => 'menor');
         }
 
         $atendimentos = AtendimentoService::Filtrar($valor);
-        
+
         $_SESSION['filtro'] = serialize($atendimentos);
         header("Location: ../Views/Atendimento/Listar.php");
         exit();
     }
-    
+
     public static function OrdenarFiltro($dados) {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
@@ -150,7 +210,7 @@ class AtendimentoController {
         header("Location: ../Views/Atendimento/Listar.php");
         exit();
     }
-    
+
     public static function RetornarFichaMedica($id) {
         try {
             $fichaMedica = FichaMedicaService::RetornarFichaMedica($id);
@@ -162,7 +222,28 @@ class AtendimentoController {
             exit();
         }
     }
-    
+
+    public static function RetornarAtendimento($id) {
+        try {
+            $atendimento = AtendimentoService::RetornarAtendimentoCompleto($id);
+
+            $paciente = PacienteService::RetornarNomeRa($atendimento->getPaciente());
+
+            $sintomas = AtendimentoSintomaService::RetornarSintomas($id);
+
+            $resultado['atendimento'] = $atendimento;
+
+            $resultado['paciente'] = $paciente;
+            $resultado['sintomas'] = $sintomas;
+
+            return $resultado;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
     public static function ListarPacientes() {
         try {
             $pacientes = PacienteService::ListarPacientes();

@@ -164,9 +164,9 @@ $usuario = unserialize($_SESSION['usuario']);
                             <td><?php echo date('H:i', strtotime($lista[$i]['Hora'])); ?></td>
                             <td><?php echo $lista[$i]['Nome']; ?></td>
                             <td>
-                                <a href="Detalhes.php?atendimento=<?php echo $lista[$i][0]; ?>&paciente=<?php echo $lista[$i][4]; ?>&funcionario=<?php echo $lista[$i]['Id']; ?>" class="btn btn-primary btn-sm">Detalhes</a>
+                                <a href="Detalhes.php?atendimento=<?php echo $lista[$i][0]; ?>" class="btn btn-primary btn-sm">Detalhes</a>
                                 <?php if ($usuario->getNivelAcesso() >= NivelAcesso::Editar) : ?>
-                                    <a href="Editar.php?atendimento=<?php echo $lista[$i][0]; ?>&paciente=<?php echo $lista[$i][4]; ?>&funcionario=<?php echo $lista[$i]['Id']; ?>" class="btn btn-primary btn-sm">Editar</a>                     
+                                    <a href="Editar.php?atendimento=<?php echo $lista[$i][0]; ?>" class="btn btn-primary btn-sm">Editar</a>                     
                                     <button type="submit" class="btn btn-primary btn-sm" form="<?php echo 'index' . $i; ?>">Excluir</button> 
                                     <form method="GET" id="<?php echo 'index' . $i; ?>">
                                         <input type="hidden" name="i" value="<?php echo $i; ?>" />                                   

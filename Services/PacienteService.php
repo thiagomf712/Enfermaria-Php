@@ -218,5 +218,22 @@ class PacienteService {
 
         return new Paciente($resultado['Id'], $resultado['Nome'], $resultado['Ra'], $resultado['DataNascimento'], $resultado['Email'], $resultado['Telefone']);
     }
+    
+    public static function RetornarNomeRa(int $id) {
+        $conn = Connection();
+
+        $sql = "SELECT Nome, Ra FROM paciente WHERE Id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch();
+
+        if (empty($resultado)) {
+            throw new Exception("Paciente não encontrado");
+        }
+
+        return $resultado;
+    }
 
 }

@@ -36,6 +36,10 @@ function DesabilitarOrdenacao() {
     if (isset($_SESSION['listaSintomas'])) {
         unset($_SESSION['listaSintomas']);
     }
+    
+    if(isset($_SESSION['sintomasCarregados'])) {
+        unset($_SESSION['sintomasCarregados']);
+    }
 }
 
 function DesabilitarFiltro() {

@@ -101,6 +101,10 @@ if (isset($_SESSION['sucesso'])) {
     if (isset($_SESSION['listaSintomas'])) {
         unset($_SESSION['listaSintomas']);
     }
+    
+    if(isset($_SESSION['sintomasCarregados'])) {
+        unset($_SESSION['sintomasCarregados']);
+    }
 }
 ?>
 
