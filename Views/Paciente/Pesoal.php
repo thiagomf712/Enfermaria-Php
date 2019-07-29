@@ -9,9 +9,13 @@ if (session_id() == '') {
     session_start();
 }
 
-$id = isset($_GET['paciente']) ? $_GET['paciente'] : 0;
-$enderecoId = isset($_GET['endereco']) ? $_GET['endereco'] : 0;
-$fichaMedicaId = isset($_GET['fichaMedica']) ? $_GET['fichaMedica'] : 0;
+$usuario = unserialize($_SESSION['usuario']);
+
+$pacienteId = PacienteController::RetornarIdPaciente($usuario->getId(), true);
+
+$id = $pacienteId[0];
+$enderecoId = $pacienteId[1];
+$fichaMedicaId = $pacienteId[2];
 
 $paciente = PacienteController::RetornarPaciente($id, $enderecoId, $fichaMedicaId);
 
@@ -20,8 +24,6 @@ $reg = $paciente->getEndereco()->getRegime();
 function DefinirChecked($regime, $valorSelecionado) {
     echo ($regime == $valorSelecionado) ? 'checked' : '';
 }
-
-$usuario = unserialize($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>

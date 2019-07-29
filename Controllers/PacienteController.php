@@ -244,11 +244,15 @@ class PacienteController {
         }
     }
 
-    public static function RetornarIdPaciente($usuarioId) {
+    public static function RetornarIdPaciente($usuarioId, bool $cadastro = false) {
         try {
-            $pacienteId = PacienteService::RetornarId($usuarioId);
-            
-            return $pacienteId[0];
+            $pacienteId = PacienteService::RetornarId($usuarioId, $cadastro);
+
+            if ($cadastro) {
+                return $pacienteId;
+            } else {
+                return $pacienteId[0];
+            }
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             echo "<script language='javascript'>history.go(-1);</script>";

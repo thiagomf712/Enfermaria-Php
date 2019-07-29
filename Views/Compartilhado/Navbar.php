@@ -10,12 +10,10 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
     <div class="navbar-collapse collapse" id="navbarItens">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
-                <!--NA = 1 :: Atendimento pessoal-->
-                <!--NA >= 2 :: lista com todos os atendimentos-->
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Atendimento</a>
                 <div class="dropdown-menu">
                     <?php if ($usuario->getNivelAcesso() == NivelAcesso::Vizualizar) : ?>
-                    <a class="dropdown-item navegacao" href="../Atendimento/ListaPessoal.php">Atendimentos</a>                    
+                        <a class="dropdown-item navegacao" href="../Atendimento/ListaPessoal.php">Atendimentos</a>                    
                     <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
                         <a class="dropdown-item navegacao" href="../Atendimento/Listar.php">Lista de atendimentos</a>
                         <a class="dropdown-item navegacao" href="../Atendimento/ListaPacientes.php">Cadastrar novo atendimento</a>                           
@@ -26,7 +24,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Paciente</a>
                 <div class="dropdown-menu">
                     <?php if ($usuario->getNivelAcesso() == NivelAcesso::Vizualizar) : ?>
-                        <a class="dropdown-item navegacao" href="#">Informações pessoais</a>                    
+                        <a class="dropdown-item navegacao" href="../Paciente/Pesoal.php">Informações pessoais</a>                    
                     <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
                         <a class="dropdown-item navegacao" href="../Paciente/Listar.php">Lista de pacientes</a>
                         <a class="dropdown-item navegacao" href="../Paciente/Cadastrar.php">Cadastrar novo paciente</a>                           
@@ -85,24 +83,24 @@ if (isset($_SESSION['sucesso'])) {
     if (isset($_SESSION['filtro'])) {
         unset($_SESSION['filtro']);
     }
-    
+
     if (isset($_SESSION['filtroOrdenado'])) {
         unset($_SESSION['filtroOrdenado']);
     }
-    
+
     if (isset($_SESSION['valorFiltrado'])) {
         unset($_SESSION['valorFiltrado']);
     }
-    
+
     if (isset($_SESSION['sintomas'])) {
         unset($_SESSION['sintomas']);
     }
-    
+
     if (isset($_SESSION['listaSintomas'])) {
         unset($_SESSION['listaSintomas']);
     }
-    
-    if(isset($_SESSION['sintomasCarregados'])) {
+
+    if (isset($_SESSION['sintomasCarregados'])) {
         unset($_SESSION['sintomasCarregados']);
     }
 }

@@ -77,7 +77,7 @@ class PacienteService {
 
         try {
             $stmt->execute();
-            if($stmt->rowCount() == 0){
+            if ($stmt->rowCount() == 0) {
                 throw new Exception("Não foi possivel deletar esse paciente");
             }
         } catch (Exception $e) {
@@ -114,58 +114,58 @@ class PacienteService {
 
         return $resultado;
     }
-    
+
     public static function Filtrar($valor) {
         $conn = Connection();
-        
+
         $sql = "SELECT e.Id, f.Id, e.PacienteId, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
                 . "INNER JOIN endereco e ON e.PacienteId = p.Id "
                 . "INNER JOIN fichamedica f ON f.PacienteId = p.Id WHERE ";
-        
-        if(count($valor) >= 2) {  
+
+        if (count($valor) >= 2) {
             for ($i = 0; $i < count($valor); $i++) {
                 $sql .= $valor[$i][0];
-                
-                if($valor[$i][0] == "e.Regime") {
+
+                if ($valor[$i][0] == "e.Regime") {
                     $sql .= " = " . $valor[$i][1];
                 } else {
                     $sql .= " LIKE '%" . $valor[$i][1] . "%'";
                 }
-                
-                if($i !== count($valor) - 1) {
+
+                if ($i !== count($valor) - 1) {
                     $sql .= ' AND ';
                 }
             }
         } else {
             $sql .= $valor[0][0];
-            
-            if($valor[0][0] == "e.Regime") {
+
+            if ($valor[0][0] == "e.Regime") {
                 $sql .= " = " . $valor[0][1];
             } else {
                 $sql .= " LIKE '%" . $valor[0][1] . "%'";
             }
         }
-        
+
         $_SESSION['valorFiltrado'] = $sql;
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        
+
         $resultado = $stmt->fetchAll();
-        
+
         return $resultado;
     }
-    
+
     public static function FiltrarOrdenado($coluna, $ordem) {
         $conn = Connection();
-        
+
         $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        
+
         $resultado = $stmt->fetchAll();
-        
+
         return $resultado;
     }
 
@@ -218,7 +218,7 @@ class PacienteService {
 
         return new Paciente($resultado['Id'], $resultado['Nome'], $resultado['Ra'], $resultado['DataNascimento'], $resultado['Email'], $resultado['Telefone']);
     }
-    
+
     public static function RetornarNomeRa(int $id) {
         $conn = Connection();
 
@@ -235,11 +235,20 @@ class PacienteService {
 
         return $resultado;
     }
-    
-    public static function RetornarId(int $usuarioId) {
+
+    public static function RetornarId(int $usuarioId, bool $cadastro) {
         $conn = Connection();
 
-        $sql = "SELECT Id FROM paciente WHERE UsuarioId = :usuarioId";
+        if ($cadastro) {
+            $sql = "SELECT p.Id, e.Id, f.Id "
+                    . "FROM paciente p "
+                    . "INNER JOIN endereco e ON e.PacienteId = p.Id "
+                    . "INNER JOIN fichamedica f ON f.PacienteId = p.Id "
+                    . "WHERE p.UsuarioId = :usuarioId";
+        } else {
+            $sql = "SELECT Id FROM paciente WHERE UsuarioId = :usuarioId";
+        }
+
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':usuarioId', $usuarioId);
         $stmt->execute();
