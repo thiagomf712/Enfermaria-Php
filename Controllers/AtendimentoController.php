@@ -143,7 +143,6 @@ class AtendimentoController {
         $id = $dados['id'];
 
         try {
-            AtendimentoSintomaService::ExcluirAtendimento($id);
             AtendimentoService::Excluir($id);
 
             header("Location: ../Views/Atendimento/Listar.php");
@@ -151,7 +150,7 @@ class AtendimentoController {
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
+            header("Location: ../Views/Atendimento/Listar.php");
             exit();
         }
     }
