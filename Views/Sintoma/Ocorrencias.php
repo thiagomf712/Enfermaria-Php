@@ -16,7 +16,7 @@ $sintomaNome = isset($_GET['sintomaNome']) ? $_GET['sintomaNome'] : null;
 $Datainicio = isset($_GET['inicio']) ? $_GET['inicio'] : null;
 $Datafim = isset($_GET['fim']) ? $_GET['fim'] : null;
 
-$lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : SintomaController::ListarOcorrencias($sintomaId, $Datainicio, $Datafim);
+$lista = SintomaController::ListarOcorrencias($sintomaId, $Datainicio, $Datafim);
 
 $numeroPaginas = ceil(count($lista) / 25);
 $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
