@@ -15,6 +15,10 @@ $id = isset($_GET['fichaMedica']) ? $_GET['fichaMedica'] : 0;
 
 $fichaMedica = AtendimentoController::RetornarFichaMedica($id);
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

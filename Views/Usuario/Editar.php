@@ -12,6 +12,10 @@ $id = isset($_GET['usuario']) ? $_GET['usuario'] : 0;;
 
 $usuarioAlt = UsuarioController::RetornarUsuario($id);
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

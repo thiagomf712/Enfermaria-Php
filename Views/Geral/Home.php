@@ -4,6 +4,10 @@ require_once(__ROOT__ . '/Models/Usuario.php');
 
 session_start();
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

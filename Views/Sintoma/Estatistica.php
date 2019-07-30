@@ -38,6 +38,10 @@ if ($filtrado && !isset($_SESSION['filtroOrdenado'])) {
     $limite = (count($lista) >= $posMax) ? $posMax : (count($lista) - 1);
 }
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

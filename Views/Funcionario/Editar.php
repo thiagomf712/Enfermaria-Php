@@ -20,7 +20,9 @@ function DefinirSelected($nivelAcesso, $valorSelecionado) {
     echo ($nivelAcesso == $valorSelecionado) ? 'selected' : '';
 }
 
-
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
 
 $usuario = unserialize($_SESSION['usuario']);
 ?>

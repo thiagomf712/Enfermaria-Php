@@ -9,6 +9,10 @@ if (session_id() == '') {
     session_start();
 }
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 
 $pacienteId = PacienteController::RetornarIdPaciente($usuario->getId(), true);

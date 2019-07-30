@@ -21,6 +21,10 @@ function DefinirChecked($regime, $valorSelecionado) {
     echo ($regime == $valorSelecionado) ? 'checked' : '';
 }
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

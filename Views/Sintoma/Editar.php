@@ -13,6 +13,10 @@ $id = isset($_GET['sintoma']) ? $_GET['sintoma'] : 0;
 
 $sintoma = SintomaController::RetornarSintoma($id);
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 

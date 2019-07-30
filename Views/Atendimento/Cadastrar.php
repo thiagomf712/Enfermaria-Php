@@ -23,6 +23,10 @@ if(!(isset($_SESSION['listaSintomas']))) {
     $_SESSION['listaSintomas'] = serialize(SintomaController::RetornarNomesSintomas());
 }
 
+if(!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
 $usuario = unserialize($_SESSION['usuario']);
 ?>
 
