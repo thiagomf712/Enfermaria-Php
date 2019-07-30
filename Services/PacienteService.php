@@ -78,10 +78,10 @@ class PacienteService {
         try {
             $stmt->execute();
             if ($stmt->rowCount() == 0) {
-                throw new Exception("Não é possivel excluir um paciente com atendimentos registrados");
+                throw new Exception("Não foi possivel deletar esse paciente");
             }
         } catch (Exception $e) {
-            throw new Exception("Não é possivel excluir um paciente com atendimentos registrados");
+            throw new Exception("Não foi possivel deletar esse paciente");
         }
     }
 

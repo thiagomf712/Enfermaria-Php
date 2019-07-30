@@ -136,8 +136,14 @@ class PacienteController {
 
         $id = $dados['pacienteId'];
         $usuarioId = $dados['usuarioId'];
+        $fichaMedicaId = $dados['fichaMedicaId'];
+        $enderecoId = $dados['enderecoId'];
 
         try {
+            FichaMedicaService::Excluir($fichaMedicaId);
+
+            EnderecoService::Excluir($enderecoId);
+
             PacienteService::Excluir($id);
 
             UsuarioService::Excluir($usuarioId);
@@ -147,7 +153,7 @@ class PacienteController {
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Paciente/Listar.php");
+            echo "<script language='javascript'>history.go(-1);</script>";
             exit();
         }
     }

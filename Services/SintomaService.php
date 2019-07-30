@@ -63,10 +63,10 @@ class SintomaService {
             $stmt->execute();
 
             if ($stmt->rowCount() == 0) {
-                throw new Exception("Não é possivel deletar sintomas registrados em algum atendimento");
+                throw new Exception("Não foi possivel deletar esse paciente");
             }
         } catch (Exception $e) {
-            throw new Exception("Não é possivel deletar sintomas registrados em algum atendimento");
+            throw new Exception("Não foi possivel deletar esse sintoma");
         }
     }
 
@@ -222,7 +222,7 @@ class SintomaService {
 
         $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome as pNome, f.Nome as fNome "
                 . "FROM atendimento a "
-                . "INNER JOIN atendimentosintoma ats ON ats.AtendimentoId = a.Id "
+                . "INNER JOIN atendimentoSintoma ats ON ats.AtendimentoId = a.Id "
                 . "INNER JOIN sintoma s ON s.Id = ats.SintomaId "
                 . "INNER JOIN paciente p ON a.PacienteId = p.Id "
                 . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "

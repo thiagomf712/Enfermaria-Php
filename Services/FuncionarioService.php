@@ -150,11 +150,8 @@ class FuncionarioService {
         
         try {
             $stmt->execute();
-            if ($stmt->rowCount() == 0) {
-                throw new Exception("Não é possivel excluir um funcionario com atendimentos registrados");
-            }
         } catch (Exception $e) {
-            throw new Exception("Não é possivel excluir um funcionario com atendimentos registrados");
+            throw new Exception("Não foi possivel deletar esse funcionario");
         }
     }
     

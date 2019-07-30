@@ -79,6 +79,25 @@ class EnderecoService {
             throw new Exception("Erro ao tentar editar o endereço");
         }
     }
+
+    public static function Excluir($id) {
+        $conn = Connection();
+
+        $sql = "DELETE FROM endereco WHERE Id = :id";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        
+        try {
+            $stmt->execute();
+            
+            if($stmt->rowCount() == 0){
+                throw new Exception("Não foi possivel deletar esse endereço");
+            }
+        } catch (Exception $e) {
+            throw new Exception("Não foi possivel deletar esse endereco");
+        }
+    }
     
     public static function RetornarEndereco(int $id) {
         $conn = Connection();

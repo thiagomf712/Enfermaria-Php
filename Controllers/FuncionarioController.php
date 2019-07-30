@@ -149,7 +149,7 @@ class FuncionarioController {
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Funcionario/Listar.php");
+            echo "<script language='javascript'>history.go(-1);</script>";
             exit();
         }
     }

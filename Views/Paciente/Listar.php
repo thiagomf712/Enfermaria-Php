@@ -204,6 +204,8 @@ $usuario = unserialize($_SESSION['usuario']);
                             <input type="hidden" name="metodoPaciente" value="Deletar"/>
                             <input type="hidden" name="pacienteId" value="<?php echo $lista[$index]['PacienteId']; ?>" />   
                             <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
+                            <input type="hidden" name="enderecoId" value="<?php echo $lista[$index]['Id']; ?>" />
+                            <input type="hidden" name="fichaMedicaId" value="<?php echo $lista[$index][1]; ?>" />
                         </form>
 
                         <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="history.go(-1);">Fechar</button>
