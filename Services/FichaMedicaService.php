@@ -65,25 +65,6 @@ class FichaMedicaService {
         }
     }
     
-    public static function Excluir($id) {
-        $conn = Connection();
-
-        $sql = "DELETE FROM fichamedica WHERE Id = :id";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        
-        try {
-            $stmt->execute();
-            
-            if($stmt->rowCount() == 0){
-                throw new Exception("Não foi possivel deletar essa ficha medica");
-            }
-        } catch (Exception $e) {
-            throw new Exception("Não foi possivel deletar essa ficha medica");
-        }
-    }
-    
     public static function RetornarFichaMedica(int $id) {
         $conn = Connection();
 

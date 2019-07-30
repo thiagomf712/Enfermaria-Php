@@ -72,7 +72,7 @@ class SintomaController {
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
+            header("Location: ../Views/Sintoma/Listar.php");
             exit();
         }
     }
