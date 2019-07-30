@@ -130,6 +130,95 @@ class SintomaController {
             exit();
         }
     }
+    
+    public static function ListarEst() {
+        try {
+            $sintomas = SintomaService::ListarSintomasEst();
+            return $sintomas;
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+            echo "<script language='javascript'>history.go(-1);</script>";
+            exit();
+        }
+    }
+
+    public static function OrdenarEst($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $sintomas = SintomaService::ListarSintomasOrdenadoEst($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+
+        $_SESSION['ordenado'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Estatistica.php");
+        exit();
+    }
+    
+    public static function FiltrarEst($dados) {
+        $sintoma = $dados['sintoma'];
+        $inicio = $dados['inicio'];
+        $fim = $dados['fim'];
+
+        if ($sintoma === "" && $inicio == null && $fim == null) {
+            header("Location: ../Views/Sintoma/Estatistica.php");
+            exit();
+        }
+        
+        if ($sintoma !== '') {
+            $valor[] = array('s.Nome', $sintoma);
+        }
+
+        if ($inicio != null && $fim != null) {
+            $valor[] = array('a.Data', $inicio, $fim, 'ope' => 'entre');
+        } else if ($inicio != null) {
+            $valor[] = array('a.Data', $inicio, 'ope' => 'maior');
+        } else if ($fim != null) {
+            $valor[] = array('a.Data', $fim, 'ope' => 'menor');
+        }
+
+        $sintomas = SintomaService::FiltrarEst($valor);
+        
+        $sintomas['Filtro'] = array('sintoma' => $sintoma, 'inicio' => $inicio, 'fim' => $fim);
+        
+        $_SESSION['filtro'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Estatistica.php");
+        exit();
+    }
+    
+    public static function OrdenarFiltroEst($dados) {
+        $coluna = $dados['coluna'];
+        $ordem = $dados['ordem'];
+
+        $sintomas = SintomaService::FiltrarOrdenado($coluna, $ordem);
+
+        $_SESSION['coluna'] = $coluna;
+        $_SESSION['estado'] = $ordem;
+        
+        $_SESSION['filtroOrdenado'] = serialize($sintomas);
+        header("Location: ../Views/Sintoma/Estatistica.php");
+        exit();
+    }
+    
+    public static function ListarOcorrencias($sintoma, $inicio, $fim) {      
+        
+        if ($inicio != null && $fim != null) {
+            $data = array('a.Data', $inicio, $fim, 'ope' => 'entre');
+        } else if ($inicio != null) {
+            $data = array('a.Data', $inicio, 'ope' => 'maior');
+        } else if ($fim != null) {
+            $data = array('a.Data', $fim, 'ope' => 'menor');
+        }
+        
+        if ($inicio != null || $fim != null) {
+            $atendimentos = SintomaService::ListarOcorrencias($sintoma, $data);
+        } else {
+            $atendimentos = SintomaService::ListarOcorrencias($sintoma);
+        }  
+        
+        return $atendimentos;
+    }
 
     public static function RetornarSintoma($id) {
         try {

@@ -37,6 +37,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     <div class="dropdown-menu">
                         <a class="dropdown-item navegacao" href="../Sintoma/Listar.php">Lista de sitomas</a>
                         <a class="dropdown-item navegacao" href="../Sintoma/Cadastrar.php">Cadastrar novo sintoma</a>
+                        <a class="dropdown-item navegacao" href="../Sintoma/Estatistica.php">Estatística</a>
                     </div>         
                 </li>
             <?php endif; ?>

@@ -40,6 +40,10 @@ function DesabilitarOrdenacao() {
     if(isset($_SESSION['sintomasCarregados'])) {
         unset($_SESSION['sintomasCarregados']);
     }
+    
+    if(isset($_SESSION['filtroAtivo'])) {
+        unset($_SESSION['filtroAtivo']);
+    }
 }
 
 function DesabilitarFiltro() {
