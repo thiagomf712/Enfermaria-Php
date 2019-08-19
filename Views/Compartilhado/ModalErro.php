@@ -6,13 +6,14 @@
     </script>
 <?php endif; ?>
 
+<!-- Modal Branco -->
 <div class="modal fade" id="modal">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content bg-secondary">
             <div class="modal-header bg-danger p-2">
                 <h5 class="modal-title">Erro</h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-black">
                 <p>
                     <?php
                     echo $_SESSION['erro'];
@@ -26,3 +27,4 @@
         </div>
     </div>
 </div>
+

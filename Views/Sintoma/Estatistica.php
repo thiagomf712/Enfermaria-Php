@@ -38,7 +38,7 @@ if ($filtrado && !isset($_SESSION['filtroOrdenado'])) {
     $limite = (count($lista) >= $posMax) ? $posMax : (count($lista) - 1);
 }
 
-if(!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario'])) {
     header("Location: ../Usuario/Login.php");
 }
 
@@ -46,52 +46,72 @@ $usuario = unserialize($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>
-<html>
-    <head lang="pt-br">
-        <title>Estatística - Sintomas</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="pt-br">
+    <head>
+        <!-- Required meta tags -->
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link rel="stylesheet" href="../../Css/forms.css?version=22" /> 
-        <link rel="stylesheet" href="../../Css/bootstrap.css" />   
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css?version=2">
 
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../../fontawesome/css/all.min.css">
+
+        <!-- Estilo persinalizado -->
+        <link rel="stylesheet" href="../../Css/estilo.css?version=11">
+
+        <!-- JQuery -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>          
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+        <title>Estatística - Sintomas</title>
     </head>
     <body>
+        <!-- Barra de navegação -->
         <?php include_once '../Compartilhado/Navbar.php'; ?>              
 
-        <div class="mx-auto p-4 formGeral listas">
+        <!-- Area da lista -->
+        <div id="area-principal" class="container bg-primary">
+
+            <!-- Titulo -->
             <header class="mb-4">
                 <h2>Lista estatística de sintomas</h2>
             </header>
 
+            <!-- Formulario de filtro -->
             <form action="../../Controllers/SintomaController.php" method="POST">
                 <input type="hidden" name="metodoSintoma" value="FiltrarEst"/>
 
                 <div class="form-row">     
-                    <div class="form-group col-sm">
+
+                    <!-- Sintoma -->
+                    <div class="form-group col-md">
                         <label for="sintoma">Sintoma: </label>
                         <input class="form-control" type="text" id="sintoma" name="sintoma" value="<?php echo ($filtrado) ? $Nomesintoma : null; ?>"/>
                     </div> 
 
-                    <div class="form-group col-sm">
+                    <!-- Data inicial -->
+                    <div class="form-group col-md">
                         <label for="inicio">Data Inicial: </label>
                         <input class="form-control" type="date" id="inicio" name="inicio" value="<?php echo ($filtrado) ? $Datainicio : null; ?>"/>
                     </div>    
 
-                    <div class="form-group col-sm">
+                    <!-- Data final -->
+                    <div class="form-group col-md">
                         <label for="fim">Data Final: </label>
                         <input class="form-control" type="date" id="fim" name="fim" value="<?php echo ($filtrado) ? $Datafim : null; ?>"/>
                     </div> 
                 </div>
 
-                <div class="form-group float-right">
-                    <button class="btn btn-primary mr-2" type="submit" name="remover">Procurar</button>
-                    <button class="btn btn-primary " type="button" name="remover" onclick="location.reload();">Remover Filtro</button>
+                <!-- Botões --> 
+                <div class="form-group float-md-right">
+                    <button class="btn btn-secondary" type="submit" name="remover">Procurar</button>
+                    <button class="btn btn-secondary" type="button" name="remover" onclick="location.reload();">Remover Filtro</button>
                 </div>
             </form>
 
+            <!-- Script para desabilitar filtros -->
             <script src="../../JavaScript/jquery-3.4.1.js"></script>
             <script>
                         var buttons = document.getElementsByName('remover');
@@ -107,68 +127,97 @@ $usuario = unserialize($_SESSION['usuario']);
                         }
             </script>
 
+            <!-- Tabela -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    
+                    <!-- Cabeça -->
+                    <thead class="thead-light">
+                        <tr>
+                            <?php
+                            $filtro = (isset($_SESSION['coluna'])) ? $_SESSION['coluna'] : '';
+                            $ordem = (isset($_SESSION['estado'])) ? $_SESSION['estado'] : '';
+                            ?>
 
-            <table class="table table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <?php
-                        $filtro = (isset($_SESSION['coluna'])) ? $_SESSION['coluna'] : '';
-                        $ordem = (isset($_SESSION['estado'])) ? $_SESSION['estado'] : '';
-                        ?>
+                            <!-- Id -->
+                            <th scope="col">
+                                <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
+                                    <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
+                                    <input type="hidden" name="coluna" value="s.Id"/>
+                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "s.Id" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                    
+                                    <span>#</span> 
+                                    <i class="fas fa-sort"></i>
+                                    <button type="submit"></button>
+                                </form>
+                            </th>
 
-                        <th scope="col">
-                            <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
-                                <input type="hidden" name="coluna" value="s.Id"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "s.Id" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
-                                <button type="submit" class="border-0 bg-transparent">#</button>
-                            </form>
-                        </th>
+                            <!-- Nome -->
+                            <th scope="col">
+                                <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
+                                    <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
+                                    <input type="hidden" name="coluna" value="s.Nome"/>
+                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "s.Nome" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
+                                    
+                                    <span>Nome</span> 
+                                    <i class="fas fa-sort"></i>
+                                    <button type="submit"></button>
+                                </form>
+                            </th>
 
-                        <th scope="col">
-                            <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
-                                <input type="hidden" name="coluna" value="s.Nome"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "s.Nome" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
-                                <button type="submit" class="border-0 bg-transparent">Nome</button>
-                            </form>
-                        </th>
+                            <!-- Ocorrencias -->
+                            <th scope="col">
+                                <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
+                                    <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
+                                    <input type="hidden" name="coluna" value="Total"/>
+                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "Total" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
+                                   
+                                    <span>Ocorrencias</span> 
+                                    <i class="fas fa-sort"></i>
+                                    <button type="submit"></button>
+                                </form>
+                            </th>
 
-                        <th scope="col">
-                            <form class="form-inline" method="POST" action="../../Controllers/SintomaController.php">
-                                <input type="hidden" name="metodoSintoma" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroEst' : 'OrdenarEst'; ?>"/>
-                                <input type="hidden" name="coluna" value="Total"/>
-                                <input type="hidden" name="ordem" value="<?php echo ($filtro == "Total" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
-                                <button type="submit" class="border-0 bg-transparent">Ocorrencias</button>
-                            </form>
-                        </th>
-
-                        <th scope="col">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php for ($i = $inicio; $i < $limite; $i++) : ?>
-                        <tr class="table-dark">
-                            <td><?php echo $i + 1; ?></td>
-                            <td><?php echo $lista[$i]['Nome']; ?></td>
-                            <td><?php echo $lista[$i]['Total']; ?></td>
-                            <td>
-                                <a href="Ocorrencias.php?sintomaNome=<?php echo $lista[$i]['Nome']; ?>&sintomaId=<?php echo $lista[$i]['Id']; ?><?php echo ($filtrado) ? "&inicio=" . $Datainicio . "&fim=" . $Datafim : ''; ?>" class="btn btn-primary btn-sm">Ver Ocorrencias</a>                     
-                            </td>
+                            <!-- Ações -->
+                            <th scope="col">Ações</th>
                         </tr>
-                    <?php endfor; ?>
-                </tbody>
-            </table> 
+                    </thead>
+                    
+                    <!-- Corpo -->
+                    <tbody>
+                        <?php for ($i = $inicio; $i < $limite; $i++) : ?>
+                            <tr class="table-light">
+                                
+                                <!-- Numeração -->
+                                <td><?php echo $i + 1; ?></td>
+                                
+                                <!-- Nome -->
+                                <td><?php echo $lista[$i]['Nome']; ?></td>
+                                
+                                <!-- Ocorrencias -->
+                                <td><?php echo $lista[$i]['Total']; ?></td>
+                                
+                                <!-- Ações -->
+                                <td>
+                                    <a href="Ocorrencias.php?sintomaNome=<?php echo $lista[$i]['Nome']; ?>&sintomaId=<?php echo $lista[$i]['Id']; ?><?php echo ($filtrado) ? "&inicio=" . $Datainicio . "&fim=" . $Datafim : ''; ?>" class="btn btn-primary btn-sm">Ver Ocorrencias</a>                     
+                                </td>
+                            </tr>
+                        <?php endfor; ?>
+                    </tbody>
+                </table> 
+            </div>
 
+            <!-- Paginação -->
             <?php include_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
-
-        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?>
-
+        <!-- Rodapé -->    
         <?php include_once '../Compartilhado/Footer.php'; ?>
+        
+        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
+        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?> 
 
-        <script src="../../JavaScript/Geral/bootstrap.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>    
+        <script src="../../bootstrap/js/bootstrap.min.js"></script>
+        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>  
     </body>
 </html>

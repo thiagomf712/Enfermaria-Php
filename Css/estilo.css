@@ -1,0 +1,165 @@
+/*------------------------------------------------------------------------------
+Configurações gerais
+-------------------------------------------------------------------------------*/
+
+body {
+    background: #a9a9a9;
+    color: white;
+}
+
+footer{
+    margin-top: 50px;
+}
+
+h2 {
+    color: white;
+}
+
+h4 {
+    color: blue;
+}
+
+.modal-body {
+    color: black;
+}
+
+#area-principal {
+    margin-top: 30px;
+    padding: 40px 30px;
+    box-shadow: 0px 0px 10px black;
+}
+
+/*------------------------------------------------------------------------------
+Estrutura de listas
+-------------------------------------------------------------------------------*/
+
+.table {
+    color: #626466;   
+}
+
+.table-light th, .table-light td, .table-light thead th, .table-light tbody+tbody {
+    border-color: #e8e8e8;
+}
+
+.table th {
+    padding: 20px;
+} 
+
+.table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+thead form {
+    position: relative;
+}
+
+thead form button {
+    position: absolute;
+    z-index: 10;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    background-color: transparent;
+}
+
+thead form i {
+    margin-left: 5px;
+}
+
+/*------------------------------------------------------------------------------
+Estrutura da pagina de login
+-------------------------------------------------------------------------------*/
+
+#area-login {
+    margin-top: 20px;
+    color: #626466;
+    background: #fff;
+    box-shadow: 0px 0px 10px gray;
+}
+
+#area-imagem {
+    padding: 30px 0;
+    margin: 0 auto;
+}
+
+/*------------------------------------------------------------------------------
+Estrutura da Home
+-------------------------------------------------------------------------------*/
+
+#carousel {
+    margin-bottom: 150px;
+}
+
+#carousel h3, #carousel p{
+    color: white;
+}
+
+#carousel .carousel-item {
+    height: 300px;
+}
+
+#carousel #slide1 {
+    background-color:#0c0e0b;
+}
+
+#carousel #slide2 {
+    background-color: #2e2e2e;
+}
+
+#carousel #slide3 {
+    background-color: #545454;
+}
+
+/*------------------------------------------------------------------------------
+Estrutura do rodapé
+-------------------------------------------------------------------------------*/
+
+footer #area-footer-botton {
+    margin-top: 20px;
+    padding: 10px;
+    color: white;
+}
+
+footer #area-footer-botton #texto {
+    line-height: 42px;
+}
+
+/*------------------------------------------------------------------------------
+Media Query
+-------------------------------------------------------------------------------*/
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {    
+    #area-login {
+        margin-top: 0;
+    }
+
+    #area-principal {
+        padding: 10px 0;
+    }
+
+    #area-principal>form, #area-principal>header{
+        padding: 0 10px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) { 
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) { 
+
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) { 
+
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+
+}
