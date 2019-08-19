@@ -92,6 +92,6 @@ unset($_SESSION['usuario']);
 
         <script src="../../bootstrap/js/bootstrap.min.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>       
-        <script src="../../JavaScript/Usuario/login.js?version=15"></script>  
+        <script src="../../JavaScript/Usuario/login.js"></script>  
     </body>
 </html>

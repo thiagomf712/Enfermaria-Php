@@ -19,13 +19,13 @@ $usuario = unserialize($_SESSION['usuario']);
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css?version=2">
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
 
         <!-- Font Awesome -->
         <link rel="stylesheet" href="../../fontawesome/css/all.min.css">
 
         <!-- Estilo persinalizado -->
-        <link rel="stylesheet" href="../../Css/estilo.css?version=8">
+        <link rel="stylesheet" href="../../Css/estilo.css">
         
         <!-- JQuery -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -90,6 +90,6 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <script src="../../bootstrap/js/bootstrap.min.js"></script>
         <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>       
-        <script src="../../JavaScript/Usuario/login.js?version=15"></script>  
+        <script src="../../JavaScript/Usuario/login.js"></script>  
     </body>
 </html>
