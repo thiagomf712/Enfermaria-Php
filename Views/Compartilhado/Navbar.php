@@ -80,7 +80,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
 
                     <!-- Link para sair -->
                     <li class="nav-item">
-                        <a class="nav-link navegacao" href="../Usuario/Login.php">Sair</a>
+                        <a class="nav-link navegacao" href="../Usuario/Deslogar.php">Sair</a>
                     </li>
                 </ul>
             </div>

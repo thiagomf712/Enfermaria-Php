@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
@@ -11,31 +12,44 @@ if (session_id() == '') {
     session_start();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoUsuario'])) {
-    $metodo = $_POST['metodoUsuario'];
+$controller = new UsuarioController();
 
-    if (method_exists('UsuarioController', $metodo)) {
-        UsuarioController::$metodo($_POST);
-    } else {
-        throw new Exception("Metodo não existe");
-    }
-}
+$controller->Executar("metodoUsuario");
+
 
 class UsuarioController {
 
-    public static function Login($dados) {
+    private $retorno;
+
+    public function __construct() {
+        $this->retorno = new stdClass();
+        $this->retorno->erro = "";
+    }
+
+    public function Executar($idMetodo) {
+        if (isset($_POST[$idMetodo])) {
+            $metodo = $_POST[$idMetodo];
+
+            if (method_exists($this, $metodo)) {
+                $this->$metodo($_POST);
+                echo json_encode($this->retorno);
+            } else {
+                $this->retorno->erro = "metodo não encontrado";
+
+                echo json_encode($this->retorno);
+            }
+        }
+    }
+
+    public function Login($dados) {
         $login = $dados['login'];
         $senha = $dados['senha'];
 
         try {
             $usuario = UsuarioService::ValidarLogin($login, $senha);
             $_SESSION['usuario'] = serialize($usuario);
-            header("Location: ../Views/Geral/Home.php");
-            exit();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
@@ -65,14 +79,14 @@ class UsuarioController {
             throw new Exception($e->getMessage());
         }
     }
-    
+
     public static function Editar($dados) {
         $id = $dados['id'];
         $senha = $dados['senha'];
-        
+
         try {
             UsuarioService::AlterarSenha($id, $senha);
-            
+
             header("Location: ../Views/Usuario/Listar.php");
             $_SESSION['sucesso'] = "Senha alterada com sucesso";
             exit();
@@ -82,7 +96,7 @@ class UsuarioController {
             exit();
         }
     }
-    
+
     public static function EditarUsuario($dados) {
         $id = $dados['usuarioId'];
         $login = $dados['login'];
@@ -97,7 +111,7 @@ class UsuarioController {
             throw new Exception($e->getMessage());
         }
     }
-    
+
     public static function Listar() {
         try {
             $usuario = UsuarioService::ListarUsuarios();
@@ -108,7 +122,7 @@ class UsuarioController {
             exit();
         }
     }
-    
+
     public static function Ordenar($dados) {
         $coluna = $dados['coluna'];
         $ordem = $dados['ordem'];
@@ -122,7 +136,7 @@ class UsuarioController {
         header("Location: ../Views/Usuario/Listar.php");
         exit();
     }
-    
+
     public static function Filtrar($dados) {
         $login = $dados['login'];
         $nivelAcesso = $dados['nivelAcesso'];
@@ -131,11 +145,11 @@ class UsuarioController {
             header("Location: ../Views/Usuario/Listar.php");
             exit();
         }
-        
+
         if ($login !== '') {
             $valor[] = array('Login', $login);
         }
-        
+
         if ($nivelAcesso !== "0") {
             $valor[] = array('NivelAcesso', $nivelAcesso);
         }
@@ -160,11 +174,11 @@ class UsuarioController {
         header("Location: ../Views/Usuario/Listar.php");
         exit();
     }
-    
+
     public static function RetornarUsuario($id) {
         try {
             $usuario = UsuarioService::RetornarLoginId($id);
-            
+
             return $usuario;
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();

@@ -4,7 +4,10 @@ require_once(__ROOT__ . '/Models/Usuario.php');
 
 session_start();
 
-unset($_SESSION['usuario']);
+if (isset($_SESSION['usuario'])) {
+    header('Location: ../Geral/Home.php');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -23,10 +26,6 @@ unset($_SESSION['usuario']);
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
         <title>Login - Unaspmed</title>
     </head>
     <body>
@@ -44,7 +43,8 @@ unset($_SESSION['usuario']);
             <!-- Formulario -->
             <div class="row">
                 <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                    <form method="POST" action="../../Controllers/UsuarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm('login', 'senha')">
+                    <form method="POST" action="" class="needs-validation" novalidate>                 
+                        <!-- Input para dizer qual função do controlador usar ../../Controllers/UsuarioController.php -->
                         <input type="hidden" name="metodoUsuario" value="Login"/>
 
                         <!-- Input Login -->
@@ -56,7 +56,7 @@ unset($_SESSION['usuario']);
                                 </div>
 
                                 <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4" aria-describedby="loginHelp"/>
-                                <div class="invalid-feedback" id="erroLogin"></div>
+                                <div class="invalid-feedback"></div>
                             </div>
                             <small id="loginHelp" class="form-text text-muted">Paciente: ec.Ra</small>     
                         </div>
@@ -70,14 +70,14 @@ unset($_SESSION['usuario']);
                                 </div>
 
                                 <input type="password" class="form-control" id="senha" name="senha" required maxlength="20" minlength="4" aria-describedby="senhaHelp"/>
-                                <div class="invalid-feedback" id="erroSenha"></div>
+                                <div class="invalid-feedback"></div>
                             </div>       
                             <small id="senhaHelp" class="form-text text-muted">Paciente: ec.Ra</small>                   
                         </div>
 
                         <!-- Input Submit -->
                         <div class="form-group mt-5 d-flex justify-content-center">
-                            <input class="btn btn-primary" type="submit" value="Entrar" />
+                            <button id="submit" class="btn btn-primary" type="submit"> Entrar</button>
                         </div>
                     </form>
                 </div>        
@@ -90,8 +90,13 @@ unset($_SESSION['usuario']);
         <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
         <?php include_once '../Compartilhado/ModalErro.php'; ?>
 
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>       
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script> 
+        
+        <!-- Scripts Personalizados (formularios deve vir primeiro para a validação do form) -->
+        <script src="../../JavaScript/Geral/formularios.js"></script>
         <script src="../../JavaScript/Usuario/login.js"></script>  
     </body>
 </html>

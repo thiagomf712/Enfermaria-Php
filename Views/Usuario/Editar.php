@@ -1,20 +1,19 @@
 <?php
-define('__ROOT__', dirname(__FILE__, 3));
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 3));
+}
+
 require_once(__ROOT__ . '/Models/Usuario.php');
 
 require_once(__ROOT__ . '/Controllers/UsuarioController.php');
 
-if (session_id() == '') {
-    session_start();
-}
+//Confirmar se o usuario está logado
+require_once(__ROOT__ . '/Views/Usuario/ValidarLogin.php');
+
 
 $id = isset($_GET['usuario']) ? $_GET['usuario'] : 0;
 
 $usuarioAlt = UsuarioController::RetornarUsuario($id);
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
 
 $usuario = unserialize($_SESSION['usuario']);
 ?>

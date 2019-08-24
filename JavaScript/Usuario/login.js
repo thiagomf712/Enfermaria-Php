@@ -1,19 +1,37 @@
-document.write(unescape('%3Cscript src="../../JavaScript/Geral/formularios.js" type="text/javascript"%3E%3C/script%3E'));
 
-function ValidarForm(loginId, senhaId) {
-    var login = document.getElementById(loginId);
-    var senha = document.getElementById(senhaId);
+//Deve ser separado por uma virgula cada input
+ValidarSubmit("#login, #senha");
 
-    var mensagemLogin = VerificarTamanho(login, login.getAttribute('minlength'));
-    var mensagemSenha = VerificarTamanho(senha, senha.getAttribute('minlength'));
+$('form.needs-validation').on("Enviar", e => {
 
-    login.setCustomValidity(mensagemLogin);
-    senha.setCustomValidity(mensagemSenha);
+    let dados = $(e.target).serialize();
+    $.ajax({
+        type: 'POST',
+        url: "../../Controllers/UsuarioController.php",
+        data: dados,
+        //dataType: 'json',
+        success: data => {
+            Loading(false);
+            
+            console.log(data);
+            
+            let dados = JSON.parse(data);
 
-    document.getElementById('erroLogin').innerHTML = login.validationMessage;
-    document.getElementById('erroSenha').innerHTML = senha.validationMessage;
-}
+            if (dados.erro !== "") {
+                $("#modal-titulo").html("Erro");
+                $("#modal-conteudo").html(dados.erro);
+                $("#modal").modal();
+            } else {
+                window.location.href = "../Geral/Home.php";
+            }
+        },
+        error: erro => {
+            Loading(false);
 
-
-
+            $("#modal-titulo").html("Erro");
+            $("#modal-conteudo").html(erro.statusText);
+            $("#modal").modal();
+        }
+    });
+});
 
