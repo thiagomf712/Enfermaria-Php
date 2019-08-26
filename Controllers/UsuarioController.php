@@ -5,40 +5,46 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . '/Models/Usuario.php');
-
 require_once(__ROOT__ . '/Services/UsuarioService.php');
 
 if (session_id() == '') {
     session_start();
 }
 
-$controller = new UsuarioController();
+if (isset($_POST["metodoUsuario"])) {
+    $controller = new UsuarioController();
 
-$controller->Executar("metodoUsuario");
-
+    $controller->Executar("metodoUsuario");
+}
 
 class UsuarioController {
 
     private $retorno;
+    private $usuarioService;
+
+    public function getUsuarioService() {
+        return $this->usuarioService;
+    }
 
     public function __construct() {
         $this->retorno = new stdClass();
         $this->retorno->erro = "";
+
+        $this->usuarioService = new UsuarioService();
     }
 
+    //Executa um metodo da class baseado no que foi passado por post
     public function Executar($idMetodo) {
-        if (isset($_POST[$idMetodo])) {
-            $metodo = $_POST[$idMetodo];
+        $metodo = $_POST[$idMetodo];
 
-            if (method_exists($this, $metodo)) {
-                $this->$metodo($_POST);
-                echo json_encode($this->retorno);
-            } else {
-                $this->retorno->erro = "metodo não encontrado";
-
-                echo json_encode($this->retorno);
-            }
+        if (method_exists($this, $metodo)) {
+            $this->$metodo($_POST);
+        } else {
+            $this->retorno->erro = "metodo não encontrado";
         }
+
+        //Retorn
+        echo json_encode($this->retorno);
     }
 
     public function Login($dados) {
@@ -46,38 +52,21 @@ class UsuarioController {
         $senha = $dados['senha'];
 
         try {
-            $usuario = UsuarioService::ValidarLogin($login, $senha);
+            $usuario = $this->usuarioService->ValidarLogin($login, $senha);
             $_SESSION['usuario'] = serialize($usuario);
         } catch (Exception $e) {
             $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Cadastrar($dados) {
-        try {
-            UsuarioController::CriarUsuario($dados);
-            $_SESSION['sucesso'] = "Usuario cadastrado com sucesso";
-            header("Location: ../Views/Usuario/Cadastrar.php");
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
-        }
-    }
-
-    public static function CriarUsuario($dados) {
+    public function CriarUsuario($dados) {
         $login = $dados['login'];
         $senha = $dados['senha'];
         $nivelAcesso = $dados['nivelAcesso'];
 
-        $usuario = new Usuario(0, $login, $senha, $nivelAcesso);
-
-        try {
-            UsuarioService::CadastrarUsuario($usuario);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
+        $usuario = new Usuario(null, $login, $senha, $nivelAcesso);
+        
+        $this->usuarioService->CadastrarUsuario($usuario);
     }
 
     public static function Editar($dados) {
@@ -186,4 +175,5 @@ class UsuarioController {
             exit();
         }
     }
+
 }

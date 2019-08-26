@@ -1,15 +1,7 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
+
 require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
-
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>
@@ -28,23 +20,16 @@ $usuario = unserialize($_SESSION['usuario']);
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
         <title>Cadastrar - Funcionario</title>
     </head>
     <body>
-
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?>              
+        <?php require_once '../Compartilhado/Navbar.php'; ?>              
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
             <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-                <form method="POST" action="../../Controllers/FuncionarioController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
-                    <input type="hidden" name="metodoFuncionario" value="Cadastrar"/>
-                    
+                <form method="POST" action="" class="needs-validation" novalidate>
                     <!-- Informações do funcionario -->
                     <fieldset>
                         <legend class="mb-4">Informações do funcionario</legend>
@@ -53,10 +38,10 @@ $usuario = unserialize($_SESSION['usuario']);
                         <div class="form-group">
                             <label for="nome" >Nome</label>
                             <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
-                            <div class="invalid-feedback" id="erroNome"></div>
+                            <div class="invalid-feedback"></div>
                         </div>
                     </fieldset>
-                    
+
                     <!-- Informações do usuario -->
                     <fieldset class="mt-4">
                         <legend class="mb-4">Informações do usuario</legend>
@@ -65,24 +50,24 @@ $usuario = unserialize($_SESSION['usuario']);
                         <div class="form-group">
                             <label for="login" >Usuario</label>
                             <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback" id="erroLogin"></div>
+                            <div class="invalid-feedback"></div>
                         </div>
 
-                         <!-- Senha -->
+                        <!-- Senha -->
                         <div class="form-group">
                             <label for="senha">Senha</label>
                             <input type="password" class="form-control" id="senha" name="senha" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback" id="erroSenha"></div>
+                            <div class="invalid-feedback"></div>
                         </div>
 
-                         <!-- Confirmar Senha -->
+                        <!-- Confirmar Senha -->
                         <div class="form-group">
                             <label for="confirmarSenha">Digite a senha novamente</label>
                             <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback" id="erroConfirmarSenha"></div>
+                            <div class="invalid-feedback"></div>
                         </div>
 
-                         <!-- Nivel Acesso -->
+                        <!-- Nivel Acesso -->
                         <div class="form-group">
                             <label for="nivelAcesso">Nivel de acesso</label>
                             <select class="form-control" id="nivelAcesso" name="nivelAcesso">
@@ -109,12 +94,17 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <!-- Rodapé -->    
         <?php include_once '../Compartilhado/Footer.php'; ?>
+        
+        
+        <?php include_once '../Compartilhado/ModalErro.php'; ?> 
+        
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script> 
 
-        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
-        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?> 
-
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
+        <!-- Scripts Personalizados (formularios deve vir primeiro para a validação do form) -->
+        <script src="../../JavaScript/Geral/formularios.js"></script>
         <script src="../../JavaScript/Funcionario/cadastroFuncionario.js"></script>  
     </body>
 </html>

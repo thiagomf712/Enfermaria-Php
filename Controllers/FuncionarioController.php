@@ -5,48 +5,71 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . '/Models/Funcionario.php');
+require_once(__ROOT__ . '/Services/FuncionarioService.php');
 
 require_once(__ROOT__ . '/Controllers/UsuarioController.php');
 
-require_once(__ROOT__ . '/Services/UsuarioService.php');
-require_once(__ROOT__ . '/Services/FuncionarioService.php');
+/*
+  if (session_id() == '') {
+  session_start();
+  }
+ */
 
-if (session_id() == '') {
-    session_start();
-}
+if (isset($_POST["metodoFuncionario"])) {
+    $controller = new FuncionarioController();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoFuncionario'])) {
-    $metodo = $_POST['metodoFuncionario'];
-
-    if (method_exists('FuncionarioController', $metodo)) {
-        FuncionarioController::$metodo($_POST);
-    } else {
-        throw new Exception("Metodo não existe");
-    }
+    $controller->Executar("metodoFuncionario");
 }
 
 class FuncionarioController {
 
-    public static function Cadastrar($dados) {
+    private $retorno;
+    private $funcionarioService;
+    private $usuarioController;
+
+    public function getUsuarioService() {
+        return $this->usuarioService;
+    }
+
+    public function __construct() {
+        $this->retorno = new stdClass();
+        $this->retorno->erro = "";
+        $this->retorno->sucesso = "";
+
+        $this->funcionarioService = new FuncionarioService();
+        $this->usuarioController = new UsuarioController();
+    }
+
+    //Executa um metodo da class baseado no que foi passado por post
+    public function Executar($idMetodo) {
+        $metodo = $_POST[$idMetodo];
+
+        if (method_exists($this, $metodo)) {
+            $this->$metodo($_POST);
+        } else {
+            $this->retorno->erro = "metodo não encontrado";
+        }
+
+        //Retorn
+        echo json_encode($this->retorno);
+    }
+
+    public function Cadastrar($dados) {
         $nome = $dados['nome'];
         $login = $dados['login'];
 
         try {
-            UsuarioController::CriarUsuario($dados);
+            $this->usuarioController->CriarUsuario($dados);
 
-            $usuario = UsuarioService::RetornarLogin($login);
+            $usuario = $this->usuarioController->getUsuarioService()->GetId($login);
 
-            $funcionario = new Funcionario(0, $nome, $usuario);
+            $funcionario = new Funcionario(null, $nome, $usuario);
 
-            FuncionarioService::CadastrarFuncionario($funcionario);
+            $this->funcionarioService->CadastrarFuncionario($funcionario);
 
-            header("Location: ../Views/Funcionario/Cadastrar.php");
-            $_SESSION['sucesso'] = "Funcionario cadastrado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Funcionario cadastrado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+           $this->retorno->erro = $e->getMessage();
         }
     }
 
@@ -104,11 +127,11 @@ class FuncionarioController {
             header("Location: ../Views/Funcionario/Listar.php");
             exit();
         }
-        
+
         if ($nome !== '') {
             $valor[] = array('f.Nome', $nome);
         }
-        
+
         if ($nivelAcesso !== "0") {
             $valor[] = array('u.NivelAcesso', $nivelAcesso);
         }
@@ -180,4 +203,5 @@ class FuncionarioController {
             exit();
         }
     }
+
 }

@@ -1,6 +1,4 @@
 <?php
-define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
 
 session_start();
 
@@ -87,7 +85,7 @@ if (isset($_SESSION['usuario'])) {
         <!-- Rodapé -->
         <?php include_once '../Compartilhado/Footer.php'; ?>    
 
-        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
+        <!-- Modal para erros -->
         <?php include_once '../Compartilhado/ModalErro.php'; ?>
 
         <!-- JQuery - popper - Bootstrap-->

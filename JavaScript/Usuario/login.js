@@ -1,26 +1,25 @@
 
-//Deve ser separado por uma virgula cada input
+//Validar o comprimento dos inputs
+ValidarTamanhoInputs("#login, #senha");
+
+//Verifica se todos os inputs passados são validos
 ValidarSubmit("#login, #senha");
 
+//Evento chamado apos validar o submit
 $('form.needs-validation').on("Enviar", e => {
 
     let dados = $(e.target).serialize();
+    
     $.ajax({
         type: 'POST',
         url: "../../Controllers/UsuarioController.php",
         data: dados,
-        //dataType: 'json',
-        success: data => {
+        dataType: 'json',
+        success: dados => {
             Loading(false);
             
-            console.log(data);
-            
-            let dados = JSON.parse(data);
-
             if (dados.erro !== "") {
-                $("#modal-titulo").html("Erro");
-                $("#modal-conteudo").html(dados.erro);
-                $("#modal").modal();
+                AcionarModalErro("Erro", dados.erro, "bg-danger");
             } else {
                 window.location.href = "../Geral/Home.php";
             }
@@ -28,9 +27,7 @@ $('form.needs-validation').on("Enviar", e => {
         error: erro => {
             Loading(false);
 
-            $("#modal-titulo").html("Erro");
-            $("#modal-conteudo").html(erro.statusText);
-            $("#modal").modal();
+            AcionarModalErro("Erro", erro.statusText, "bg-danger");        
         }
     });
 });

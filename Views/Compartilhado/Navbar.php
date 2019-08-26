@@ -1,6 +1,20 @@
 <?php
+if (!defined('__ROOT__')) {
+    define('__ROOT__', dirname(__FILE__, 3));
+}
+
+require_once(__ROOT__ . '/Models/Usuario.php');
 require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
+
+session_start();
+
+if (!isset($_SESSION['usuario'])) {
+    header("Location: ../Usuario/Login.php");
+}
+
+$usuario = unserialize($_SESSION['usuario']);
 ?>
+
 
 <header class="bg-primary">
     <div class="container-fluid">
@@ -22,9 +36,9 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Atendimento</a>
                         <div class="dropdown-menu">
-                            <?php if ($usuario->getNivelAcesso() == NivelAcesso::Vizualizar) : ?>
+                            <?php if ($usuario->nivelAcesso == NivelAcesso::Vizualizar) : ?>
                                 <a class="dropdown-item navegacao" href="../Atendimento/ListaPessoal.php">Atendimentos</a>                    
-                            <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
+                            <?php elseif ($usuario->nivelAcesso >= NivelAcesso::Adicionar) : ?>
                                 <a class="dropdown-item navegacao" href="../Atendimento/Listar.php">Lista de atendimentos</a>
                                 <a class="dropdown-item navegacao" href="../Atendimento/ListaPacientes.php">Cadastrar novo atendimento</a>                           
                             <?php endif; ?>
@@ -35,9 +49,9 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Paciente</a>
                         <div class="dropdown-menu">
-                            <?php if ($usuario->getNivelAcesso() == NivelAcesso::Vizualizar) : ?>
+                            <?php if ($usuario->nivelAcesso == NivelAcesso::Vizualizar) : ?>
                                 <a class="dropdown-item navegacao" href="../Paciente/Pesoal.php">Informações pessoais</a>                    
-                            <?php elseif ($usuario->getNivelAcesso() >= NivelAcesso::Adicionar) : ?>
+                            <?php elseif ($usuario->nivelAcesso >= NivelAcesso::Adicionar) : ?>
                                 <a class="dropdown-item navegacao" href="../Paciente/Listar.php">Lista de pacientes</a>
                                 <a class="dropdown-item navegacao" href="../Paciente/Cadastrar.php">Cadastrar novo paciente</a>                           
                             <?php endif; ?>
@@ -45,7 +59,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     </li>
 
                     <!-- Sintomas -->
-                    <?php if ($usuario->getNivelAcesso() >= NivelAcesso::Editar) : ?>
+                    <?php if ($usuario->nivelAcesso >= NivelAcesso::Editar) : ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Sintoma</a>
                             <div class="dropdown-menu">
@@ -57,7 +71,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     <?php endif; ?>
 
                     <!-- Funcionarios -->
-                    <?php if ($usuario->getNivelAcesso() == NivelAcesso::Master) : ?>    
+                    <?php if ($usuario->nivelAcesso == NivelAcesso::Master) : ?>    
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Funcionario</a>
                             <div class="dropdown-menu">
@@ -68,12 +82,11 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                     <?php endif; ?>
 
                     <!-- Usuarios -->
-                    <?php if ($usuario->getNivelAcesso() >= NivelAcesso::Editar) : ?> 
+                    <?php if ($usuario->nivelAcesso >= NivelAcesso::Editar) : ?> 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Usuario</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item navegacao" href="../Usuario/Listar.php">Lista de usuarios</a>
-                                <!--<a class="dropdown-item navegacao" href="../Usuario/Cadastrar.php">Cadastrar novo usuario</a>-->
                             </div>         
                         </li>
                     <?php endif; ?>
@@ -87,59 +100,3 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         </nav>
     </div>
 </header>
-
-
-<?php
-if (isset($_SESSION['sucesso'])) {
-    if (isset($_SESSION['ordenado'])) {
-        unset($_SESSION['ordenado']);
-    }
-
-    if (isset($_SESSION['coluna'])) {
-        unset($_SESSION['coluna']);
-    }
-
-    if (isset($_SESSION['estado'])) {
-        unset($_SESSION['estado']);
-    }
-
-    if (isset($_SESSION['filtro'])) {
-        unset($_SESSION['filtro']);
-    }
-
-    if (isset($_SESSION['filtroOrdenado'])) {
-        unset($_SESSION['filtroOrdenado']);
-    }
-
-    if (isset($_SESSION['valorFiltrado'])) {
-        unset($_SESSION['valorFiltrado']);
-    }
-
-    if (isset($_SESSION['sintomas'])) {
-        unset($_SESSION['sintomas']);
-    }
-
-    if (isset($_SESSION['listaSintomas'])) {
-        unset($_SESSION['listaSintomas']);
-    }
-
-    if (isset($_SESSION['sintomasCarregados'])) {
-        unset($_SESSION['sintomasCarregados']);
-    }
-}
-?>
-
-<script src="../../JavaScript/jquery-3.4.1.js"></script>
-<script>
-    var links = document.getElementsByClassName('navegacao');
-
-    for (var i = 0; i < links.length; i++) {
-        links[i].addEventListener("click", chamarPhp);
-    }
-
-    function chamarPhp() {
-        $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarOrdenacao'}, function (response) {
-            console.log(response);
-        });
-    }
-</script>

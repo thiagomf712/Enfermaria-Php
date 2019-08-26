@@ -8,24 +8,15 @@ class Pessoa {
     //Relacionamento
     private $usuario;
     
-    public function getId() {
-        return $this->id;
+    public function __get($name) {
+        return $this->$name;
     }
 
-    public function getNome() {
-        return $this->nome;
-    }
-
-    public function getUsuario() {
-        return $this->usuario;
-    }
-    
     public function setUsuario($usuario) {
         $this->usuario = $usuario;
     }
-
-            
-    public function __construct(int $id, string $nome, $usuario = null) {
+        
+    public function __construct($id = 0, $nome = "", $usuario = null) {
         $this->id = $id;
         $this->nome = $nome;
         $this->usuario = $usuario;
