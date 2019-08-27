@@ -95,7 +95,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         <!-- Rodapé -->    
         <?php include_once '../Compartilhado/Footer.php'; ?>
         
-        
+        <!-- Modal de resposta -->
         <?php include_once '../Compartilhado/ModalErro.php'; ?> 
         
         <!-- JQuery - popper - Bootstrap-->
@@ -103,8 +103,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="../../bootstrap/js/bootstrap.min.js"></script> 
 
-        <!-- Scripts Personalizados (formularios deve vir primeiro para a validação do form) -->
-        <script src="../../JavaScript/Geral/formularios.js"></script>
+        <!-- Scripts Personalizados -->
         <script src="../../JavaScript/Funcionario/cadastroFuncionario.js"></script>  
     </body>
 </html>

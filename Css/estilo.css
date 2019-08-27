@@ -50,18 +50,20 @@ Estrutura de listas
     vertical-align: middle;
 }
 
-thead form {
+thead th {
     position: relative;
 }
 
-thead form button {
+thead button {
     position: absolute;
-    z-index: 10;
+    z-index: 2;
     padding: 0;
     height: 100%;
-    width: 100%;
+    width: 80%;
     border: 0px;
     background-color: transparent;
+    left: 0;
+    top: 0;
 }
 
 thead form i {

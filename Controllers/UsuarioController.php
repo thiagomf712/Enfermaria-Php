@@ -28,7 +28,6 @@ class UsuarioController {
 
     public function __construct() {
         $this->retorno = new stdClass();
-        $this->retorno->erro = "";
 
         $this->usuarioService = new UsuarioService();
     }

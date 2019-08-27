@@ -12,7 +12,7 @@ class Connection {
             $dns = "mysql:host=$this->host;dbname=$this->dbname";
 
             $conn = new PDO($dns, $this->user, $this->pass);
-            $conn->exec("set charset set utf8");
+            $conn->exec("SET CHARACTER SET utf8");
 
             return $conn;
         } catch (PDOException $e) {

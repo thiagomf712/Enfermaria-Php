@@ -9,12 +9,6 @@ require_once(__ROOT__ . '/Services/FuncionarioService.php');
 
 require_once(__ROOT__ . '/Controllers/UsuarioController.php');
 
-/*
-  if (session_id() == '') {
-  session_start();
-  }
- */
-
 if (isset($_POST["metodoFuncionario"])) {
     $controller = new FuncionarioController();
 
@@ -23,7 +17,7 @@ if (isset($_POST["metodoFuncionario"])) {
 
 class FuncionarioController {
 
-    private $retorno;
+    public $retorno;
     private $funcionarioService;
     private $usuarioController;
 
@@ -33,8 +27,6 @@ class FuncionarioController {
 
     public function __construct() {
         $this->retorno = new stdClass();
-        $this->retorno->erro = "";
-        $this->retorno->sucesso = "";
 
         $this->funcionarioService = new FuncionarioService();
         $this->usuarioController = new UsuarioController();
@@ -94,14 +86,11 @@ class FuncionarioController {
         }
     }
 
-    public static function Listar() {
+    public function Listar() {
         try {
-            $funcionarios = FuncionarioService::ListarFuncionarios();
-            return $funcionarios;
+            $this->retorno->lista = $this->funcionarioService->Listar();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

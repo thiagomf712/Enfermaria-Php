@@ -54,16 +54,16 @@ class FuncionarioService {
         }
     }
 
-    public static function ListarFuncionarios() {
-        $conn = Connection();
+    public function Listar() {
+        $query = "SELECT "
+                . "f.Id, f.Nome, f.UsuarioId, u.NivelAcesso "
+                . "FROM funcionario f "
+                . "LEFT JOIN usuario u ON f.UsuarioId = u.Id";
 
-        $sql = "SELECT f.Id, f.Nome, f.UsuarioId, u.NivelAcesso FROM funcionario f "
-                . "INNER JOIN usuario u ON f.UsuarioId = u.Id";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
+        $resultado = $stmt->fetchAll(PDO::FETCH_OBJ);
 
         return $resultado;
     }
