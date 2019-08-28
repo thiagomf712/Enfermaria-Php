@@ -1,26 +1,3 @@
-<?php
-/*
-  define('__ROOT__', dirname(__FILE__, 3));
-
-  require_once(__ROOT__ . '/Controllers/FuncionarioController.php');
-
-  if (session_id() == '') {
-  session_start();
-  }
-
-  if (isset($_SESSION['filtro'])) {
-  $lista = (isset($_SESSION['filtroOrdenado'])) ? unserialize($_SESSION['filtroOrdenado']) : unserialize($_SESSION['filtro']);
-  } else {
-  $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : FuncionarioController::Listar();
-  }
-
-  $numeroPaginas = ceil(count($lista) / 25);
-  $paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
-  $posMax = $paginaAtual * 25;
-  $inicio = $posMax - 25;
-  $limite = (count($lista) >= $posMax) ? $posMax : count($lista); */
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -52,33 +29,31 @@
             </header>
 
             <!-- Formulario Filtro -->
-            <form class="mb-3 clearfix" action="../../Controllers/FuncionarioController.php" method="POST">
-                <input type="hidden" name="metodoFuncionario" value="Filtrar"/>
-
+            <form id="filtro" class="mb-3 clearfix">
                 <div class="row">
                     <!-- Nome -->
                     <div class="form-group col-sm">
                         <label for="nome">Nome: </label>
-                        <input class="form-control" type="text" id="nome" name="nome"/>
+                        <input class="form-control" type="text" name="Nome"/>
                     </div>  
 
                     <!-- Nivel de Acesso -->
                     <div class="form-group col-sm">
                         <label for="nome">Nivel Acesso: </label>
-                        <select class="custom-select" id="nivelAcesso" name="nivelAcesso">
+                        <select class="custom-select" name="NivelAcesso">
                             <option value="<?php echo NivelAcesso::Vizualizar; ?>">Visualizar</option>
                             <option value="<?php echo NivelAcesso::Adicionar; ?>">Adicionar</option>
                             <option value="<?php echo NivelAcesso::Editar; ?>">Editar / Remover</option>
                             <option value="<?php echo NivelAcesso::Master; ?>">Master</option>
-                            <option value="0" selected>Sem filtro</option>
+                            <option value="" selected>Sem filtro</option>
                         </select>
                     </div> 
                 </div>
 
                 <!-- Botões -->
                 <div class="float-sm-right">
-                    <button class="btn btn-secondary" type="submit" name="remover">Procurar</button>
-                    <button class="btn btn-secondary" type="button" name="remover" onclick="location.reload();" id="remover">Remover Filtro</button>
+                    <button class="btn btn-secondary" type="submit">Procurar</button>
+                    <button class="btn btn-secondary" type="button" id="remover">Remover Filtro</button>
                 </div> 
             </form>
 
