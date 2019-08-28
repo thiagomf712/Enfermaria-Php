@@ -93,21 +93,21 @@
                             <th scope="col">
                                 <span>#</span> 
                                 <i class="fas fa-sort"></i>
-                                <button type="button"></button>
+                                <button id="order-id" type="button" value="ordenado"></button>
                             </th>
 
                             <!-- Ordenar Nome -->
                             <th scope="col">
                                 <span>Nome</span> 
                                 <i class="fas fa-sort"></i>
-                                <button type="button"></button>
+                                <button id="order-nome" type="button"></button>
                             </th>
 
                             <!-- Ordenar Nivel de acesso -->
                             <th scope="col">
                                 <span>Nivel de Acesso</span> 
                                 <i class="fas fa-sort"></i>
-                                <button type="button"></button>
+                                <button id="order-nivelAcesso" type="button"></button>
                             </th>
 
                             <!-- Açoes -->
@@ -125,42 +125,6 @@
             <!-- Paginação -->
             <?php require_once '../Compartilhado/Paginacao.php';?>
         </div>  
-
-        <?php if (isset($_GET['i']) && !(isset($_SESSION['erro']))) { ?>
-            <script>
-                $(document).ready(function () {
-                    $("#modalAlerta").modal();
-                });
-            </script>  
-            <?php
-            $index = $_GET['i'];
-        }
-        ?>
-
-        <!-- Modal Alerta -->
-        <div class="modal fade" id="modalAlerta">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning p-2">
-                        <h5 class="modal-title">Atenção</h5>
-                    </div>
-                    <div class="modal-body">
-                        <p>Tem certeza que quer deletar o funcionario <strong><?php echo $lista[$index]['Nome']; ?> </strong></p>
-                    </div>
-                    <div class="modal-footer p-2">
-                        <button type="submit" class="btn btn-primary" form="Deletar">Deletar</button>
-
-                        <form method="POST" id="Deletar" action="../../Controllers/FuncionarioController.php">
-                            <input type="hidden" name="metodoFuncionario" value="Deletar"/>
-                            <input type="hidden" name="funcionarioId" value="<?php echo $lista[$index]['Id']; ?>" />   
-                            <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
-                        </form>
-
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="history.go(-1);">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Rodapé -->    
         <?php include_once '../Compartilhado/Footer.php'; ?>

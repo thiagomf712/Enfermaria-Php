@@ -1,7 +1,11 @@
 
 //Espera dois objetos literais
-//O primeiro objeto passa o conteudo de cada coluna
-//O segundo objeto passa qual das 3 ações (detalhes, editar, deletar) vai ter e os dados de cada uma delas
+//O primeiro objeto passa o conteudo de cada coluna (que vai ser exibido)
+//O segundo objeto passa qual das 3 ações (detalhes, editar, deletar) vai ter e os dados de cada uma delas:
+//(type: o tipo de elemento que vai ser a ação (button ou a))
+//(href: No caso de <a> ele espera qual é o link para ele)
+//(value: No caso de <button> ele espera qual o valor que esse button terá)
+//(html: Qual vai ser o conteudo visivel desse action)
 //Retorna a linha da tabela
 function CriarLinhaTabela(colunas, action) {
     let tr = document.createElement('tr');
@@ -63,7 +67,6 @@ function DefinirNivelAcesso(nivelAcesso) {
     return texto;
 }
 
-
 //Gera as opções de pagina do select de paginas
 function GerarPaginacao(numeroPaginas) {
     for (var i = 1; i <= numeroPaginas; i++) {
@@ -109,7 +112,7 @@ function HabilitarSetas(numeroPaginas) {
 }
 
 //Adiciona o evento de clicks para as setas
-function HabilitarAlteracaoPagina() {
+function HabilitarAlteracaoPaginaSetas() {
     $('#proxima').on('click', () => {
         let paginacao = $('#pagina');
 
@@ -120,5 +123,75 @@ function HabilitarAlteracaoPagina() {
         let paginacao = $('#pagina');
 
         paginacao.val(parseInt(paginacao.val()) - 1).trigger('change');
+    });
+}
+
+function HabilitarAlteracaoPaginaSelect(lista, numeroPaginas) {
+    $('#pagina').on("change", e => {
+        let paginaAtual = $(e.target).val();
+
+        GerarTabela(lista, paginaAtual);
+
+        $('html, body').scrollTop(0);
+
+        //Reatualiza quais setas estão disponiveis
+        HabilitarSetas(numeroPaginas);
+    });
+}
+
+
+//Recebe um objeto contendo os itens que serão ordenados
+//Cada item deve informar: 
+//(id: id do botão a ser alterado)
+//(atributo: qual o atributo dentro da lista que será alterado)
+//(type: qual o tipo de dado que será filtrado (string ou numero)
+function Ordenar(lista, ordenacao) {
+
+    //Remover ordenado de um botão caso outro seja clicado
+    $('th button').on("click", (e) => {
+        $('th button').each((i, value) => {
+            if (e.target !== value) {
+                $(value).val("");
+            }
+        });
+    });
+
+    //Adicionar a ordenação em cada um dos botões
+    $.each(ordenacao, (i, valor) => {
+
+        $(`#${valor.id}`).on("click", e => {
+            if ($(e.target).val() === "ordenado") {
+                lista.reverse();
+
+                $(e.target).val("");
+            } else {
+                lista.sort((a, b) => {
+                    let pri = a[valor.atributo];
+                    let sec = b[valor.atributo];
+
+                    if (valor.type === "numero") {
+                        pri = parseInt(pri);
+                        sec = parseInt(sec);
+                    } else if (valor.type === "string") {
+                        pri = pri.toLowerCase();
+                        sec = sec.toLowerCase();
+                    }
+
+                    if (pri < sec) {
+                        return -1;
+                    }
+
+                    if (pri > sec) {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
+                $(e.target).val("ordenado");
+            }
+
+            $('#pagina').val(1).trigger("change");
+        });
     });
 }

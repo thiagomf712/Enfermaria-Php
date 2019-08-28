@@ -5,12 +5,6 @@ document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="t
 //Script com funções gerais para listas
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/listas.js" type="text/javascript"%3E%3C/script%3E'));
 
-
-//3 problemas
-//Separar os resultados em paginas
-//Filtrar os dados
-//Ordenar os dados
-
 $(document).ready(() => {
     Loading(true);
 
@@ -34,9 +28,36 @@ $(document).ready(() => {
                 lista = dados.lista;
                 numeroPaginas = Math.ceil(lista.length / 25);
 
+                //Gera a tabela inicial (25 primeiros resultados)
                 GerarTabela(lista, 1);
 
+                //Gera e habilita a paginação
                 GerarPaginacao(numeroPaginas);
+
+                //Habilitas as alterações de pagina pelas setas
+                HabilitarAlteracaoPaginaSetas();
+
+                //Habilitas as alterações de pagina pelo select
+                HabilitarAlteracaoPaginaSelect(lista, numeroPaginas);
+
+                //Habilita a ordenação de lista
+                Ordenar(lista, {
+                    1: {
+                        id: "order-id",
+                        atributo: "Id",
+                        type: "numero"
+                    },
+                    2: {
+                        id: "order-nome",
+                        atributo: "Nome",
+                        type: "string"
+                    },
+                    3: {
+                        id: "order-nivelAcesso",
+                        atributo: "NivelAcesso",
+                        type: "numero"
+                    }
+                });
 
                 Loading(false);
             }
@@ -46,18 +67,6 @@ $(document).ready(() => {
 
             AcionarModalErro("Erro", erro.statusText, "bg-danger");
         }
-    });
-
-    HabilitarAlteracaoPagina();
-
-    $('#pagina').on("change", e => {
-        let paginaAtual = $(e.target).val();
-
-        GerarTabela(lista, paginaAtual);
-
-        $('html, body').scrollTop(0);
-
-        HabilitarSetas(numeroPaginas);
     });
 });
 
@@ -70,8 +79,10 @@ function GerarTabela(listaCompleta, pagina) {
     $.each(listaPaginada, (i, funcionario) => {
         let nivelAcesso = DefinirNivelAcesso(funcionario.NivelAcesso);
 
+        let numeros = (parseInt(pagina) - 1) * 25 + (i + 1);
+
         let colunas = {
-            1: i + 1,
+            1: numeros,
             2: funcionario.Nome,
             3: nivelAcesso
         };
