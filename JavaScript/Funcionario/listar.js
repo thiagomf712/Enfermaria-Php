@@ -55,6 +55,19 @@ $(document).ready(() => {
             AcionarModalErro("Erro", erro.statusText, "bg-danger");
         }
     });
+
+    let alerta = {
+        mensagem: "Tem certeza que quer deletar este funcionario:",
+        destaque: "nome" //Vai acessar o valor nome inclusso no botão de deletar
+    };
+
+    let controller = {
+        controller: "../../Controllers/FuncionarioController.php", //Url para o controller
+        metodo: "metodoFuncionario", //qual o tipo de metodo (metodo seguido do nome do controller)
+        valor: "Deletar" //Nome do metodo que irá executar
+    };
+
+    HabilitarExclusao(alerta, controller);
 });
 
 //Gera a tabela de acordo om a pagina passada
@@ -87,7 +100,7 @@ function GerarTabela(listaCompleta, pagina) {
             },
             deletar: {
                 type: 'button',
-                value: `funcionario=${funcionario.Id}&usuario=${funcionario.UsuarioId}`,
+                value: `funcionario=${funcionario.Id}&usuario=${funcionario.UsuarioId}&nome=${funcionario.Nome}`,
                 html: "Deletar"
             }
         };

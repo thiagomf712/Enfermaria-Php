@@ -2,7 +2,7 @@
 
 require_once 'Enums/NivelAcesso.php';
 
-class Usuario {
+class Usuario implements JsonSerializable{
     private $id;
     private $login;
     private $senha;
@@ -24,4 +24,9 @@ class Usuario {
         $this->senha = "ec." . $paciente->getRa();
         $this->nivelAcesso = NivelAcesso::Vizualizar;
     }
+
+    public function jsonSerialize() {
+        return get_object_vars($this);
+    }
+
 }

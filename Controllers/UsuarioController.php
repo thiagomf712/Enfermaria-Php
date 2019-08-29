@@ -64,11 +64,12 @@ class UsuarioController {
         $nivelAcesso = $dados['nivelAcesso'];
 
         $usuario = new Usuario(null, $login, $senha, $nivelAcesso);
-        
+
         $this->usuarioService->CadastrarUsuario($usuario);
     }
 
-    public static function Editar($dados) {
+    //Será editado
+    public static function AlterarSenha($dados) {
         $id = $dados['id'];
         $senha = $dados['senha'];
 
@@ -85,21 +86,17 @@ class UsuarioController {
         }
     }
 
-    public static function EditarUsuario($dados) {
-        $id = $dados['usuarioId'];
+    public function Editar($dados) {
+        $id = $dados['usuario'];
         $login = $dados['login'];
-        $senha = ($dados['senha'] !== '') ? $dados['senha'] : $dados['senhaAtual'];
         $nivelAcesso = $dados['nivelAcesso'];
 
-        $usuario = new Usuario($id, $login, $senha, $nivelAcesso);
+        $usuario = new Usuario($id, $login, null, $nivelAcesso);
 
-        try {
-            UsuarioService::EditarUsuario($usuario);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
+        $this->usuarioService->Editar($usuario);
     }
 
+    //Será editado
     public static function Listar() {
         try {
             $usuario = UsuarioService::ListarUsuarios();
@@ -111,58 +108,7 @@ class UsuarioController {
         }
     }
 
-    public static function Ordenar($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $usuarios = UsuarioService::ListarUsuariosOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($usuarios);
-        header("Location: ../Views/Usuario/Listar.php");
-        exit();
-    }
-
-    public static function Filtrar($dados) {
-        $login = $dados['login'];
-        $nivelAcesso = $dados['nivelAcesso'];
-
-        if ($login === '' && $nivelAcesso === "0") {
-            header("Location: ../Views/Usuario/Listar.php");
-            exit();
-        }
-
-        if ($login !== '') {
-            $valor[] = array('Login', $login);
-        }
-
-        if ($nivelAcesso !== "0") {
-            $valor[] = array('NivelAcesso', $nivelAcesso);
-        }
-
-        $usuarios = UsuarioService::Filtrar($valor);
-
-        $_SESSION['filtro'] = serialize($usuarios);
-        header("Location: ../Views/Usuario/Listar.php");
-        exit();
-    }
-
-    public static function OrdenarFiltro($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $usuarios = UsuarioService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($usuarios);
-        header("Location: ../Views/Usuario/Listar.php");
-        exit();
-    }
-
+    //Não sei aonde está sendo usado
     public static function RetornarUsuario($id) {
         try {
             $usuario = UsuarioService::RetornarLoginId($id);

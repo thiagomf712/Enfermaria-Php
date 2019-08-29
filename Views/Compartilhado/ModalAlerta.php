@@ -1,23 +1,19 @@
-<!-- Modal Alerta -->
-<div class="modal fade" id="modalAlerta">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+<div class="modal fade" id="alerta">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-secondary  ">
             <div class="modal-header bg-warning p-2">
                 <h5 class="modal-title">Atenção</h5>
             </div>
             <div class="modal-body">
-                <p id="modal-conteudo"></p>
+                <div id="alerta-conteudo"></div>
             </div>
             <div class="modal-footer p-2">
-                <button type="submit" class="btn btn-primary" form="Deletar">Deletar</button>
-
-                <form method="POST" id="Deletar" action="../../Controllers/FuncionarioController.php">
-                    <input type="hidden" name="metodoFuncionario" value="Deletar"/>
-                    <input type="hidden" name="funcionarioId" value="<?php echo $lista[$index]['Id']; ?>" />   
-                    <input type="hidden" name="usuarioId" value="<?php echo $lista[$index]['UsuarioId']; ?>" />
-                </form>
-
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="history.go(-1);">Fechar</button>
+                <div class="col">
+                    <button id="alerta-deletar" type="button" class="btn btn-danger btn-block">Deletar</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>

@@ -82,6 +82,8 @@ function AtualizarPagina(lista, ordenacao) {
     //Define o numero de paginas
     numeroPaginas = Math.ceil(lista.length / 25);
 
+    $('#quantidade').html(lista.length);
+
     //Gera a tabela
     GerarTabela(lista, 1);
 
@@ -95,7 +97,7 @@ function AtualizarPagina(lista, ordenacao) {
     HabilitarAlteracaoPaginaSelect(lista, numeroPaginas);
 
     //Habilita a filtragem dos elementos
-    Ordenar(lista, ordenacao);
+    Ordenar(lista, ordenacao, numeroPaginas);
 }
 
 /*------------------------------------------------------------------------------
@@ -192,7 +194,7 @@ function HabilitarAlteracaoPaginaSelect(lista, numeroPaginas) {
 //(id: id do botão a ser alterado)
 //(atributo: qual o atributo dentro da lista que será alterado)
 //(type: qual o tipo de dado que será filtrado (string ou numero)
-function Ordenar(lista, ordenacao) {
+function Ordenar(lista, ordenacao, numeroPaginas) {
     //Correção de um bug devido a filtragem da lista (Duplicar eventos a cada filtragem)
     $('th button').off("click");
 
@@ -239,7 +241,11 @@ function Ordenar(lista, ordenacao) {
                 $(e.target).val("ordenado");
             }
 
-            $('#pagina').val(1).trigger("change");
+            $('#pagina').val(1);
+            
+            GerarTabela(lista, 1);
+            
+            HabilitarSetas(numeroPaginas);
         });
     });
 }
@@ -292,4 +298,88 @@ function FiltrarArray(lista, filtros) {
     });
 
     return listaFiltrada;
+}
+
+
+/*------------------------------------------------------------------------------
+ Funções relacionadas a deletar dados
+ ------------------------------------------------------------------------------*/
+
+//Converte parametros (url Get) em um objeto
+function ParametroToObjetct(parametros) {
+    let objeto = new Object();
+
+    $.each(parametros.split("&"), (i, value) => {
+        objeto[value.split("=")[0]] = value.split("=")[1];
+    });
+
+    return objeto;
+}
+
+//Habilita a exclusão de dados
+//alerta = é o que vai aparecer no alerta antes de deletar (objeto com atributos -> mensagem, destaque)
+//controller = para onde será mandado a requisição de deletar (objeto com atributos -> controller (url), metodo, valor (metodo que será executado)
+function HabilitarExclusao(alerta, controller) {
+    
+    //Aciona um modal de alerta ao clicar em deletar na lista
+    $("tbody").on('click', "td button", e => {
+        let params = $(e.target).val();
+
+        //Transformar o valor passado em um objeto
+        let objeto = ParametroToObjetct(params);
+
+        //Mostrar Modal de alerta
+        let conteudo = document.createElement('div');
+        conteudo.innerHTML = alerta.mensagem;
+
+        if (alerta.hasOwnProperty('destaque')) {
+            let destaque = document.createElement('div');
+            destaque.className = "font-weight-bold w-100 text-center mt-2";
+            destaque.innerHTML = objeto[alerta.destaque];
+
+            conteudo.appendChild(destaque);
+        }
+
+        $('#alerta-conteudo').html(conteudo);
+        $('#alerta').modal();
+        $('#alerta-deletar').val(params);
+    });
+    
+    //Faz a exclusão dos dados ao clicar no botão de deletar do modal
+    $('#alerta-deletar').on('click', e => {
+        $('#alerta').modal('hide');
+
+        Loading(true);
+
+        let params = $(e.target).val();
+
+        //Deletar funcionario
+        let metodo = controller.metodo;
+        let valor = controller.valor;
+        let post = `${metodo}=${valor}&${params}`;
+
+        $.ajax({
+            type: 'POST',
+            url: controller.controller, 
+            data: post,
+            dataType: 'json',
+            success: dados => {
+                Loading(false);
+
+                if (dados.hasOwnProperty("erro")) {
+                    AcionarModalErro("Erro", dados.erro, "bg-danger");
+                } else {
+                    AcionarModalErro("Sucesso", dados.sucesso, "bg-success");
+
+                    $('#modal').on('hidden.bs.modal', () => {
+                        window.location.reload();
+                    });
+                }
+            },
+            error: erro => {
+                Loading(false);
+                AcionarModalErro("Erro", erro.statusText, "bg-danger");
+            }
+        });
+    });
 }

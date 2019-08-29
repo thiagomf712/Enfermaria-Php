@@ -1,6 +1,6 @@
 <?php
 
-class Pessoa {
+class Pessoa implements JsonSerializable {
 
     private $id;
     private $nome;
@@ -20,6 +20,10 @@ class Pessoa {
         $this->id = $id;
         $this->nome = $nome;
         $this->usuario = $usuario;
+    }
+
+    public function jsonSerialize() {        
+        return get_object_vars($this);
     }
 
 }

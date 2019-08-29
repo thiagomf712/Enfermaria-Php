@@ -5,20 +5,21 @@ function ValidarSubmit(inputs) {
         event.preventDefault();
 
         Loading(true);
+        
+        //Verifica todos os inputs
+        $(inputs).trigger('blur');
 
         let input = inputs.split(", ");
         let validado = true;
 
         //Varrendo todos os inputs necessarios 
         $.each(input, (i, valor) => {
-            if (!$(valor).hasClass("is-valid")) {
+            if ($(valor).hasClass("is-invalid")) {
                 validado = false;
             }
         });
 
         if (!validado) {
-            $(inputs).trigger('blur');
-
             Loading(false);
         } else {
             $('form.needs-validation').trigger("Enviar");
@@ -31,6 +32,7 @@ function ValidarTamanhoInputs(inputs) {
     $(inputs).on('blur', event => {
         ValidarTamanhoInput(event);
 
+        $(event.target).off('keyup');
         $(event.target).on('keyup', event => {
             ValidarTamanhoInput(event);
         });

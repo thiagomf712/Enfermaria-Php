@@ -21,10 +21,6 @@ class FuncionarioController {
     private $funcionarioService;
     private $usuarioController;
 
-    public function getUsuarioService() {
-        return $this->usuarioService;
-    }
-
     public function __construct() {
         $this->retorno = new stdClass();
 
@@ -46,6 +42,7 @@ class FuncionarioController {
         echo json_encode($this->retorno);
     }
 
+    
     public function Cadastrar($dados) {
         $nome = $dados['nome'];
         $login = $dados['login'];
@@ -57,32 +54,28 @@ class FuncionarioController {
 
             $funcionario = new Funcionario(null, $nome, $usuario);
 
-            $this->funcionarioService->CadastrarFuncionario($funcionario);
+            $this->funcionarioService->Cadastrar($funcionario);
 
             $this->retorno->sucesso = "Funcionario cadastrado com sucesso";
         } catch (Exception $e) {
-           $this->retorno->erro = $e->getMessage();
+            $this->retorno->erro = $e->getMessage();
         }
     }
-
-    public static function Editar($dados) {
-        $id = $dados['funcionarioId'];
+    
+    public function Editar($dados) {
+        $id = $dados['funcionario'];
         $nome = $dados['nome'];
 
         try {
-            UsuarioController::EditarUsuario($dados);
+            $this->usuarioController->Editar($dados);
 
             $funcionario = new Funcionario($id, $nome);
 
-            FuncionarioService::EditarFuncionario($funcionario);
+            $this->funcionarioService->Editar($funcionario);
 
-            header("Location: ../Views/Funcionario/Listar.php");
-            $_SESSION['sucesso'] = "Funcionario editado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Funcionario editado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
@@ -94,93 +87,39 @@ class FuncionarioController {
         }
     }
 
-    public static function Ordenar($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $funcionario = FuncionarioService::ListarFuncionarioOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($funcionario);
-        header("Location: ../Views/Funcionario/Listar.php");
-        exit();
-    }
-
-    public static function Filtrar($dados) {
-        $nome = $dados['nome'];
-        $nivelAcesso = $dados['nivelAcesso'];
-
-        if ($nome === '' && $nivelAcesso === "0") {
-            header("Location: ../Views/Funcionario/Listar.php");
-            exit();
-        }
-
-        if ($nome !== '') {
-            $valor[] = array('f.Nome', $nome);
-        }
-
-        if ($nivelAcesso !== "0") {
-            $valor[] = array('u.NivelAcesso', $nivelAcesso);
-        }
-
-        $funcionarios = FuncionarioService::Filtrar($valor);
-
-        $_SESSION['filtro'] = serialize($funcionarios);
-        header("Location: ../Views/Funcionario/Listar.php");
-        exit();
-    }
-
-    public static function OrdenarFiltro($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $funcionario = FuncionarioService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($funcionario);
-        header("Location: ../Views/Funcionario/Listar.php");
-        exit();
-    }
-
-    public static function Deletar($dados) {
-
-        $id = $dados['funcionarioId'];
-        $usuarioId = $dados['usuarioId'];
+    public function Deletar($dados) {
+        $id = $dados['funcionario'];
+        $usuarioId = $dados['usuario'];
 
         try {
-            FuncionarioService::Excluir($id);
+            $this->funcionarioService->Excluir($id);
 
-            UsuarioService::Excluir($usuarioId);
+            $this->usuarioController->getUsuarioService()->Excluir($usuarioId);
 
-            header("Location: ../Views/Funcionario/Listar.php");
-            $_SESSION['sucesso'] = "Funcionario deletado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Funcionario deletado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Funcionario/Listar.php");
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function RetornarFuncionario($id, $usuarioId) {
+    public function GetFuncionario($dados) {
+        $id = $dados['funcionario'];
+        $usuarioId = $dados['usuario'];
+
         try {
-            $usuario = UsuarioService::RetornarLoginId($usuarioId);
-            $funcionario = FuncionarioService::RetornarFuncionario($id);
+            $usuario = $this->usuarioController->getUsuarioService()->GetUsuario($usuarioId);
+
+            $funcionario = $this->funcionarioService->GetFuncionario($id);
 
             $funcionario->setUsuario($usuario);
 
-            return $funcionario;
+            $this->retorno->resultado = $funcionario;
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
+    //Será editado
     public static function RetornarNomeFuncionarios() {
         try {
             $funcionarios = FuncionarioService::RetornarNomesFuncionarios();

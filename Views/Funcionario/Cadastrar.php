@@ -1,9 +1,3 @@
-<?php
-define('__ROOT__', dirname(__FILE__, 3));
-
-require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -29,7 +23,7 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
             <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-                <form method="POST" action="" class="needs-validation" novalidate>
+                <form class="needs-validation" novalidate>
                     <!-- Informações do funcionario -->
                     <fieldset>
                         <legend class="mb-4">Informações do funcionario</legend>
@@ -38,7 +32,6 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                         <div class="form-group">
                             <label for="nome" >Nome</label>
                             <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
-                            <div class="invalid-feedback"></div>
                         </div>
                     </fieldset>
 
@@ -50,31 +43,28 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
                         <div class="form-group">
                             <label for="login" >Usuario</label>
                             <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback"></div>
                         </div>
 
                         <!-- Senha -->
                         <div class="form-group">
                             <label for="senha">Senha</label>
                             <input type="password" class="form-control" id="senha" name="senha" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback"></div>
                         </div>
 
                         <!-- Confirmar Senha -->
                         <div class="form-group">
                             <label for="confirmarSenha">Digite a senha novamente</label>
                             <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha" required maxlength="20" minlength="4"/>
-                            <div class="invalid-feedback"></div>
                         </div>
 
                         <!-- Nivel Acesso -->
                         <div class="form-group">
                             <label for="nivelAcesso">Nivel de acesso</label>
                             <select class="form-control" id="nivelAcesso" name="nivelAcesso">
-                                <option value="<?php echo NivelAcesso::Vizualizar; ?>">Visualizar</option>
-                                <option value="<?php echo NivelAcesso::Adicionar; ?>">Adicionar</option>
-                                <option value="<?php echo NivelAcesso::Editar; ?>">Editar / Remover</option>
-                                <option value="<?php echo NivelAcesso::Master; ?>">Master</option>
+                                <option value="<?= NivelAcesso::Vizualizar; ?>">Visualizar</option>
+                                <option value="<?= NivelAcesso::Adicionar; ?>">Adicionar</option>
+                                <option value="<?= NivelAcesso::Editar; ?>">Editar / Remover</option>
+                                <option value="<?= NivelAcesso::Master; ?>">Master</option>
                             </select>
                         </div>
                     </fieldset>
@@ -93,10 +83,10 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         </div>  
 
         <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+        <?php require_once '../Compartilhado/Footer.php'; ?>
         
         <!-- Modal de resposta -->
-        <?php include_once '../Compartilhado/ModalErro.php'; ?> 
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
         
         <!-- JQuery - popper - Bootstrap-->
         <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
@@ -104,6 +94,6 @@ require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
         <script src="../../bootstrap/js/bootstrap.min.js"></script> 
 
         <!-- Scripts Personalizados -->
-        <script src="../../JavaScript/Funcionario/cadastroFuncionario.js"></script>  
+        <script src="../../JavaScript/Funcionario/cadastro.js"></script>  
     </body>
 </html>

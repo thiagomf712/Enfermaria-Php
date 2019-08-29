@@ -69,7 +69,7 @@
         </div>
 
         <!-- Rodapé -->
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+        <?php require_once '../Compartilhado/Footer.php'; ?>
 
         <!-- JQuery - popper - Bootstrap-->
         <script src="../../JavaScript/jquery-3.4.1.min.js"></script>

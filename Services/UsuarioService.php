@@ -27,15 +27,14 @@ class UsuarioService {
 
         if (empty($resultado)) {
             throw new Exception("Esse usuario não existe");
-        } else {
-            if ($resultado->Senha != $senha) {
-                throw new Exception("Senha incorreta");
-            } else {
-
-                //O login e senha não são necessarios para a session
-                return new Usuario($resultado->Id, null, null, $resultado->NivelAcesso);
-            }
         }
+
+        if ($resultado->Senha != $senha) {
+            throw new Exception("Senha incorreta");
+        }
+
+        //O login e senha não são necessarios para a session
+        return new Usuario($resultado->Id, null, null, $resultado->NivelAcesso);
     }
 
     public function CadastrarUsuario(Usuario $usuario) {
@@ -54,24 +53,15 @@ class UsuarioService {
         }
     }
 
-    public static function EditarUsuario(Usuario $usuario) {
-        $conn = Connection();
+    public function Editar(Usuario $usuario) {
+        $querry = "UPDATE usuario SET Login = :login, NivelAcesso = :nivelAcesso WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($querry);
+        $stmt->bindValue(':id', $usuario->id);
+        $stmt->bindValue(':login', $usuario->login);
+        $stmt->bindValue(':nivelAcesso', $usuario->nivelAcesso);
 
-        $id = $usuario->getId();
-        $login = $usuario->getLogin();
-        $senha = $usuario->getSenha();
-        $nivelAcesso = $usuario->getNivelAcesso();
-
-        $sql = "UPDATE usuario SET Login = :login, Senha = :senha, NivelAcesso = :nivelAcesso WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':login', $login);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':nivelAcesso', $nivelAcesso);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
+        if (!$stmt->execute()) {
             throw new Exception("Erro ao tentar editar o usuario");
         }
     }
@@ -91,22 +81,14 @@ class UsuarioService {
         }
     }
 
-    public static function Excluir($id) {
-        $conn = Connection();
+    public function Excluir($id) {
+        $query = "DELETE FROM usuario WHERE Id = :id";
 
-        $sql = "DELETE FROM usuario WHERE Id = :id";
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-
-        try {
-            $stmt->execute();
-
-            if ($stmt->rowCount() == 0) {
-                throw new Exception("Não foi possivel deletar esse usuario");
-            }
-        } catch (PDOException $e) {
-            throw new Exception("Não foi possivel deletar esse usuario");
+        if (!$stmt->execute()) {
+            throw new Exception("Não foi possivel excluir o usuario");
         }
     }
 
@@ -207,10 +189,10 @@ class UsuarioService {
     //Metodo que retona o id de um usuario
     public function GetId(string $login) {
         $query = "SELECT Id FROM usuario WHERE Login = :login";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':login', $login);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);
@@ -222,22 +204,22 @@ class UsuarioService {
         }
     }
 
-    public static function RetornarLoginId(int $id) {
-        $conn = Connection();
+    //Retorna o usuario a partir do id passado
+    public function GetUsuario(int $id) {
+        $query = "SELECT Id, Login, NivelAcesso FROM usuario WHERE Id = :id";
 
-        $sql = "SELECT * FROM usuario WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
             throw new Exception("Usuario não encontrado");
         }
 
-        return new Usuario($resultado['Id'], $resultado['Login'],
-                $resultado['Senha'], $resultado['NivelAcesso']);
+        return new Usuario($resultado->Id, $resultado->Login, null, $resultado->NivelAcesso);
     }
 
 }

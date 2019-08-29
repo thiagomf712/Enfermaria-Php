@@ -41,10 +41,10 @@
                     <div class="form-group col-sm">
                         <label for="nome">Nivel Acesso: </label>
                         <select class="custom-select" name="NivelAcesso">
-                            <option value="<?php echo NivelAcesso::Vizualizar; ?>">Visualizar</option>
-                            <option value="<?php echo NivelAcesso::Adicionar; ?>">Adicionar</option>
-                            <option value="<?php echo NivelAcesso::Editar; ?>">Editar / Remover</option>
-                            <option value="<?php echo NivelAcesso::Master; ?>">Master</option>
+                            <option value="<?= NivelAcesso::Vizualizar ?>">Visualizar</option>
+                            <option value="<?= NivelAcesso::Adicionar ?>">Adicionar</option>
+                            <option value="<?= NivelAcesso::Editar ?>">Editar / Remover</option>
+                            <option value="<?= NivelAcesso::Master ?>">Master</option>
                             <option value="" selected>Sem filtro</option>
                         </select>
                     </div> 
@@ -56,6 +56,11 @@
                     <button class="btn btn-secondary" type="button" id="remover">Remover Filtro</button>
                 </div> 
             </form>
+            
+            <!-- Quantidade de resultados -->
+            <div class="my-2">
+                <span id="quantidade"></span> resultados 
+            </div>
 
             <!-- Tabela -->
             <div class="table-responsive">
@@ -105,7 +110,10 @@
         <?php include_once '../Compartilhado/Footer.php'; ?>
 
         <!-- Modal de resposta -->
-        <?php include_once '../Compartilhado/ModalErro.php'; ?> 
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
+        
+        <!-- Modal de alerta -->
+        <?php require_once '../Compartilhado/ModalAlerta.php'; ?> 
 
         <!-- JQuery - popper - Bootstrap-->
         <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
@@ -113,6 +121,6 @@
         <script src="../../bootstrap/js/bootstrap.min.js"></script>  
 
         <!-- Scripts Personalizados -->
-        <script src="../../JavaScript/Funcionario/listarFuncionario.js"></script>  
+        <script src="../../JavaScript/Funcionario/listar.js"></script>  
     </body>
 </html>

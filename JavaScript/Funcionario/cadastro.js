@@ -14,6 +14,7 @@ $(document).ready(() => {
 
         ValidarSenha(event);
 
+        $(event.target).off('keyup');
         $(event.target).on('keyup', event => {
             ValidarSenha(event);
         });
