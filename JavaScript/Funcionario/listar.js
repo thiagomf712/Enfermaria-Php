@@ -6,66 +6,39 @@ document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="t
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/listas.js" type="text/javascript"%3E%3C/script%3E'));
 
 $(document).ready(() => {
-    Loading(true);
 
-    let metodo = "metodoFuncionario";
-    let valor = "Listar";
-    let post = `${metodo}=${valor}`;
-
-    $.ajax({
-        type: 'POST',
-        url: "../../Controllers/FuncionarioController.php",
-        data: post,
-        dataType: 'json',
-        success: dados => {
-            if (dados.hasOwnProperty("erro")) {
-                Loading(false);
-                AcionarModalErro("Erro", dados.erro, "bg-danger");
-            } else {
-                let lista = dados.lista;
-
-                let ordenacao = {
-                    Id: {
-                        id: "order-id",
-                        atributo: "Id",
-                        type: "numero"
-                    },
-                    Nome: {
-                        id: "order-nome",
-                        atributo: "Nome",
-                        type: "string"
-                    },
-                    NivelAcesso: {
-                        id: "order-nivelAcesso",
-                        atributo: "NivelAcesso",
-                        type: "numero"
-                    }
-                };
-
-                AtualizarPagina(lista, ordenacao);
-
-                HabilitarFiltro(lista, ordenacao);
-
-                Loading(false);
-            }
+    let ordenacao = {
+        Id: {
+            id: "order-id",
+            atributo: "Id",
+            type: "numero"
         },
-        error: erro => {
-            Loading(false);
-
-            AcionarModalErro("Erro", erro.statusText, "bg-danger");
+        Nome: {
+            id: "order-nome",
+            atributo: "Nome",
+            type: "string"
+        },
+        NivelAcesso: {
+            id: "order-nivelAcesso",
+            atributo: "NivelAcesso",
+            type: "numero"
         }
-    });
+    };
+
+    let controller = {
+        controller: "../../Controllers/FuncionarioController.php", //Url para o controller
+        metodo: "metodoFuncionario", //qual o tipo de metodo (metodo seguido do nome do controller)
+        valor: "Listar" //Nome do metodo que irá executar
+    };
+
+    GerarDadosTabela(ordenacao, controller);
 
     let alerta = {
         mensagem: "Tem certeza que quer deletar este funcionario:",
         destaque: "nome" //Vai acessar o valor nome inclusso no botão de deletar
     };
 
-    let controller = {
-        controller: "../../Controllers/FuncionarioController.php", //Url para o controller
-        metodo: "metodoFuncionario", //qual o tipo de metodo (metodo seguido do nome do controller)
-        valor: "Deletar" //Nome do metodo que irá executar
-    };
+    controller.valor = "Deletar";
 
     HabilitarExclusao(alerta, controller);
 });

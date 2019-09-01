@@ -2,11 +2,11 @@
 
 class Pessoa implements JsonSerializable {
 
-    private $id;
-    private $nome;
+    protected $id;
+    protected $nome;
 
     //Relacionamento
-    private $usuario;
+    protected $usuario;
     
     public function __get($name) {
         return $this->$name;

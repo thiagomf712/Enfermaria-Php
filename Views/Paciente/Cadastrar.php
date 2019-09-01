@@ -1,16 +1,3 @@
-<?php
-define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
-
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -27,23 +14,16 @@ $usuario = unserialize($_SESSION['usuario']);
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
         <title>Cadastro - paciente</title>
     </head>
     <body>
-
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?>
+        <?php require_once '../Compartilhado/Navbar.php'; ?>
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
             <div class="col-md-10 offset-md-1">
-                <form method="POST" action="../../Controllers/PacienteController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
-                    <input type="hidden" name="metodoPaciente" value="Cadastrar"/>
-                    
+                <form class="needs-validation" novalidate>          
                     <!-- Informações gerais -->
                     <fieldset>
                         <legend class="mb-4">Informações gerais do paciente</legend>
@@ -53,22 +33,19 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Nome -->
                             <div class="form-group col-md-5 col-lg-6">
                                 <label for="nome" >Nome</label>
-                                <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
-                                <div class="invalid-feedback" id="erroNome"></div>
+                                <input type="text" class="form-control" id="nome" name="nome"/>
                             </div>
 
                             <!-- Ra -->
                             <div class="form-group col-md-3">
                                 <label for="ra" >Ra</label>
-                                <input type="number" class="form-control" id="ra" name="ra" required min="1"/>
-                                <div class="invalid-feedback" id="erroRa"></div>
+                                <input type="number" class="form-control" id="ra" name="ra"/>
                             </div>  
 
                             <!-- Data Nascimento -->
                             <div class="form-group col-md-4 col-lg-3">
                                 <label for="dataNascimento" >Data de nascimento</label>
-                                <input type="date" class="form-control" id="dataNascimento" name="dataNascimento" required/>
-                                <div class="invalid-feedback" id="erroDataNascimento"></div>
+                                <input type="date" class="form-control" id="dataNascimento" name="dataNascimento"/>
                             </div>  
                         </div>
 
@@ -77,16 +54,15 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Email -->
                             <div class="form-group col-md">
                                 <label for="email" >Email</label>
-                                <input type="email" class="form-control" id="email" name="email" maxlength="50"/>
-                                <div class="invalid-feedback" id="erroEmail"></div>
+                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"/>
+                                <small id="emailHelp" class="form-text text-muted">Exemplo: exemplo@email.com</small>
                             </div>
 
                             <!-- Telefone -->
                             <div class="form-group col-md">
                                 <label for="telefone" >Telefone</label>
-                                <input type="tel" class="form-control" id="telefone" name="telefone" pattern="[0-9]{2} [0-9]{5}-[0-9]{4}" aria-describedby="telefoneHelp"/>
-                                <small id="telefoneHelp" class="form-text text-muted">Exemplo: 12 12345-1234</small>
-                                <div class="invalid-feedback" id="erroTelefone"></div> 
+                                <input type="tel" class="form-control" id="telefone" name="telefone" aria-describedby="telefoneHelp"/>
+                                <small id="telefoneHelp" class="form-text text-muted">Exemplo: (12) 12345-1234</small>
                             </div>
                         </div>
                     </fieldset>
@@ -98,31 +74,31 @@ $usuario = unserialize($_SESSION['usuario']);
                         <!-- plano -->
                         <div class="form-group">
                             <label for="planoSaude" >Plano de saúde</label>
-                            <input type="text" class="form-control" id="planoSaude" name="planoSaude" maxlength="100" placeholder="Deixa em branco se não possuir"/>
+                            <input type="text" class="form-control" id="planoSaude" name="planoSaude" placeholder="Deixa em branco se não possuir"/>
                         </div>
 
                         <!-- problema -->
                         <div class="form-group">
                             <label for="problemaSaude" >Problemas de saúde</label>
-                            <textarea class="form-control" id="problemaSaude" name="problemaSaude" rows="3" maxlength="100" placeholder="Deixa em branco se não possuir"></textarea>
+                            <textarea class="form-control" id="problemaSaude" name="problemaSaude" rows="3" placeholder="Deixa em branco se não possuir"></textarea>
                         </div>
 
                         <!-- medicamento -->
                         <div class="form-group">
                             <label for="medicamento" >Medicamentos de uso continuo</label>
-                            <textarea class="form-control" id="medicamento" name="medicamento" rows="3" maxlength="100" placeholder="Deixa em branco se não fazer uso"></textarea>
+                            <textarea class="form-control" id="medicamento" name="medicamento" rows="3" placeholder="Deixa em branco se não fazer uso"></textarea>
                         </div>
 
                         <!-- Alergia -->
                         <div class="form-group">
                             <label for="alergia" >Alergias</label>
-                            <textarea class="form-control" id="alergia" name="alergia" rows="3" maxlength="100" placeholder="Deixa em branco se não possuir"></textarea>
+                            <textarea class="form-control" id="alergia" name="alergia" rows="3" placeholder="Deixa em branco se não possuir"></textarea>
                         </div>
 
                         <!-- Cirurgia -->
                         <div class="form-group">
                             <label for="cirurgia" >Cirurgias realizadas</label>
-                            <textarea class="form-control" id="cirurgia" name="cirurgia" rows="3" maxlength="100" placeholder="Deixa em branco se não realizou nenhuma"></textarea>
+                            <textarea class="form-control" id="cirurgia" name="cirurgia" rows="3" placeholder="Deixa em branco se não realizou nenhuma"></textarea>
                         </div>       
                     </fieldset>
 
@@ -138,13 +114,13 @@ $usuario = unserialize($_SESSION['usuario']);
                                     
                                     <!-- Interno -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="regime" id="interno" value="1" onchange="altEndereco(this)" checked>
+                                        <input class="form-check-input" type="radio" name="regime" id="interno" value="1" checked>
                                         <label class="form-check-label" for="interno">Interno</label>
                                     </div>
                                     
                                     <!-- Externo -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="regime" id="externo" value="2" onchange="altEndereco(this)" >
+                                        <input class="form-check-input" type="radio" name="regime" id="externo" value="2">
                                         <label class="form-check-label" for="externo">Externo</label>
                                     </div>   
                                 </div>
@@ -156,14 +132,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Rua -->
                             <div class="form-group col-md">
                                 <label for="rua" >Rua</label>
-                                <input type="text" class="form-control" id="rua" name="rua" maxlength="50" value="Estr. Mun. Pastor Walter Boger"/>
+                                <input type="text" class="form-control" id="rua" name="rua" value="Estr. Mun. Pastor Walter Boger"/>
                             </div>
 
                             <!-- Numero -->
                             <div class="form-group col-md-3">
                                 <label for="numero" >Numero</label>
-                                <input type="number" class="form-control" id="numero" name="numero" min="1" max="9999"/>
-                                <div class="invalid-feedback" id="erroNumero"></div>
+                                <input type="number" class="form-control" id="numero" name="numero"/>
                             </div>
                         </div>             
 
@@ -172,15 +147,14 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Complemento -->
                             <div class="form-group col-md">
                                 <label for="complemento" >Complemento</label>
-                                <input type="text" class="form-control" id="complemento" name="complemento" maxlength="20"/>
+                                <input type="text" class="form-control" id="complemento" name="complemento"/>
                             </div>  
 
                             <!-- Cep -->
                             <div class="form-group col-md-4">
                                 <label for="cep" >CEP</label>
-                                <input type="text" class="form-control" id="cep" name="cep" maxlength="9" pattern="[0-9]{5}-[0-9]{3}" aria-describedby="cepHelp" value="13445-970"/>
+                                <input type="text" class="form-control" id="cep" name="cep" aria-describedby="cepHelp" value="13445-970"/>
                                 <small id="cepHelp" class="form-text text-muted">Exemplo: 12345-123</small>
-                                <div class="invalid-feedback" id="erroCep"></div>
                             </div>  
                         </div>  
 
@@ -189,19 +163,19 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- bairo -->
                             <div class="form-group col-md">
                                 <label for="bairro" >Bairro</label>
-                                <input type="text" class="form-control" id="bairro" name="bairro" maxlength="50" value="Lagoa Bonita I"/>
+                                <input type="text" class="form-control" id="bairro" name="bairro" value="Lagoa Bonita I"/>
                             </div>
 
                             <!-- Cidade -->
                             <div class="form-group col-md">
                                 <label for="cidade" >Cidade</label>
-                                <input type="text" class="form-control" id="cidade" name="cidade" maxlength="50" value="Engenheiro Coelho"/>
+                                <input type="text" class="form-control" id="cidade" name="cidade" value="Engenheiro Coelho"/>
                             </div>
 
                             <!-- Estado -->
                             <div class="form-group col-md">
                                 <label for="estado" >Estado</label>
-                                <input type="text" class="form-control" id="estado" name="estado" maxlength="50" value="São Paulo"/>
+                                <input type="text" class="form-control" id="estado" name="estado" value="São Paulo"/>
                             </div>
                         </div>
                     </fieldset>
@@ -219,14 +193,18 @@ $usuario = unserialize($_SESSION['usuario']);
             </div>
         </div>  
 
-        <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+         <!-- Rodapé -->    
+        <?php require_once '../Compartilhado/Footer.php'; ?>
+        
+        <!-- Modal de resposta -->
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
+        
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script> 
 
-        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
-        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?> 
-
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
-        <script src="../../JavaScript/Paciente/cadastroPaciente.js"></script>  
+        <!-- Scripts Personalizados -->
+        <script src="../../JavaScript/Paciente/cadastro.js"></script>  
     </body>
 </html>

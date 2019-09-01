@@ -14,23 +14,47 @@ require_once(__ROOT__ . '/Services/PacienteService.php');
 require_once(__ROOT__ . '/Services/EnderecoService.php');
 require_once(__ROOT__ . '/Services/FichaMedicaService.php');
 
-if (session_id() == '') {
-    session_start();
-}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoPaciente'])) {
-    $metodo = $_POST['metodoPaciente'];
 
-    if (method_exists('PacienteController', $metodo)) {
-        PacienteController::$metodo($_POST);
-    } else {
-        throw new Exception("Metodo não existe");
-    }
+if (isset($_POST["metodoPaciente"])) {
+    $controller = new PacienteController();
+
+    $controller->Executar("metodoPaciente");
 }
 
 class PacienteController {
 
-    public static function Cadastrar($dados) {
+    public $retorno;
+    
+    private $pacienteService;
+    private $usuarioService;
+    private $enderecoService;
+    private $fichaMedicaService;
+
+    public function __construct() {
+        $this->retorno = new stdClass();
+
+        $this->pacienteService = new PacienteService();
+        $this->usuarioService = new UsuarioService();
+        $this->enderecoService = new EnderecoService();
+        $this->fichaMedicaService = new FichaMedicaService();
+    }
+
+    //Executa um metodo da class baseado no que foi passado por post
+    public function Executar($idMetodo) {
+        $metodo = $_POST[$idMetodo];
+
+        if (method_exists($this, $metodo)) {
+            $this->$metodo($_POST);
+        } else {
+            $this->retorno->erro = "metodo não encontrado";
+        }
+
+        //Retorn
+        echo json_encode($this->retorno);
+    }
+
+    public function Cadastrar($dados) {
         //Informações gerais
         $nome = $dados['nome'];
         $ra = $dados['ra'];
@@ -55,32 +79,29 @@ class PacienteController {
         $estado = $dados['estado'];
         $cep = $dados['cep'];
 
-        $paciente = new Paciente(0, $nome, $ra, $dataNascimento, $email, $telefone);
+        $paciente = new Paciente(null, $nome, $ra, $dataNascimento, $email, $telefone);
 
-        $usuario = new Usuario(0);
+        $usuario = new Usuario(null);
         $usuario->DefinirUsuarioPadrao($paciente);
 
         try {
-            UsuarioService::CadastrarUsuario($usuario);
-            $usuariobd = UsuarioService::RetornarLogin($usuario->getLogin());
+            $this->usuarioService->CadastrarUsuario($usuario);
+  
+            $paciente->setUsuario($this->usuarioService->GetId($usuario->login));
+            
+            $this->pacienteService->Cadastrar($paciente);
+   
+            $pacienteId = $this->pacienteService->GetId($paciente->ra);
 
-            $paciente->setUsuario($usuariobd);
-            PacienteService::CadastrarPaciente($paciente);
+            $fichaMedica = new FichaMedica(null, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia, $pacienteId);
+            $endereco = new Endereco(null, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep, $pacienteId);
 
-            $pacientebd = PacienteService::RetornarPaciente($paciente->getRa());
-            $fichaMedica = new FichaMedica(0, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia, $pacientebd);
-            $endereco = new Endereco(0, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep, $pacientebd);
+            $this->fichaMedicaService->Cadastrar($fichaMedica);
+            $this->enderecoService->Cadastrar($endereco);
 
-            FichaMedicaService::CadastrarFichaMedica($fichaMedica);
-            EnderecoService::CadastrarEndereco($endereco);
-
-            $_SESSION['sucesso'] = "Paciente cadastrado com sucesso";
-            header("Location: ../Views/Paciente/Cadastrar.php");
-            exit();
+            $this->retorno->sucesso = "Paciente cadastrado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

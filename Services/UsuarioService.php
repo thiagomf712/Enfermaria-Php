@@ -66,17 +66,14 @@ class UsuarioService {
         }
     }
 
-    public static function AlterarSenha(int $id, string $senha) {
-        $conn = Connection();
+    public function AlterarSenha(int $id, string $senha) {
+        $query = "UPDATE usuario SET Senha = :senha WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':senha', $senha);
 
-        $sql = "UPDATE usuario SET Senha = :senha WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':senha', $senha);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
+        if (!$stmt->execute()) {
             throw new Exception("Erro ao tentar alterar a senha");
         }
     }
@@ -92,85 +89,16 @@ class UsuarioService {
         }
     }
 
-    public static function ListarUsuarios() {
-        $conn = Connection();
+    public function Listar() {
+        $query = "SELECT Id, Login, NivelAcesso FROM usuario";
 
-        $sql = "SELECT Id, Login, NivelAcesso FROM usuario";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->Conectar()->prepare($query);
+        
         $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public static function ListarUsuariosOrdenado($coluna, $ordem) {
-        $conn = Connection();
-
-        $sql = "SELECT Id, Login, NivelAcesso FROM usuario ORDER BY " . $coluna . " " . $ordem;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function Filtrar($valor) {
-        $conn = Connection();
-
-        if (count($valor) >= 2) {
-            $sql = "SELECT Id, Login, NivelAcesso FROM usuario WHERE ";
-
-            for ($i = 0; $i < count($valor); $i++) {
-                $sql .= $valor[$i][0];
-
-                if ($valor[$i][0] == "NivelAcesso") {
-                    $sql .= " = " . $valor[$i][1];
-                } else {
-                    $sql .= " LIKE '%" . $valor[$i][1] . "%'";
-                }
-
-                if ($i !== count($valor) - 1) {
-                    $sql .= ' AND ';
-                }
-            }
-        } else {
-            $sql = "SELECT Id, Login, NivelAcesso FROM usuario WHERE " . $valor[0][0];
-
-            if ($valor[0][0] == "NivelAcesso") {
-                $sql .= " = " . $valor[0][1];
-            } else {
-                $sql .= " LIKE '%" . $valor[0][1] . "%'";
-            }
-        }
-
-        $_SESSION['valorFiltrado'] = $sql;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function FiltrarOrdenado($coluna, $ordem) {
-        $conn = Connection();
-
-        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    //Verifica se um login já está cadastrado no sistema
     private function VerificarLoginExiste(string $login) {
         $query = "SELECT Login FROM usuario WHERE Login = :login";
 

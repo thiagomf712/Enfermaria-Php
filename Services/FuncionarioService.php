@@ -4,12 +4,6 @@ if (!defined('__ROOT__')) {
     define('__ROOT__', dirname(__FILE__, 2));
 }
 
-/*
-  if (session_id() == '') {
-  session_start();
-  }
- */
-
 require_once(__ROOT__ . '/Models/Funcionario.php');
 require_once(__ROOT__ . '/Models/Usuario.php');
 
@@ -57,9 +51,7 @@ class FuncionarioService {
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-        return $resultado;
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function Excluir($id) {

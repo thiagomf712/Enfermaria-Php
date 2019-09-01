@@ -31,7 +31,7 @@
                         <!-- nome -->
                         <div class="form-group">
                             <label for="nome" >Nome</label>
-                            <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
+                            <input type="text" class="form-control" id="nome" name="nome"/>
                         </div>
                     </fieldset>
 
@@ -42,19 +42,19 @@
                         <!-- Usuario -->
                         <div class="form-group">
                             <label for="login" >Usuario</label>
-                            <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4"/>
+                            <input type="text" class="form-control" id="login" name="login"/>
                         </div>
 
                         <!-- Senha -->
                         <div class="form-group">
                             <label for="senha">Senha</label>
-                            <input type="password" class="form-control" id="senha" name="senha" required maxlength="20" minlength="4"/>
+                            <input type="password" class="form-control" id="senha" name="senha"/>
                         </div>
 
                         <!-- Confirmar Senha -->
                         <div class="form-group">
                             <label for="confirmarSenha">Digite a senha novamente</label>
-                            <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha" required maxlength="20" minlength="4"/>
+                            <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha"/>
                         </div>
 
                         <!-- Nivel Acesso -->

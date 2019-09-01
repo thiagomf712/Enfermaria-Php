@@ -68,21 +68,16 @@ class UsuarioController {
         $this->usuarioService->CadastrarUsuario($usuario);
     }
 
-    //Será editado
-    public static function AlterarSenha($dados) {
-        $id = $dados['id'];
+    public function AlterarSenha($dados) {
+        $id = $dados['usuario'];
         $senha = $dados['senha'];
 
         try {
-            UsuarioService::AlterarSenha($id, $senha);
+            $this->usuarioService->AlterarSenha($id, $senha);
 
-            header("Location: ../Views/Usuario/Listar.php");
-            $_SESSION['sucesso'] = "Senha alterada com sucesso";
-            exit();
+            $this->retorno->sucesso = "Senha alterada com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
@@ -96,15 +91,11 @@ class UsuarioController {
         $this->usuarioService->Editar($usuario);
     }
 
-    //Será editado
-    public static function Listar() {
+    public function Listar() {
         try {
-            $usuario = UsuarioService::ListarUsuarios();
-            return $usuario;
+            $this->retorno->lista = $this->usuarioService->Listar();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

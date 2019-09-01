@@ -15,50 +15,12 @@ class Endereco {
     //Relacionamentos
     private $paciente;
     
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getRegime() {
-        return $this->regime;
-    }
-
-    public function getLogradouro() {
-        return $this->logradouro;
-    }
-
-    public function getNumero() {
-        return $this->numero;
-    }
-
-    public function getComplemento() {
-        return $this->complemento;
-    }
-
-    public function getBairro() {
-        return $this->bairro;
-    }
-
-    public function getCidade() {
-        return $this->cidade;
-    }
-
-    public function getEstado() {
-        return $this->estado;
-    }
-
-    public function getCep() {
-        return $this->cep;
+    public function __get($name) {
+        return $this->$name;
     }
     
-    public function getPaciente() {
-        return $this->paciente;
-    }
-
-    
-    public function __construct(int $id, int $regime, string $logradouro, string $numero, string $complemento, string $bairro,
-            string $cidade, string $estado, string $cep, $paciente = null) {
+    public function __construct($id = 0, $regime = 1, $logradouro = "", $numero = "", $complemento = "", $bairro = "",
+           $cidade = "", $estado = "", $cep = "", $paciente = null) {
         $this->id = $id;
         $this->regime = $regime;
         $this->logradouro = $logradouro;

@@ -7,5 +7,3 @@ if (session_id() == '') {
 unset($_SESSION['usuario']);
 
 header('Location: Login.php');
-
-?>

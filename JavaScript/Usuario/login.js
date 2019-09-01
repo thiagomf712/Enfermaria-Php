@@ -1,16 +1,40 @@
-//Script necessario para validação de formularios
-document.write(unescape('%3Cscript src="../../JavaScript/Geral/formularios.js" type="text/javascript"%3E%3C/script%3E'));
+//Script para fazer validação de formularios
+document.write(unescape('%3Cscript src="../../JavaScript/validate.min.js" type="text/javascript"%3E%3C/script%3E'));
+
+//Script para definir as mensagens padrões da validação
+document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" type="text/javascript"%3E%3C/script%3E'));
 
 //Script com funções gerais (loading)
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="text/javascript"%3E%3C/script%3E'));
 
 
 $(document).ready(() => {
-    //Validar o comprimento dos inputs
-    ValidarTamanhoInputs("#login, #senha");
 
-    //Verifica se todos os inputs passados são validos
-    ValidarSubmit("#login, #senha");
+    let loginSenha = {
+        required: true,
+        minlength: 4,
+        maxlength: 20
+    };
+
+    $('form.needs-validation').validate({
+        submitHandler: function (form) {
+            $(form).trigger("Enviar");
+        },
+        onfocusout: function (element) {
+            $(element).valid();
+        },
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+
+        rules: {
+            login: loginSenha,
+            senha: loginSenha
+        }
+    });
 
     //Evento chamado apos validar o submit
     $('form.needs-validation').on("Enviar", e => {

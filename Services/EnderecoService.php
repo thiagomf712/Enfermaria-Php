@@ -5,44 +5,34 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . '/Models/Endereco.php');
-require_once(__ROOT__ . '/Models/Paciente.php');
 
 require_once(__ROOT__ . '/Services/Connection.php');
 
 class EnderecoService {
+    
+    private $conn;
 
-    public static function CadastrarEndereco(Endereco $endereco) {
-        $conn = Connection();
+    public function __construct() {
+        $this->conn = new Connection();
+    }
 
-        $id = $endereco->getId();
-        $regime = $endereco->getRegime();
-        $logradouro = $endereco->getLogradouro();
-        $numero = $endereco->getNumero();
-        $complemento = $endereco->getComplemento();
-        $bairro = $endereco->getBairro();
-        $cidade = $endereco->getCidade();
-        $estado = $endereco->getEstado();
-        $cep = $endereco->getCep();
-        $pacienteId = $endereco->getPaciente()->getId();
+    public function Cadastrar(Endereco $endereco) {
+        $query = "INSERT INTO endereco VALUES (:id, :regime, :logradouro, :numero, :complemento, :bairro, :cidade, :estado, :cep, :pacienteId )";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $endereco->id);
+        $stmt->bindValue(':regime', $endereco->regime);
+        $stmt->bindValue(':logradouro', $endereco->logradouro);
+        $stmt->bindValue(':numero', $endereco->numero);
+        $stmt->bindValue(':complemento', $endereco->complemento);
+        $stmt->bindValue(':bairro', $endereco->bairro);
+        $stmt->bindValue(':cidade', $endereco->cidade);
+        $stmt->bindValue(':estado', $endereco->estado);
+        $stmt->bindValue(':cep', $endereco->cep);
+        $stmt->bindValue(':pacienteId', $endereco->paciente->id);
 
-
-        $sql = "INSERT INTO endereco VALUES (:id, :regime, :logradouro, :numero, :complemento, :bairro, :cidade, :estado, :cep, :pacienteId )";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':regime', $regime);
-        $stmt->bindParam(':logradouro', $logradouro);
-        $stmt->bindParam(':numero', $numero);
-        $stmt->bindParam(':complemento', $complemento);
-        $stmt->bindParam(':bairro', $bairro);
-        $stmt->bindParam(':cidade', $cidade);
-        $stmt->bindParam(':estado', $estado);
-        $stmt->bindParam(':cep', $cep);
-        $stmt->bindParam(':pacienteId', $pacienteId);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erro ao tentar cadastrar o endereco");
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao tentar cadastrar o endereço");
         }
     }
 

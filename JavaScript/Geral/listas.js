@@ -1,6 +1,6 @@
 
 /*------------------------------------------------------------------------------
- Funções relacionadas a Criação da tabela
+ #Funções relacionadas a Criação da tabela
  ------------------------------------------------------------------------------*/
 
 //Espera dois objetos literais
@@ -71,9 +71,44 @@ function DefinirNivelAcesso(nivelAcesso) {
     return texto;
 }
 
+//Faz a requisição parao backend para conseguir os dados para a tabela
+function GerarDadosTabela(ordenacao, controller) {
+    Loading(true);
+
+    let metodo = controller.metodo;
+    let valor = controller.valor;
+    let post = `${metodo}=${valor}`;
+
+    $.ajax({
+        type: 'POST',
+        url: controller.controller,
+        data: post,
+        dataType: 'json',
+        success: dados => {
+            if (dados.hasOwnProperty("erro")) {
+                Loading(false);
+                AcionarModalErro("Erro", dados.erro, "bg-danger");
+            } else {
+                let lista = dados.lista;
+
+                AtualizarPagina(lista, ordenacao);
+
+                HabilitarFiltro(lista, ordenacao);
+
+                Loading(false);
+            }
+        },
+        error: erro => {
+            Loading(false);
+
+            AcionarModalErro("Erro", erro.statusText, "bg-danger");
+        }
+    });
+}
+
 
 /*------------------------------------------------------------------------------
- Funções relacionadas a atualização de conteudo
+ #Funções relacionadas a atualização de conteudo
  ------------------------------------------------------------------------------*/
 
 //Essa função só pode ser chamada em algum local que possua o metodo GerarTabela
@@ -101,7 +136,7 @@ function AtualizarPagina(lista, ordenacao) {
 }
 
 /*------------------------------------------------------------------------------
- Funções relacionadas a paginação do conteudo
+ #Funções relacionadas a paginação do conteudo
  ------------------------------------------------------------------------------*/
 
 //Gera as opções de pagina do select de paginas
@@ -186,7 +221,7 @@ function HabilitarAlteracaoPaginaSelect(lista, numeroPaginas) {
 
 
 /*------------------------------------------------------------------------------
- Funções relacionadas a Ordenação da tabela
+ #Funções relacionadas a Ordenação da tabela
  ------------------------------------------------------------------------------*/
 
 //Recebe um objeto contendo os itens que serão ordenados
@@ -242,9 +277,9 @@ function Ordenar(lista, ordenacao, numeroPaginas) {
             }
 
             $('#pagina').val(1);
-            
+
             GerarTabela(lista, 1);
-            
+
             HabilitarSetas(numeroPaginas);
         });
     });
@@ -252,7 +287,7 @@ function Ordenar(lista, ordenacao, numeroPaginas) {
 
 
 /*------------------------------------------------------------------------------
- Funções relacionadas ao filtro
+ #Funções relacionadas ao filtro
  ------------------------------------------------------------------------------*/
 
 //Habilita a filtragem de dados nas tabelas
@@ -302,7 +337,7 @@ function FiltrarArray(lista, filtros) {
 
 
 /*------------------------------------------------------------------------------
- Funções relacionadas a deletar dados
+ #Funções relacionadas a deletar dados
  ------------------------------------------------------------------------------*/
 
 //Converte parametros (url Get) em um objeto
@@ -320,7 +355,7 @@ function ParametroToObjetct(parametros) {
 //alerta = é o que vai aparecer no alerta antes de deletar (objeto com atributos -> mensagem, destaque)
 //controller = para onde será mandado a requisição de deletar (objeto com atributos -> controller (url), metodo, valor (metodo que será executado)
 function HabilitarExclusao(alerta, controller) {
-    
+
     //Aciona um modal de alerta ao clicar em deletar na lista
     $("tbody").on('click', "td button", e => {
         let params = $(e.target).val();
@@ -344,7 +379,7 @@ function HabilitarExclusao(alerta, controller) {
         $('#alerta').modal();
         $('#alerta-deletar').val(params);
     });
-    
+
     //Faz a exclusão dos dados ao clicar no botão de deletar do modal
     $('#alerta-deletar').on('click', e => {
         $('#alerta').modal('hide');
@@ -360,7 +395,7 @@ function HabilitarExclusao(alerta, controller) {
 
         $.ajax({
             type: 'POST',
-            url: controller.controller, 
+            url: controller.controller,
             data: post,
             dataType: 'json',
             success: dados => {

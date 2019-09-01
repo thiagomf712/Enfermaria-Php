@@ -1,5 +1,3 @@
-//Script com funções pada cadastro
-document.write(unescape('%3Cscript src="../../JavaScript/Geral/formularios.js" type="text/javascript"%3E%3C/script%3E'));
 
 //Script com funções gerais (loading)
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="text/javascript"%3E%3C/script%3E'));
@@ -10,14 +8,11 @@ document.write(unescape('%3Cscript src="../../JavaScript/validate.min.js" type="
 //Script para definir as mensagens padrões da validação
 document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" type="text/javascript"%3E%3C/script%3E'));
 
+//Script necessario para edição de formularios
+document.write(unescape('%3Cscript src="../../JavaScript/Geral/editar.js" type="text/javascript"%3E%3C/script%3E'));
+
 
 $(document).ready(() => {
-    
-    let loginSenha = {
-        required: true,
-        minlength: 4,
-        maxlength: 20
-    };
     
     $('form.needs-validation').validate({
         submitHandler: function (form) {
@@ -34,13 +29,11 @@ $(document).ready(() => {
         validClass: "is-valid",
 
         rules: {
-            nome: {
+            senha: {
                 required: true,
-                minlength: 3,
-                maxlength: 50
+                minlength: 4,
+                maxlength: 20
             },
-            login: loginSenha,
-            senha: loginSenha,
             confirmarSenha: {
                 required: true,
                 equalTo: "#senha"
@@ -54,15 +47,15 @@ $(document).ready(() => {
         }
     });
 
+    //Efetuar as alterações   
     let controller = {
-        controller: "../../Controllers/FuncionarioController.php", //Url para o controller
-        metodo: "metodoFuncionario", //qual o tipo de metodo (metodo seguido do nome do controller)
-        valor: "Cadastrar" //Nome do metodo que irá executar
+        controller: "../../Controllers/UsuarioController.php", //Url para o controller
+        metodo: "metodoUsuario", //qual o tipo de metodo (metodo seguido do nome do controller)
+        valor: "AlterarSenha" //Nome do metodo que irá executar
     };
-    
-    EfetuarCadastro(controller);
+   
+    EfetuarEdicao(controller);
 });
-
 
 //Verifica se os inputs de senha e confirmarSenha são iguais
 function ValidarSenha(event) {
@@ -82,3 +75,5 @@ function VerificarSenhas(senha, confirmar) {
         return false;
     }
 }
+
+

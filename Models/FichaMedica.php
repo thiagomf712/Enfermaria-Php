@@ -11,37 +11,11 @@ class FichaMedica {
     //relacionamentos
     private $paciente;
     
-    public function getId() {
-        return $this->id;
+    public function __get($name) {
+        return $this->$name;
     }
-
-    public function getPlanoSaude() {
-        return $this->planoSaude;
-    }
-
-    public function getProblemaSaude() {
-        return $this->problemaSaude;
-    }
-
-    public function getMedicamento() {
-        return $this->medicamento;
-    }
-
-    public function getAlergia() {
-        return $this->alergia;
-    }
-
-    public function getCirurgia() {
-        return $this->cirurgia;
-    }
-    
-    public function getPaciente() {
-        return $this->paciente;
-    }
-
         
-    public function __construct(int $id, string $planoSaude, string $problemaSaude, 
-            string $medicamento, string $alergia, string $cirurgia, $paciente = null) {
+    public function __construct($id = 0, $planoSaude = "", $problemaSaude = "", $medicamento = "", $alergia = "", $cirurgia = "", $paciente = null) {
         $this->id = $id;
         $this->planoSaude = $planoSaude;
         $this->problemaSaude = $problemaSaude;

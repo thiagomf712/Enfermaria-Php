@@ -1,16 +1,3 @@
-<?php
-define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
-
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -26,23 +13,17 @@ $usuario = unserialize($_SESSION['usuario']);
 
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
-
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
+        
         <title>Cadastrar - Sintoma</title>
     </head>
     <body>
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?> 
+        <?php require_once '../Compartilhado/Navbar.php'; ?> 
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
             <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-                <form method="POST" action="../../Controllers/SintomaController.php" class="needs-validation" novalidate onsubmit="return ValidarForm()">
-                    <input type="hidden" name="metodoSintoma" value="Cadastrar"/>
-
+                <form class="needs-validation" novalidate>
                     <!-- Informações do sintoma -->
                     <fieldset>
                         <legend class="mb-4">Informações do sintoma</legend>
@@ -51,7 +32,6 @@ $usuario = unserialize($_SESSION['usuario']);
                         <div class="form-group">
                             <label for="nome" >Nome</label>
                             <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3"/>
-                            <div class="invalid-feedback" id="erroNome"></div>
                         </div>
                     </fieldset>
 
@@ -69,13 +49,17 @@ $usuario = unserialize($_SESSION['usuario']);
         </div>
 
         <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+        <?php require_once '../Compartilhado/Footer.php'; ?>
+        
+        <!-- Modal de resposta -->
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
+        
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script> 
 
-        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
-        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?> 
-
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>    
-        <script src="../../JavaScript/Sintoma/cadastroSintoma.js"></script> 
+        <!-- Scripts Personalizados -->
+        <script src="../../JavaScript/Sintoma/cadastro.js"></script>  
     </body>
 </html>

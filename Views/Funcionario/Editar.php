@@ -32,7 +32,7 @@
                         <!-- nome -->
                         <div class="form-group">
                             <label for="nome" >Nome</label>
-                            <input type="text" class="form-control" id="nome" name="nome" required maxlength="50" minlength="3" value=""/>
+                            <input type="text" class="form-control" id="nome" name="nome" value=""/>
                         </div>
                     </fieldset>
                     
@@ -43,7 +43,7 @@
                         <!-- Usuario -->
                         <div class="form-group">
                             <label for="login" >Usuario</label>
-                            <input type="text" class="form-control" id="login" name="login" required maxlength="20" minlength="4" value=""/>
+                            <input type="text" class="form-control" id="login" name="login" value=""/>
                         </div>
 
                         <!-- Nivel Acesso -->

@@ -11,32 +11,27 @@ require_once(__ROOT__ . '/Services/Connection.php');
 
 class PacienteService {
 
-    public static function CadastrarPaciente(Paciente $paciente) {
-        $conn = Connection();
+    private $conn;
 
-        $id = $paciente->getId();
-        $nome = $paciente->getNome();
-        $ra = $paciente->getRa();
-        $dataNascimento = $paciente->getDataNascimento();
-        $email = $paciente->getEmail();
-        $telefone = $paciente->getTelefone();
-        $usuarioId = $paciente->getUsuario()->getId();
+    public function __construct() {
+        $this->conn = new Connection();
+    }
 
-        PacienteService::VerificarRaExiste($ra);
+    public function Cadastrar(Paciente $paciente) {
+        $this->VerificarRa($paciente->ra);
 
-        $sql = "INSERT INTO paciente VALUES (:id, :nome, :ra, :dataNascimento, :email, :telefone, :usuarioId)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':ra', $ra);
-        $stmt->bindParam(':dataNascimento', $dataNascimento);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':usuarioId', $usuarioId);
+        $query = "INSERT INTO paciente VALUES (:id, :nome, :ra, :dataNascimento, :email, :telefone, :usuarioId)";
 
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $paciente->id);
+        $stmt->bindValue(':nome', $paciente->nome);
+        $stmt->bindValue(':ra', $paciente->ra);
+        $stmt->bindValue(':dataNascimento', $paciente->dataNascimento);
+        $stmt->bindValue(':email', $paciente->email);
+        $stmt->bindValue(':telefone', $paciente->telefone);
+        $stmt->bindValue(':usuarioId', $paciente->usuario->id);
+
+        if (!$stmt->execute()) {
             throw new Exception("Erro ao tentar cadastrar o paciente");
         }
     }
@@ -169,37 +164,36 @@ class PacienteService {
         return $resultado;
     }
 
-    private static function VerificarRaExiste(string $ra) {
-        $conn = Connection();
+    private function VerificarRa(string $ra) {
+        $query = "SELECT Ra FROM paciente WHERE Ra = :ra";
 
-        $sql = "SELECT Ra FROM paciente WHERE Ra = :ra";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':ra', $ra);
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':ra', $ra);
+
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (!empty($resultado)) {
-            throw new Exception("O Ra {$ra} já está cadastrado no sistema");
+            throw new Exception("O Ra $ra já está cadastrado no sistema");
         }
     }
 
-    public static function RetornarPaciente(string $ra) {
-        $conn = Connection();
+    public function GetId(string $ra) {
+        $query = "SELECT Id FROM paciente WHERE Ra = :ra";
 
-        $sql = "SELECT * FROM paciente WHERE Ra = :ra";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':ra', $ra);
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':ra', $ra);
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
-            throw new Exception("Um erro inesperado aconteceu");
+            throw new Exception("Paciente não encontrado"); //Esse erro só acontece se falhar no cadastro do paciente
         }
 
-        return new Paciente($resultado['Id'], $resultado['Nome'],
-                $resultado['Ra'], $resultado['DataNascimento'], $resultado['Email'], $resultado['Telefone']);
+        return new Paciente($resultado->Id);
     }
 
     public static function RetornarPacienteCompleto(int $id) {

@@ -2,12 +2,13 @@
 
 require_once 'Enums/NivelAcesso.php';
 
-class Usuario implements JsonSerializable{
+class Usuario implements JsonSerializable {
+
     private $id;
     private $login;
     private $senha;
     private $nivelAcesso;
-    
+
     public function __get($name) {
         return $this->$name;
     }
@@ -18,10 +19,17 @@ class Usuario implements JsonSerializable{
         $this->senha = $senha;
         $this->nivelAcesso = $nivelAcesso;
     }
-    
+
     public function DefinirUsuarioPadrao(Paciente $paciente) {
-        $this->login = "ec." . $paciente->getRa();
-        $this->senha = "ec." . $paciente->getRa();
+
+        if ($paciente->ra < 10) {
+            $this->login = "ec.0" . $paciente->ra;
+            $this->senha = "ec.0" . $paciente->ra;
+        } else {
+            $this->login = "ec." . $paciente->ra;
+            $this->senha = "ec." . $paciente->ra;
+        }
+
         $this->nivelAcesso = NivelAcesso::Vizualizar;
     }
 

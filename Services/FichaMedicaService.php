@@ -4,38 +4,31 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . '/Models/FichaMedica.php');
-require_once(__ROOT__ . '/Models/Paciente.php');
 
 require_once(__ROOT__ . '/Services/Connection.php');
 
 class FichaMedicaService {
+    
+    private $conn;
 
-    public static function CadastrarFichaMedica(FichaMedica $fichaMedica) {
-        $conn = Connection();
+    public function __construct() {
+        $this->conn = new Connection();
+    }
 
-        $id = $fichaMedica->getId();
-        $planoSaude = $fichaMedica->getPlanoSaude();
-        $problemaSaude = $fichaMedica->getProblemaSaude();
-        $medicamento = $fichaMedica->getMedicamento();
-        $alergia = $fichaMedica->getAlergia();
-        $cirurgia = $fichaMedica->getCirurgia();
-        $pacienteId = $fichaMedica->getPaciente()->getId();
+    public function Cadastrar(FichaMedica $fichaMedica) {
+        $query = "INSERT INTO fichamedica VALUES (:id, :planoSaude, :problemaSaude, :medicamento, :alergia, :cirurgia, :pacienteId )";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $fichaMedica->id);
+        $stmt->bindValue(':planoSaude', $fichaMedica->planoSaude);
+        $stmt->bindValue(':problemaSaude', $fichaMedica->problemaSaude);
+        $stmt->bindValue(':medicamento', $fichaMedica->medicamento);
+        $stmt->bindValue(':alergia', $fichaMedica->alergia);
+        $stmt->bindValue(':cirurgia', $fichaMedica->cirurgia);
+        $stmt->bindValue(':pacienteId', $fichaMedica->paciente->id);
 
-
-        $sql = "INSERT INTO fichamedica VALUES (:id, :planoSaude, :problemaSaude, :medicamento, :alergia, :cirurgia, :pacienteId )";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':planoSaude', $planoSaude);
-        $stmt->bindParam(':problemaSaude', $problemaSaude);
-        $stmt->bindParam(':medicamento', $medicamento);
-        $stmt->bindParam(':alergia', $alergia);
-        $stmt->bindParam(':cirurgia', $cirurgia);
-        $stmt->bindParam(':pacienteId', $pacienteId);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erro ao tentar cadastrar a ficha medica");
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao tentar cadastrar a ficha médica");
         }
     }
     

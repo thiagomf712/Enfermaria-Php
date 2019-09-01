@@ -18,7 +18,7 @@
     </head>
     <body>
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?>              
+        <?php require_once '../Compartilhado/Navbar.php'; ?>              
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
@@ -34,13 +34,13 @@
                     <!-- Nome -->
                     <div class="form-group col-sm">
                         <label for="nome">Nome: </label>
-                        <input class="form-control" type="text" name="Nome"/>
+                        <input class="form-control" type="text" id="nome" name="Nome"/>
                     </div>  
 
                     <!-- Nivel de Acesso -->
                     <div class="form-group col-sm">
-                        <label for="nome">Nivel Acesso: </label>
-                        <select class="custom-select" name="NivelAcesso">
+                        <label for="nivelAcesso">Nivel Acesso: </label>
+                        <select class="custom-select" id="nivelAcesso" name="NivelAcesso">
                             <option value="<?= NivelAcesso::Vizualizar ?>">Visualizar</option>
                             <option value="<?= NivelAcesso::Adicionar ?>">Adicionar</option>
                             <option value="<?= NivelAcesso::Editar ?>">Editar / Remover</option>
@@ -107,7 +107,7 @@
         </div>  
 
         <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+        <?php require_once '../Compartilhado/Footer.php'; ?>
 
         <!-- Modal de resposta -->
         <?php require_once '../Compartilhado/ModalErro.php'; ?> 

@@ -2,8 +2,14 @@
 //Script com funções gerais (loading)
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="text/javascript"%3E%3C/script%3E'));
 
-//Script necessario para validação de formularios
-document.write(unescape('%3Cscript src="../../JavaScript/Geral/formularios.js" type="text/javascript"%3E%3C/script%3E'));
+//Script para fazer validação de formularios
+document.write(unescape('%3Cscript src="../../JavaScript/validate.min.js" type="text/javascript"%3E%3C/script%3E'));
+
+//Script para definir as mensagens padrões da validação
+document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" type="text/javascript"%3E%3C/script%3E'));
+
+//Script necessario para edição de formularios
+document.write(unescape('%3Cscript src="../../JavaScript/Geral/editar.js" type="text/javascript"%3E%3C/script%3E'));
 
 
 $(document).ready(() => {
@@ -41,43 +47,40 @@ $(document).ready(() => {
         }
     });
 
-    //Validar alterações
-    ValidarTamanhoInputs("#nome, #login");
+    $('form.needs-validation').validate({
+        submitHandler: function (form) {
+            $(form).trigger("Enviar");
+        },
+        onfocusout: function (element) {
+            $(element).valid();
+        },
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        errorClass: "is-invalid",
+        validClass: "is-valid",
 
-    //Validar submit
-    ValidarSubmit("#nome, #login");
+        rules: {
+            nome: {
+                required: true,
+                minlength: 3,
+                maxlength: 50
+            },
+            login: {
+                required: true,
+                minlength: 4,
+                maxlength: 20
+            }
+        }
+    });
 
     //Efetuar as alterações
-    $('form.needs-validation').on("Enviar", e => {
+    let controller = {
+        controller: "../../Controllers/FuncionarioController.php", //Url para o controller
+        metodo: "metodoFuncionario", //qual o tipo de metodo (metodo seguido do nome do controller)
+        valor: "Editar" //Nome do metodo que irá executar
+    };
 
-        let dados = $(e.target).serialize();
-
-        let metodo = "metodoFuncionario";
-        let valor = "Editar";
-        let post = `${dados}&${metodo}=${valor}&${location.search.slice(1)}`;
-
-        $.ajax({
-            type: 'POST',
-            url: "../../Controllers/FuncionarioController.php",
-            data: post,
-            dataType: 'json',
-            success: dados => {
-                Loading(false);
-
-                if (dados.hasOwnProperty("erro")) {
-                    AcionarModalErro("Erro", dados.erro, "bg-danger");
-                } else {
-                    AcionarModalErro("Sucesso", dados.sucesso, "bg-success");
-
-                    $('#modal').on('hidden.bs.modal', () => {
-                        window.location.href = "Listar.php";
-                    });
-                }
-            },
-            error: erro => {
-                Loading(false);
-                AcionarModalErro("Erro", erro.statusText, "bg-danger");
-            }
-        });
-    });
+    EfetuarEdicao(controller);
 });

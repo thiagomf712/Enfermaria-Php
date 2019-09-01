@@ -1,19 +1,20 @@
 <?php
 
-class Sintoma {
+class Sintoma implements JsonSerializable {
+
     private $id;
     private $nome;
 
-    public function getId() {
-        return $this->id;
+    public function __get($name) {
+        return $this->$name;
     }
 
-    public function getNome() {
-        return $this->nome;
-    }
- 
-    public function __construct(int $id, string $nome) {
+    public function __construct($id = 0, $nome = "") {
         $this->id = $id;
         $this->nome = $nome;
+    }
+
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 }

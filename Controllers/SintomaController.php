@@ -5,132 +5,90 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . '/Models/Sintoma.php');
-
 require_once(__ROOT__ . '/Services/SintomaService.php');
 
-if (session_id() == '') {
-    session_start();
-}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoSintoma'])) {
-    $metodo = $_POST['metodoSintoma'];
+if (isset($_POST["metodoSintoma"])) {
+    $controller = new SintomaController();
 
-    if (method_exists('SintomaController', $metodo)) {
-        SintomaController::$metodo($_POST);
-    } else {
-        throw new Exception("Metodo não existe");
-    }
+    $controller->Executar("metodoSintoma");
 }
 
 class SintomaController {
 
-    static function Cadastrar($dados) {
+    public $retorno;
+    private $sintomaService;
+
+    public function __construct() {
+        $this->retorno = new stdClass();
+
+        $this->sintomaService = new SintomaService();
+    }
+
+    //Executa um metodo da class baseado no que foi passado por post
+    public function Executar($idMetodo) {
+        $metodo = $_POST[$idMetodo];
+
+        if (method_exists($this, $metodo)) {
+            $this->$metodo($_POST);
+        } else {
+            $this->retorno->erro = "metodo não encontrado";
+        }
+
+        //Retorn
+        echo json_encode($this->retorno);
+    }
+
+    public function Cadastrar($dados) {
         $nome = $dados['nome'];
 
-        $sintoma = new Sintoma(0, $nome);
+        $sintoma = new Sintoma(null, $nome);
 
         try {
-            SintomaService::CadastrarSintoma($sintoma);
+            $this->sintomaService->Cadastrar($sintoma);
 
-            header("Location: ../Views/Sintoma/Cadastrar.php");
-            $_SESSION['sucesso'] = "Sintoma cadastrado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Sintoma cadastrado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Editar($dados) {
-        $id = $dados['id'];
+    public function Editar($dados) {
+        $id = $dados['sintoma'];
         $nome = $dados['nome'];
 
-        try {
-            $sintoma = new Sintoma($id, $nome);
-
-            SintomaService::EditarSintoma($sintoma);
-
-            header("Location: ../Views/Sintoma/Listar.php");
-            $_SESSION['sucesso'] = "Sintoma editado com sucesso";
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
-        }
-    }
-
-    public static function Deletar($dados) {
-        $id = $dados['id'];
-
-        try {
-            SintomaService::Excluir($id);
-
-            header("Location: ../Views/Sintoma/Listar.php");
-            $_SESSION['sucesso'] = "sintoma deletado com sucesso";
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Sintoma/Listar.php");
-            exit();
-        }
-    }
-
-    public static function Ordenar($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $sintomas = SintomaService::ListarSintomasOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Listar.php");
-        exit();
-    }
-
-    public static function Filtrar($dados) {
-        $nome = $dados['nome'];
-
-        if ($nome === '') {
-            header("Location: ../Views/Sintoma/Listar.php");
-            exit();
-        }
-
-        $sintomas = SintomaService::Filtrar($nome);
+        $sintoma = new Sintoma($id, $nome);
         
-        $_SESSION['filtro'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Listar.php");
-        exit();
-    }
-    
-    public static function OrdenarFiltro($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
+        try {         
+            $this->sintomaService->Editar($sintoma);
 
-        $sintomas = SintomaService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Listar.php");
-        exit();
-    }
-
-    public static function Listar() {
-        try {
-            $sintomas = SintomaService::ListarSintomas();
-            return $sintomas;
+            $this->retorno->sucesso = "Sintoma editado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
-    
+
+    public function Deletar($dados) {
+        $id = $dados['sintoma'];
+
+        try {
+            $this->sintomaService->Excluir($id);
+
+            $this->retorno->sucesso = "Sintoma deletado com sucesso";
+        } catch (Exception $e) {
+            $this->retorno->erro = $e->getMessage();
+        }
+    }
+
+    public function Listar() {
+        try {
+            $this->retorno->lista = $this->sintomaService->Listar();
+        } catch (Exception $e) {
+            $this->retorno->erro = $e->getMessage();
+        }
+    }
+
+    //Será modificado
     public static function ListarEst() {
         try {
             $sintomas = SintomaService::ListarSintomasEst();
@@ -142,67 +100,9 @@ class SintomaController {
         }
     }
 
-    public static function OrdenarEst($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
+    //Será modificado
+    public static function ListarOcorrencias($sintoma, $inicio, $fim) {
 
-        $sintomas = SintomaService::ListarSintomasOrdenadoEst($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Estatistica.php");
-        exit();
-    }
-    
-    public static function FiltrarEst($dados) {
-        $sintoma = $dados['sintoma'];
-        $inicio = $dados['inicio'];
-        $fim = $dados['fim'];
-
-        if ($sintoma === "" && $inicio == null && $fim == null) {
-            header("Location: ../Views/Sintoma/Estatistica.php");
-            exit();
-        }
-        
-        if ($sintoma !== '') {
-            $valor[] = array('s.Nome', $sintoma);
-        }
-
-        if ($inicio != null && $fim != null) {
-            $valor[] = array('a.Data', $inicio, $fim, 'ope' => 'entre');
-        } else if ($inicio != null) {
-            $valor[] = array('a.Data', $inicio, 'ope' => 'maior');
-        } else if ($fim != null) {
-            $valor[] = array('a.Data', $fim, 'ope' => 'menor');
-        }
-
-        $sintomas = SintomaService::FiltrarEst($valor);
-        
-        $sintomas['Filtro'] = array('sintoma' => $sintoma, 'inicio' => $inicio, 'fim' => $fim);
-        
-        $_SESSION['filtro'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Estatistica.php");
-        exit();
-    }
-    
-    public static function OrdenarFiltroEst($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $sintomas = SintomaService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-        
-        $_SESSION['filtroOrdenado'] = serialize($sintomas);
-        header("Location: ../Views/Sintoma/Estatistica.php");
-        exit();
-    }
-    
-    public static function ListarOcorrencias($sintoma, $inicio, $fim) {      
-        
         if ($inicio != null && $fim != null) {
             $data = array('a.Data', $inicio, $fim, 'ope' => 'entre');
         } else if ($inicio != null) {
@@ -210,29 +110,28 @@ class SintomaController {
         } else if ($fim != null) {
             $data = array('a.Data', $fim, 'ope' => 'menor');
         }
-        
+
         if ($inicio != null || $fim != null) {
             $atendimentos = SintomaService::ListarOcorrencias($sintoma, $data);
         } else {
             $atendimentos = SintomaService::ListarOcorrencias($sintoma);
-        }  
-        
+        }
+
         return $atendimentos;
     }
 
-    public static function RetornarSintoma($id) {
+    public function GetSintoma($dados) {
+        $id = $dados['sintoma'];
+        
         try {
-            $sintoma = SintomaService::RetornarSintoma($id);
-
-            return $sintoma;
+            $this->retorno->resultado = $this->sintomaService->GetSintoma($id);
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
-    
-    public static function RetornarNomesSintomas(){
+
+    //Será modificado
+    public static function RetornarNomesSintomas() {
         try {
             $sintomas = SintomaService::RetornarNomesSintomas();
 
@@ -243,4 +142,5 @@ class SintomaController {
             exit();
         }
     }
+
 }
