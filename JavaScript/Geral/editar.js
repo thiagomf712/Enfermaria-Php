@@ -28,7 +28,6 @@ function EfetuarEdicao(controller) {
                 }
             },
             error: erro => {
-                
                 Loading(false);
                 AcionarModalErro("Erro", erro.statusText, "bg-danger");
             }

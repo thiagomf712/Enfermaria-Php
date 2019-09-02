@@ -1,6 +1,6 @@
 <?php
 
-class FichaMedica {
+class FichaMedica implements JsonSerializable{
     private $id;
     private $planoSaude;
     private $problemaSaude;
@@ -23,6 +23,10 @@ class FichaMedica {
         $this->alergia = $alergia;
         $this->cirurgia = $cirurgia;
         $this->paciente = $paciente;
+    }
+    
+    public function jsonSerialize() {        
+        return get_object_vars($this);
     }
 
 }

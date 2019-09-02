@@ -71,6 +71,21 @@ function DefinirNivelAcesso(nivelAcesso) {
     return texto;
 }
 
+function DefinirRegime(regime) {
+    let texto;
+
+    switch (parseInt(regime)) {
+        case 1:
+            texto = "Interno";
+            break;
+        case 2:
+            texto = "Externo";
+            break;
+    }
+
+    return texto;
+}
+
 //Faz a requisição parao backend para conseguir os dados para a tabela
 function GerarDadosTabela(ordenacao, controller) {
     Loading(true);

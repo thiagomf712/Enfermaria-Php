@@ -31,5 +31,8 @@ class Paciente extends Pessoa implements JsonSerializable {
         $this->email = $email;
         $this->telefone = $telefone;
     }
-
+    
+    public function jsonSerialize() {        
+        return get_object_vars($this);
+    }
 }

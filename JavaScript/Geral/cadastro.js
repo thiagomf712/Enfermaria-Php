@@ -11,6 +11,7 @@ function LimparForm(form) {
 //Efetua o cadastro depois da validção do submit
 function EfetuarCadastro(controller) {
     $('form.needs-validation').on("Enviar", e => {
+        Loading(true);
 
         let dados = $(e.target).serialize();
 

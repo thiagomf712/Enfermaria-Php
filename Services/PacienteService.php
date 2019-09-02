@@ -36,132 +36,42 @@ class PacienteService {
         }
     }
 
-    public static function EditarPaciente(Paciente $paciente) {
-        $conn = Connection();
+    public function Editar(Paciente $paciente) {
+        $query = "UPDATE paciente SET Nome = :nome, Ra = :ra, DataNascimento = :dataNascimento, Email = :email, Telefone = :telefone WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $paciente->id);
+        $stmt->bindValue(':nome', $paciente->nome);
+        $stmt->bindValue(':ra', $paciente->ra);
+        $stmt->bindValue(':dataNascimento', $paciente->dataNascimento);
+        $stmt->bindValue(':email', $paciente->email);
+        $stmt->bindValue(':telefone', $paciente->telefone);
 
-        $id = $paciente->getId();
-        $nome = $paciente->getNome();
-        $ra = $paciente->getRa();
-        $dataNascimento = $paciente->getDataNascimento();
-        $email = $paciente->getEmail();
-        $telefone = $paciente->getTelefone();
-
-        $sql = "UPDATE paciente SET Nome = :nome, Ra = :ra, DataNascimento = :dataNascimento, Email = :email, Telefone = :telefone WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':ra', $ra);
-        $stmt->bindParam(':dataNascimento', $dataNascimento);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
+        if (!$stmt->execute()) {
             throw new Exception("Erro ao tentar editar o paciente");
         }
     }
 
-    public static function Excluir($id) {
-        $conn = Connection();
+    public function Excluir($id) {
+        $query = "DELETE FROM paciente WHERE Id = :id";
 
-        $sql = "DELETE FROM paciente WHERE Id = :id";
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-
-        try {
-            $stmt->execute();
-            if ($stmt->rowCount() == 0) {
-                throw new Exception("Não é possivel excluir um paciente com atendimentos registrados");
-            }
-        } catch (Exception $e) {
+        if (!$stmt->execute()) {
             throw new Exception("Não é possivel excluir um paciente com atendimentos registrados");
         }
     }
 
-    public static function ListarPacientes() {
-        $conn = Connection();
+    public function Listar() {
+        $query = "SELECT e.Id as EnderecoId, f.Id as FichamedicaId, p.Id, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
+                . "LEFT JOIN endereco e ON e.PacienteId = p.Id "
+                . "LEFT JOIN fichamedica f ON f.PacienteId = p.Id";
 
-        $sql = "SELECT e.Id, f.Id, e.PacienteId, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
-                . "INNER JOIN endereco e ON e.PacienteId = p.Id "
-                . "INNER JOIN fichamedica f ON f.PacienteId = p.Id";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function ListarPacientesOrdenado($coluna, $ordem) {
-        $conn = Connection();
-
-        $sql = "SELECT e.Id, f.Id, e.PacienteId, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
-                . "INNER JOIN endereco e ON e.PacienteId = p.Id "
-                . "INNER JOIN fichamedica f ON f.PacienteId = p.Id ORDER BY " . $coluna . " " . $ordem;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function Filtrar($valor) {
-        $conn = Connection();
-
-        $sql = "SELECT e.Id, f.Id, e.PacienteId, p.UsuarioId, p.Nome, p.Ra, e.Regime FROM paciente p "
-                . "INNER JOIN endereco e ON e.PacienteId = p.Id "
-                . "INNER JOIN fichamedica f ON f.PacienteId = p.Id WHERE ";
-
-        if (count($valor) >= 2) {
-            for ($i = 0; $i < count($valor); $i++) {
-                $sql .= $valor[$i][0];
-
-                if ($valor[$i][0] == "e.Regime") {
-                    $sql .= " = " . $valor[$i][1];
-                } else {
-                    $sql .= " LIKE '%" . $valor[$i][1] . "%'";
-                }
-
-                if ($i !== count($valor) - 1) {
-                    $sql .= ' AND ';
-                }
-            }
-        } else {
-            $sql .= $valor[0][0];
-
-            if ($valor[0][0] == "e.Regime") {
-                $sql .= " = " . $valor[0][1];
-            } else {
-                $sql .= " LIKE '%" . $valor[0][1] . "%'";
-            }
-        }
-
-        $_SESSION['valorFiltrado'] = $sql;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function FiltrarOrdenado($coluna, $ordem) {
-        $conn = Connection();
-
-        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     private function VerificarRa(string $ra) {
@@ -184,7 +94,7 @@ class PacienteService {
 
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':ra', $ra);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);
@@ -196,21 +106,21 @@ class PacienteService {
         return new Paciente($resultado->Id);
     }
 
-    public static function RetornarPacienteCompleto(int $id) {
-        $conn = Connection();
-
-        $sql = "SELECT * FROM paciente WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
+    public function GetPaciente(int $id) {
+        $query = "SELECT Id, Nome, Ra, DataNascimento, Email, Telefone FROM paciente WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
             throw new Exception("Paciente não encontrado");
         }
 
-        return new Paciente($resultado['Id'], $resultado['Nome'], $resultado['Ra'], $resultado['DataNascimento'], $resultado['Email'], $resultado['Telefone']);
+        return new Paciente($resultado->Id, $resultado->Nome, $resultado->Ra, $resultado->DataNascimento, $resultado->Email, $resultado->Telefone);
     }
 
     public static function RetornarNomeRa(int $id) {

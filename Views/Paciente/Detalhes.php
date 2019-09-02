@@ -1,33 +1,3 @@
-<?php
-define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
-require_once(__ROOT__ . '/Models/Enums/Regime.php');
-
-require_once(__ROOT__ . '/Controllers/PacienteController.php');
-
-if (session_id() == '') {
-    session_start();
-}
-
-$id = isset($_GET['paciente']) ? $_GET['paciente'] : 0;
-$enderecoId = isset($_GET['endereco']) ? $_GET['endereco'] : 0;
-$fichaMedicaId = isset($_GET['fichaMedica']) ? $_GET['fichaMedica'] : 0;
-
-$paciente = PacienteController::RetornarPaciente($id, $enderecoId, $fichaMedicaId);
-
-$reg = $paciente->getEndereco()->getRegime();
-
-function DefinirChecked($regime, $valorSelecionado) {
-    echo ($regime == $valorSelecionado) ? 'checked' : '';
-}
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -44,15 +14,11 @@ $usuario = unserialize($_SESSION['usuario']);
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
         <title>Detalhes - paciente</title>
     </head>
     <body>
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?>    
+        <?php require_once '../Compartilhado/Navbar.php'; ?>    
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
@@ -68,19 +34,19 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Nome -->
                             <div class="form-group col-md-5 col-lg-6">
                                 <label>Nome</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getNome(); ?>"/>
+                                <input type="text" class="form-control" id="nome" value=""/>
                             </div>
 
                             <!-- Ra -->
                             <div class="form-group col-md-3">
                                 <label>Ra</label>
-                                <input type="number" class="form-control" value="<?php echo $paciente->getRa(); ?>"/>
+                                <input type="number" class="form-control" id="ra" value=""/>
                             </div>
 
                             <!-- Data Nascimento -->
                             <div class="form-group col-md-4 col-lg-3">
                                 <label >Data de nascimento</label>
-                                <input type="date" class="form-control" value="<?php echo $paciente->getDataNascimento(); ?>"/>
+                                <input type="date" class="form-control" id="dataNascimento" value=""/>
                             </div>  
                         </div>
 
@@ -89,13 +55,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Email -->
                             <div class="form-group col-md">
                                 <label>Email</label>
-                                <input type="email" class="form-control" value="<?php echo $paciente->getEmail(); ?>"/>
+                                <input type="email" class="form-control" id="email" value=""/>
                             </div>
 
                             <!-- Telefone -->
                             <div class="form-group col-md">
                                 <label>Telefone</label>
-                                <input type="tel" class="form-control" value="<?php echo $paciente->getTelefone(); ?>"/>
+                                <input type="tel" class="form-control" id="telefone" value=""/>
                             </div>
                         </div>
                     </fieldset>
@@ -107,31 +73,31 @@ $usuario = unserialize($_SESSION['usuario']);
                         <!-- Plano -->
                         <div class="form-group">
                             <label>Plano de saúde</label>
-                            <input type="text" class="form-control" value="<?php echo $paciente->getFichaMedica()->getPlanoSaude(); ?>"/>
+                            <input type="text" class="form-control" id="plano" value=""/>
                         </div>
 
                         <!-- Problemas -->
                         <div class="form-group">
                             <label>Problemas de saúde</label>
-                            <textarea class="form-control"><?php echo $paciente->getFichaMedica()->getProblemaSaude(); ?></textarea>
+                            <textarea class="form-control" id="problema"></textarea>
                         </div>
 
                         <!-- Medicamento -->
                         <div class="form-group">
                             <label>Medicamentos de uso continuo</label>
-                            <textarea class="form-control"><?php echo $paciente->getFichaMedica()->getMedicamento(); ?></textarea>
+                            <textarea class="form-control" id="medicamento"></textarea>
                         </div>
 
                         <!-- Alergia -->
                         <div class="form-group">
                             <label>Alergias</label>
-                            <textarea class="form-control"><?php echo $paciente->getFichaMedica()->getAlergia(); ?></textarea>
+                            <textarea class="form-control" id="alergia"></textarea>
                         </div>
 
                         <!-- Cirurgia -->
                         <div class="form-group">
                             <label>Cirurgias realizadas</label>
-                            <textarea class="form-control"><?php echo $paciente->getFichaMedica()->getCirurgia(); ?></textarea>
+                            <textarea class="form-control" id="cirurgia"></textarea>
                         </div>       
                     </fieldset>
 
@@ -147,13 +113,13 @@ $usuario = unserialize($_SESSION['usuario']);
                                     
                                     <!-- Interno -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="regime" id="interno" value="1" onchange="altEndereco(this)" <?php DefinirChecked($reg, Regime::Interno) ?>>
+                                        <input class="form-check-input" type="radio" name="regime" id="interno" value="1">
                                         <label class="form-check-label" for="interno">Interno</label>
                                     </div>
                                     
                                     <!-- Externo -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="regime" id="externo" value="2" onchange="altEndereco(this)" <?php DefinirChecked($reg, Regime::Externo) ?>>
+                                        <input class="form-check-input" type="radio" name="regime" id="externo" value="2">
                                         <label class="form-check-label" for="externo">Externo</label>
                                     </div>   
                                 </div>
@@ -165,13 +131,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Rua -->
                             <div class="form-group col-md">
                                 <label>Rua</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getLogradouro(); ?>"/>
+                                <input type="text" class="form-control" id="rua" value=""/>
                             </div>
 
                             <!-- Numero -->
                             <div class="form-group col-md-3">
                                 <label>Numero</label>
-                                <input type="number" class="form-control" value="<?php echo $paciente->getEndereco()->getNumero(); ?>"/>
+                                <input type="number" class="form-control" id="numero" value=""/>
                             </div>
                         </div>             
 
@@ -180,13 +146,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- Complemento -->
                             <div class="form-group col-md">
                                 <label>Complemento</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getComplemento(); ?>"/>
+                                <input type="text" class="form-control" id="complemento" value=""/>
                             </div>  
 
                             <!-- Cep -->
                             <div class="form-group col-md-4">
                                 <label>CEP</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getCep(); ?>"/>
+                                <input type="text" class="form-control" id="cep" value=""/>
                             </div>  
                         </div>  
 
@@ -195,26 +161,26 @@ $usuario = unserialize($_SESSION['usuario']);
                             <!-- bairo -->
                             <div class="form-group col-md">
                                 <label>Bairro</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getBairro(); ?>"/>
+                                <input type="text" class="form-control" id="bairro" value=""/>
                             </div>
 
                             <!-- Cidade -->
                             <div class="form-group col-md">
                                 <label>Cidade</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getCidade(); ?>"/>
+                                <input type="text" class="form-control" id="cidade" value=""/>
                             </div>
 
                             <!-- Estado -->
                             <div class="form-group col-md">
                                 <label>Estado</label>
-                                <input type="text" class="form-control" value="<?php echo $paciente->getEndereco()->getEstado(); ?>"/>
+                                <input type="text" class="form-control" id="estado" value=""/>
                             </div>
                         </div>
                     </fieldset>
 
                     <!-- Botões -->
                     <div class="form-group">
-                        <button type="button" class="btn btn-secondary btn-block mt-4" onclick="history.go(-1);">Voltar</button>
+                        <a href="Listar.php" class="btn btn-secondary btn-block">Voltar</a>
                     </div>
 
                 </form>
@@ -222,10 +188,18 @@ $usuario = unserialize($_SESSION['usuario']);
         </div>       
 
         <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
+        <?php require_once '../Compartilhado/Footer.php'; ?>
+        
+        <!-- Modal de resposta -->
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
 
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>   
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script>  
+
+        <!-- Scripts Personalizados -->
+        <script src="../../JavaScript/Paciente/detalhes.js"></script>   
     </body>
 </html>
 

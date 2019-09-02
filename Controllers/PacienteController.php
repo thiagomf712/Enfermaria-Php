@@ -25,7 +25,6 @@ if (isset($_POST["metodoPaciente"])) {
 class PacienteController {
 
     public $retorno;
-    
     private $pacienteService;
     private $usuarioService;
     private $enderecoService;
@@ -86,11 +85,11 @@ class PacienteController {
 
         try {
             $this->usuarioService->CadastrarUsuario($usuario);
-  
+
             $paciente->setUsuario($this->usuarioService->GetId($usuario->login));
-            
+
             $this->pacienteService->Cadastrar($paciente);
-   
+
             $pacienteId = $this->pacienteService->GetId($paciente->ra);
 
             $fichaMedica = new FichaMedica(null, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia, $pacienteId);
@@ -105,9 +104,9 @@ class PacienteController {
         }
     }
 
-    public static function Editar($dados) {
+    public function Editar($dados) {
         //Informações gerais
-        $id = $dados['id'];
+        $id = $dados['paciente'];
         $nome = $dados['nome'];
         $ra = $dados['ra'];
         $dataNascimento = $dados['dataNascimento'];
@@ -115,7 +114,7 @@ class PacienteController {
         $telefone = $dados['telefone'];
 
         //Ficha médica
-        $fichaMedicaId = $dados['fichaMedicaId'];
+        $fichaMedicaId = $dados['ficha'];
         $planoSaude = $dados['planoSaude'];
         $problemaSaude = $dados['problemaSaude'];
         $medicamento = $dados['medicamento'];
@@ -123,7 +122,7 @@ class PacienteController {
         $cirurgia = $dados['cirurgia'];
 
         //Endereço
-        $enderecoId = $dados['enderecoId'];
+        $enderecoId = $dados['endereco'];
         $regime = $dados['regime'];
         $logradouro = $dados['rua'];
         $numero = $dados['numero'];
@@ -135,127 +134,60 @@ class PacienteController {
 
         try {
             $paciente = new Paciente($id, $nome, $ra, $dataNascimento, $email, $telefone);
-            PacienteService::EditarPaciente($paciente);
+            $this->pacienteService->Editar($paciente);
 
             $fichaMedica = new FichaMedica($fichaMedicaId, $planoSaude, $problemaSaude, $medicamento, $alergia, $cirurgia);
-            FichaMedicaService::EditarFichaMedica($fichaMedica);
+            $this->fichaMedicaService->Editar($fichaMedica);
 
             $endereco = new Endereco($enderecoId, $regime, $logradouro, $numero, $complemento, $bairro, $cidade, $estado, $cep);
-            EnderecoService::EditarEndereco($endereco);
+            $this->enderecoService->Editar($endereco);
 
-            header("Location: ../Views/Paciente/Listar.php");
-            $_SESSION['sucesso'] = "Paciente editado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Paciente editado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Deletar($dados) {
+    public function Deletar($dados) {
 
-        $id = $dados['pacienteId'];
-        $usuarioId = $dados['usuarioId'];
+        $id = $dados['paciente'];
+        $usuarioId = $dados['usuario'];
 
         try {
-            PacienteService::Excluir($id);
+            $this->pacienteService->Excluir($id);
 
-            UsuarioService::Excluir($usuarioId);
+            $this->usuarioService->Excluir($usuarioId);
 
-            header("Location: ../Views/Paciente/Listar.php");
-            $_SESSION['sucesso'] = "Paciente deletado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Paciente deletado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Paciente/Listar.php");
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Listar() {
+    public function Listar() {
         try {
-            $pacientes = PacienteService::ListarPacientes();
-            return $pacientes;
+            $this->retorno->lista = $this->pacienteService->Listar();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Ordenar($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
+    public function GetPaciente($dados) {
+        $id = $dados["paciente"];
+        $enderecoId = $dados["endereco"];
+        $fichaId = $dados["ficha"];
 
-        $paciente = PacienteService::ListarPacientesOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($paciente);
-        header("Location: ../Views/Paciente/Listar.php");
-        exit();
-    }
-
-    public static function Filtrar($dados) {
-        $nome = $dados['nome'];
-        $ra = $dados['ra'];
-        $regime = $dados['regime'];
-
-        if ($nome === '' && $regime === "0" && $ra == null) {
-            header("Location: ../Views/Paciente/Listar.php");
-            exit();
-        }
-
-        if ($nome !== '') {
-            $valor[] = array('p.Nome', $nome);
-        }
-
-        if ($regime !== "0") {
-            $valor[] = array('e.Regime', $regime);
-        }
-
-        if ($ra !== null) {
-            $valor[] = array('p.Ra', $ra);
-        }
-
-        $pacientes = PacienteService::Filtrar($valor);
-
-
-        $_SESSION['filtro'] = serialize($pacientes);
-        header("Location: ../Views/Paciente/Listar.php");
-        exit();
-    }
-
-    public static function OrdenarFiltro($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $pacientes = PacienteService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($pacientes);
-        header("Location: ../Views/Paciente/Listar.php");
-        exit();
-    }
-
-    public static function RetornarPaciente($id, $enderecoId, $fichaMedicaId) {
         try {
-            $paciente = PacienteService::RetornarPacienteCompleto($id);
-            $endereco = EnderecoService::RetornarEndereco($enderecoId);
-            $fichaMedica = FichaMedicaService::RetornarFichaMedica($fichaMedicaId);
+            $paciente = $this->pacienteService->GetPaciente($id);
+            $endereco = $this->enderecoService->GetEndereco($enderecoId);
+            $ficha = $this->fichaMedicaService->GetFicha($fichaId);
 
             $paciente->setEndereco($endereco);
-            $paciente->setFichaMedica($fichaMedica);
+            $paciente->setFichaMedica($ficha);
 
-            return $paciente;
+            $this->retorno->resultado = $paciente;
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

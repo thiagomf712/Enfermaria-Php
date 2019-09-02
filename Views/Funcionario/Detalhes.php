@@ -1,18 +1,3 @@
-<?php
-/*
-$id = isset($_GET['funcionario']) ? $_GET['funcionario'] : 0;
-$usuarioId = isset($_GET['usuario']) ? $_GET['usuario'] : 0;
-
-$funcionario = FuncionarioController::RetornarFuncionario($id, $usuarioId);
-
-$na = $funcionario->getUsuario()->getNivelAcesso();
-
-function DefinirSelected($nivelAcesso, $valorSelecionado) {
-    echo ($nivelAcesso == $valorSelecionado) ? 'selected' : '';
-}
-*/
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>

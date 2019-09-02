@@ -1,6 +1,6 @@
 <?php
 
-class Endereco {
+class Endereco implements JsonSerializable {
 
     private $id;
     private $regime;
@@ -11,16 +11,15 @@ class Endereco {
     private $cidade;
     private $estado;
     private $cep;
-    
     //Relacionamentos
     private $paciente;
-    
+
     public function __get($name) {
         return $this->$name;
     }
-    
+
     public function __construct($id = 0, $regime = 1, $logradouro = "", $numero = "", $complemento = "", $bairro = "",
-           $cidade = "", $estado = "", $cep = "", $paciente = null) {
+            $cidade = "", $estado = "", $cep = "", $paciente = null) {
         $this->id = $id;
         $this->regime = $regime;
         $this->logradouro = $logradouro;
@@ -31,6 +30,10 @@ class Endereco {
         $this->estado = $estado;
         $this->cep = $cep;
         $this->paciente = $paciente;
+    }
+
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 
 }
