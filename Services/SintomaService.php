@@ -52,7 +52,7 @@ class SintomaService {
     }
 
     public function Listar() {
-        $query = "SELECT Id, Nome FROM sintoma";
+        $query = "SELECT Id, Nome FROM sintoma ORDER BY Nome";
 
         $stmt = $this->conn->Conectar()->prepare($query);
         

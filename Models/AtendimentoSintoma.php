@@ -1,25 +1,13 @@
 <?php
 
-class AtendimentoSintoma {
+class AtendimentoSintoma implements JsonSerializable {
     private $id;
     private $especificacao;
     private $atendimento;
     private $sintoma;
     
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getEspecificacao() {
-        return $this->especificacao;
-    }
-
-    public function getAtendimento() {
-        return $this->atendimento;
-    }
-
-    public function getSintoma() {
-        return $this->sintoma;
+    public function __get($name) {
+        return $this->$name;
     }
     
     public function setAtendimento($atendimento) {
@@ -27,11 +15,14 @@ class AtendimentoSintoma {
     }
 
     
-    public function __construct(int $id, string $especificacao, $sintoma, $atendimento = null) {
+    public function __construct($id = 0, $especificacao = '', $sintoma = null, $atendimento = null) {
         $this->id = $id;
         $this->especificacao = $especificacao;
         $this->atendimento = $atendimento;
         $this->sintoma = $sintoma;
     }
-
+    
+    public function jsonSerialize() {
+        return get_object_vars($this);
+    }
 }

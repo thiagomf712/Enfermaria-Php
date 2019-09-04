@@ -123,47 +123,38 @@ class PacienteService {
         return new Paciente($resultado->Id, $resultado->Nome, $resultado->Ra, $resultado->DataNascimento, $resultado->Email, $resultado->Telefone);
     }
 
-    public static function RetornarNomeRa(int $id) {
-        $conn = Connection();
-
-        $sql = "SELECT Nome, Ra FROM paciente WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
+    public function GetNomeRa(int $id) {
+        $query = "SELECT Nome, Ra FROM paciente WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
             throw new Exception("Paciente não encontrado");
         }
 
-        return $resultado;
+        return new Paciente($id, $resultado->Nome, $resultado->Ra);
     }
 
-    public static function RetornarId(int $usuarioId, bool $cadastro) {
-        $conn = Connection();
-
-        if ($cadastro) {
-            $sql = "SELECT p.Id, e.Id, f.Id "
-                    . "FROM paciente p "
-                    . "INNER JOIN endereco e ON e.PacienteId = p.Id "
-                    . "INNER JOIN fichamedica f ON f.PacienteId = p.Id "
-                    . "WHERE p.UsuarioId = :usuarioId";
-        } else {
-            $sql = "SELECT Id FROM paciente WHERE UsuarioId = :usuarioId";
-        }
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':usuarioId', $usuarioId);
+    public function GetPacientePessoal(int $usuarioId) {
+        $query = "SELECT Id, Nome, Ra, DataNascimento, Email, Telefone FROM paciente WHERE UsuarioId = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $usuarioId);
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
             throw new Exception("Paciente não encontrado");
         }
 
-        return $resultado;
+        return new Paciente($resultado->Id, $resultado->Nome, $resultado->Ra, $resultado->DataNascimento, $resultado->Email, $resultado->Telefone);
     }
 
 }

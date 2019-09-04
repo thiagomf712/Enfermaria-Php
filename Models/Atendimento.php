@@ -1,6 +1,6 @@
 <?php
 
-class Atendimento {
+class Atendimento implements JsonSerializable {
     private $id;
     private $data; 
     private $hora; 
@@ -10,45 +10,24 @@ class Atendimento {
     private $paciente;
     private $funcionario;
     
-    public function getId() {
-        return $this->id;
+    public function __get($name) {
+        return $this->$name;
     }
     
     public function setId($id) {
         $this->id = $id;
     }
-
-    
-    public function getData() {
-        return $this->data;
-    }
-
-    public function getProcedimento() {
-        return $this->procedimento;
-    }
-    
-    public function getPaciente() {
-        return $this->paciente;
-    }
-
-    public function getFuncionario() {
-        return $this->funcionario;
-    }
-
-    public function getHora() {
-        return $this->hora;
-    }
-
-    
         
-    public function __construct(int $id, $data, $hora, string $procedimento,
-            $paciente, $funcionario) {
+    public function __construct($id = 0, $data = null, $hora = null, $procedimento = "", $paciente = null, $funcionario = null) {
         $this->id = $id;
         $this->hora = $hora;
         $this->data = $data;
         $this->procedimento = $procedimento;
         $this->paciente = $paciente;
-        $this->funcionario = $funcionario;  
-        
+        $this->funcionario = $funcionario;      
+    }
+    
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 }

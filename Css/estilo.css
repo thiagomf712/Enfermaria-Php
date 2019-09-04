@@ -42,11 +42,11 @@ Estrutura de listas
 }
 
 .table th {
-    padding: 20px;
+    padding: 20px 15px;
 } 
 
 .table td {
-    padding: 10px;
+    padding: 10px 15px;
     vertical-align: middle;
 }
 

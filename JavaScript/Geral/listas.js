@@ -87,7 +87,7 @@ function DefinirRegime(regime) {
 }
 
 //Faz a requisição parao backend para conseguir os dados para a tabela
-function GerarDadosTabela(ordenacao, controller) {
+function GerarDadosTabela(ordenacao, controller, filtroBetween = false) {
     Loading(true);
 
     let metodo = controller.metodo;
@@ -108,7 +108,7 @@ function GerarDadosTabela(ordenacao, controller) {
 
                 AtualizarPagina(lista, ordenacao);
 
-                HabilitarFiltro(lista, ordenacao);
+                HabilitarFiltro(lista, ordenacao, filtroBetween);
 
                 Loading(false);
             }
@@ -275,6 +275,9 @@ function Ordenar(lista, ordenacao, numeroPaginas) {
                     } else if (valor.type === "string") {
                         pri = pri.toLowerCase();
                         sec = sec.toLowerCase();
+                    } else if (valor.type === "date") {
+                        pri = new Date(pri);
+                        sec = new Date(sec);
                     }
 
                     if (pri < sec) {
@@ -306,7 +309,7 @@ function Ordenar(lista, ordenacao, numeroPaginas) {
  ------------------------------------------------------------------------------*/
 
 //Habilita a filtragem de dados nas tabelas
-function HabilitarFiltro(lista, ordenacao) {
+function HabilitarFiltro(lista, ordenacao, filtroBetween = false) {
     //Filtro
     $('form#filtro').on("submit", e => {
         e.preventDefault();
@@ -314,7 +317,7 @@ function HabilitarFiltro(lista, ordenacao) {
         let filtros = $(e.target).serializeArray();
 
         //Filtrando lista
-        let listaFiltrada = FiltrarArray(lista, filtros);
+        let listaFiltrada = FiltrarArray(lista, filtros, filtroBetween);
 
         //Atualizando os comportamentos da lista baseado na nova lista filtrada
         AtualizarPagina(listaFiltrada, ordenacao);
@@ -333,15 +336,37 @@ function HabilitarRemoverFiltros() {
 
 //Filtra uma array de acordo com o filtro passado
 //Como filtro se espera uma array com chaves -> valor representando qual o atributo da lista a ser filtrado e o valor que deve conter
-function FiltrarArray(lista, filtros) {
+function FiltrarArray(lista, filtros, filtroBetween = false) {
     let listaFiltrada = lista.filter((valor) => {
         let filtro = true;
         let teste;
 
-        for (var i = 0; i < filtros.length; i++) {
-            teste = valor[filtros[i].name].toLowerCase().indexOf(filtros[i].value.toLowerCase()) > -1;
+        let inicio = '';
+        let fim = '';
 
-            filtro = filtro && teste;
+        for (var i = 0; i < filtros.length; i++) {
+            if (filtros[i].name !== "Inicio" && filtros[i].name !== "Fim") {
+                teste = valor[filtros[i].name].toLowerCase().indexOf(filtros[i].value.toLowerCase()) > -1;
+                
+                filtro = filtro && teste;
+            }
+            
+            //Pegando os valores iniciais e finais
+            if(filtros[i].name === "Inicio") {
+                inicio = filtros[i].value;
+            } else if(filtros[i].name === "Fim") {
+                fim = filtros[i].value;
+            }
+        }
+
+        if(filtroBetween) {
+            if(inicio !== '') {
+                filtro = filtro && valor.Data >= inicio;
+            }
+            
+            if(fim !== '') {
+                filtro = filtro && valor.Data <= fim;
+            }
         }
 
         return filtro;

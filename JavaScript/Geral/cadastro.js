@@ -10,6 +10,8 @@ function LimparForm(form) {
 
 //Efetua o cadastro depois da validção do submit
 function EfetuarCadastro(controller) {
+    $('form.needs-validation').off("Enviar");
+
     $('form.needs-validation').on("Enviar", e => {
         Loading(true);
 
@@ -19,7 +21,7 @@ function EfetuarCadastro(controller) {
         let valor = controller.valor;
 
         dados += `&${metodo}=${valor}`;
-
+        
         $.ajax({
             type: 'POST',
             url: controller.controller,
@@ -27,7 +29,7 @@ function EfetuarCadastro(controller) {
             dataType: 'json',
             success: dados => {
                 Loading(false);
-                
+
                 //console.log(dados);
 
                 if (dados.hasOwnProperty("erro")) {
@@ -39,9 +41,9 @@ function EfetuarCadastro(controller) {
             },
             error: erro => {
                 Loading(false);
-                
+
                 //console.log(erro);
-                
+
                 AcionarModalErro("Erro", erro.statusText, "bg-danger");
             }
         });

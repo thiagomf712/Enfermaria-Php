@@ -48,8 +48,14 @@ class FichaMedicaService {
         }
     }
     
-    public function GetFicha(int $id) {
-        $query = "SELECT Id, PlanoSaude, ProblemasSaude, Medicamentos, Alergias, Cirurgias FROM fichamedica WHERE Id = :id";
+    public function GetFicha(int $id, bool $paciente = false) {
+        $query = "SELECT Id, PlanoSaude, ProblemasSaude, Medicamentos, Alergias, Cirurgias FROM fichamedica ";
+        
+        if($paciente) {
+            $query .= "WHERE PacienteId = :id";
+        } else {
+            $query .= "WHERE Id = :id";
+        }
         
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $id);

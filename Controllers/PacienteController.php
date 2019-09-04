@@ -191,19 +191,20 @@ class PacienteController {
         }
     }
 
-    public static function RetornarIdPaciente($usuarioId, bool $cadastro = false) {
-        try {
-            $pacienteId = PacienteService::RetornarId($usuarioId, $cadastro);
+    public function GetPacientePessoal($dados) {
+        $usuario = $dados['usuario'];
+        
+        try {       
+            $paciente = $this->pacienteService->GetPacientePessoal($usuario);
+            $endereco = $this->enderecoService->GetEndereco($paciente->id, true);
+            $ficha = $this->fichaMedicaService->GetFicha($paciente->id, true);
+            
+            $paciente->setEndereco($endereco);
+            $paciente->setFichaMedica($ficha);
 
-            if ($cadastro) {
-                return $pacienteId;
-            } else {
-                return $pacienteId[0];
-            }
+            $this->retorno->resultado = $paciente;
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

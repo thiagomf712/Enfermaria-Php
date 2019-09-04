@@ -82,18 +82,14 @@ class FuncionarioService {
         return new Funcionario($resultado->Id, $resultado->Nome);
     }
 
-    //Será editado
-    public static function RetornarNomesFuncionarios() {
-        $conn = Connection();
+    public function ListarNomes() {
+        $query = "SELECT Id, Nome, UsuarioId FROM funcionario ORDER BY Nome";
 
-        $sql = "SELECT Id, Nome, UsuarioId FROM funcionario ORDER BY Nome";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->Conectar()->prepare($query);
+        
         $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
 }

@@ -1,32 +1,6 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
-require_once(__ROOT__ . '/Models/Usuario.php');
-require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
 require_once(__ROOT__ . '/Models/Enums/Regime.php');
-
-require_once(__ROOT__ . '/Controllers/AtendimentoController.php');
-
-if (session_id() == '') {
-    session_start();
-}
-
-if (isset($_SESSION['filtro'])) {
-    $lista = (isset($_SESSION['filtroOrdenado'])) ? unserialize($_SESSION['filtroOrdenado']) : unserialize($_SESSION['filtro']);
-} else {
-    $lista = (isset($_SESSION['ordenado'])) ? unserialize($_SESSION['ordenado']) : AtendimentoController::ListarPacientes();
-}
-
-$numeroPaginas = ceil(count($lista) / 25);
-$paginaAtual = (isset($_GET['pagina'])) ? $_GET['pagina'] : 1;
-$posMax = $paginaAtual * 25;
-$inicio = $posMax - 25;
-$limite = (count($lista) >= $posMax) ? $posMax : count($lista);
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>
@@ -45,15 +19,11 @@ $usuario = unserialize($_SESSION['usuario']);
         <!-- Estilo persinalizado -->
         <link rel="stylesheet" href="../../Css/estilo.css">
 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
         <title>Lista - Pacientes</title>
     </head>
     <body>
         <!-- Barra de navegação -->
-        <?php include_once '../Compartilhado/Navbar.php'; ?>              
+        <?php require_once '../Compartilhado/Navbar.php'; ?>              
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
@@ -64,55 +34,42 @@ $usuario = unserialize($_SESSION['usuario']);
             </header>
 
             <!-- Formulario de filtro -->
-            <form action="../../Controllers/AtendimentoController.php" method="POST">
-                <input type="hidden" name="metodoAtendimento" value="FiltrarPacientes"/>
-
+            <form id="filtro" class="mb-3 clearfix">
                 <div class="form-row">
 
                     <!-- Nome -->
                     <div class="form-group col-sm">
                         <label for="nome">Nome: </label>
-                        <input class="form-control" type="text" id="nome" name="nome"/>
+                        <input class="form-control" type="text" id="nome" name="Nome"/>
                     </div>    
 
                     <!-- Ra -->
                     <div class="form-group col-sm">
                         <label for="ra">Ra: </label>
-                        <input class="form-control" type="number" id="ra" name="ra"/>
+                        <input class="form-control" type="number" id="ra" name="Ra"/>
                     </div> 
 
                     <!-- Regime -->
                     <div class="form-group col-sm">
                         <label for="regime">Regime: </label>
-                        <select class="form-control" id="regime" name="regime">
-                            <option value="<?php echo Regime::Interno; ?>">Interno</option>
-                            <option value="<?php echo Regime::Externo; ?>">Externo</option>
-                            <option value="0" selected>Sem filtro</option>
+                        <select class="form-control" id="regime" name="Regime">
+                            <option value="<?= Regime::Interno; ?>">Interno</option>
+                            <option value="<?= Regime::Externo; ?>">Externo</option>
+                            <option value="" selected>Sem filtro</option>
                         </select>
                     </div> 
                 </div>
 
                 <div class="form-group float-sm-right">
-                    <button class="btn btn-secondary" type="submit" name="remover">Procurar</button>
-                    <button class="btn btn-secondary" type="button" name="remover" onclick="location.reload();">Remover Filtro</button>
+                    <button class="btn btn-secondary" type="submit">Procurar</button>
+                    <button class="btn btn-secondary" type="button" id="remover">Remover Filtro</button>
                 </div>
             </form>
 
-            <!-- Script para desabilitar filtros -->
-            <script src="../../JavaScript/jquery-3.4.1.js"></script>
-            <script>
-                        var buttons = document.getElementsByName('remover');
-
-                        for (var i = 0; i < buttons.length; i++) {
-                            buttons[i].addEventListener("click", chamarPhp);
-                        }
-
-                        function chamarPhp() {
-                            $.post('../Compartilhado/phpAuxiliar.php', {function: 'DesabilitarFiltro'}, function (response) {
-                                console.log(response);
-                            });
-                        }
-            </script>
+            <!-- Quantidade de resultados -->
+            <div class="my-2">
+                <span id="quantidade"></span> resultados 
+            </div>
 
             <!-- Tabela -->
             <div class="table-responsive">
@@ -121,61 +78,32 @@ $usuario = unserialize($_SESSION['usuario']);
                     <!-- Header -->
                     <thead class="thead-light">
                         <tr>
-                            <?php
-                            $filtro = (isset($_SESSION['coluna'])) ? $_SESSION['coluna'] : '';
-                            $ordem = (isset($_SESSION['estado'])) ? $_SESSION['estado'] : '';
-                            ?>
-
                             <!-- Ordenar Id -->
                             <th scope="col">
-                                <form class="form-inline" method="POST" action="../../Controllers/AtendimentoController.php">
-                                    <input type="hidden" name="metodoAtendimento" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroPaciente' : 'OrdenarPaciente'; ?>"/>
-                                    <input type="hidden" name="coluna" value="p.Id"/>
-                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Id" && $ordem == "DESC") ? 'ASC' : 'DESC' ?>"/>
-
-                                    <span>#</span> 
-                                    <i class="fas fa-sort"></i>
-                                    <button type="submit"></button>
-                                </form>
+                                <span>#</span> 
+                                <i class="fas fa-sort"></i>
+                                <button id="order-id" type="submit" value="ordenado"></button>
                             </th>
 
                             <!-- Ordenar Nome -->
                             <th scope="col">
-                                <form class="form-inline" method="POST" action="../../Controllers/AtendimentoController.php">
-                                    <input type="hidden" name="metodoAtendimento" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroPaciente' : 'OrdenarPaciente'; ?>"/>
-                                    <input type="hidden" name="coluna" value="p.Nome"/>
-                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Nome" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
-
-                                    <span>Nome</span> 
-                                    <i class="fas fa-sort"></i>
-                                    <button type="submit"></button>
-                                </form>
+                                <span>Nome</span> 
+                                <i class="fas fa-sort"></i>
+                                <button id="order-nome" type="submit"></button>
                             </th>
 
                             <!-- Ordenar Ra -->
                             <th scope="col">
-                                <form class="form-inline" method="POST" action="../../Controllers/AtendimentoController.php">
-                                    <input type="hidden" name="metodoAtendimento" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroPaciente' : 'OrdenarPaciente'; ?>"/>
-                                    <input type="hidden" name="coluna" value="p.Ra"/>
-                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "p.Ra" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
-
-                                    <span>Ra</span> 
-                                    <i class="fas fa-sort"></i>
-                                    <button type="submit"></button>
-                                </form>
+                                <span>Ra</span> 
+                                <i class="fas fa-sort"></i>
+                                <button id="order-ra" type="submit"></button>
                             </th>
 
                             <!-- Ordenar Regime -->
                             <th scope="col">
-                                <form class="form-inline" method="POST" action="../../Controllers/AtendimentoController.php">
-                                    <input type="hidden" name="metodoAtendimento" value="<?php echo (isset($_SESSION['filtro'])) ? 'OrdenarFiltroPaciente' : 'OrdenarPaciente'; ?>"/>
-                                    <input type="hidden" name="coluna" value="e.Regime"/>
-                                    <input type="hidden" name="ordem" value="<?php echo ($filtro == "e.Regime" && $ordem == "ASC") ? 'DESC' : 'ASC' ?>"/>
-
-                                    <span>Regime</span> 
-                                    <i class="fas fa-sort"></i>
-                                    <button type="submit"></button>
-                                </form>
+                                <span>Regime</span> 
+                                <i class="fas fa-sort"></i>
+                                <button id="order-regime" type="submit"></button>
                             </th>
 
                             <!-- Açoes -->
@@ -185,60 +113,27 @@ $usuario = unserialize($_SESSION['usuario']);
 
                     <!-- Corpo -->
                     <tbody>
-                        <?php for ($i = $inicio; $i < $limite; $i++) : ?>
-                            <tr class="table-light">
-
-                                <!-- Numeração -->
-                                <td><?php echo $i + 1; ?></td>
-
-                                <!-- Nome -->
-                                <td><?php echo $lista[$i]['Nome']; ?></td>
-
-                                <!-- Ra -->
-                                <td><?php echo $lista[$i]['Ra']; ?></td>
-
-                                <!-- Regime -->
-                                <td>
-                                    <?php
-                                    switch ($lista[$i]['Regime']) {
-                                        case Regime::Interno:
-                                            echo 'Interno';
-                                            break;
-                                        case Regime::Externo:
-                                            echo 'Externo';
-                                            break;
-                                        default:
-                                            echo 'Não definido';
-                                            break;
-                                    }
-                                    ?>
-                                </td>
-                                
-                                <!-- Açoes -->
-                                <td>
-                                    <!-- Cadastrar atendimento -->
-                                    <a href="Cadastrar.php?paciente=<?php echo $lista[$i]['PacienteId']; ?>&nome=<?php echo $lista[$i]['Nome']; ?>&ra=<?php echo $lista[$i]['Ra']; ?>" class="btn btn-primary btn-sm mb-1">Adicionar Atendimento</a>  
-                                   
-                                    <!-- Ficha medica -->
-                                    <a href="FichaMedica.php?paciente=<?php echo $lista[$i]['Nome']; ?>&ra=<?php echo $lista[$i]['Ra']; ?>&fichaMedica=<?php echo $lista[$i][1]; ?>" class="btn btn-primary btn-sm mb-1">Ficha medica</a>
-                                </td>
-                            </tr>
-                        <?php endfor; ?>
+                        
                     </tbody>
                 </table> 
             </div>
 
             <!-- Paginação -->
-            <?php include_once '../Compartilhado/Paginacao.php'; ?>
+            <?php require_once '../Compartilhado/Paginacao.php'; ?>
         </div>  
 
         <!-- Rodapé -->    
-        <?php include_once '../Compartilhado/Footer.php'; ?>
-        
-        <!-- Janela que aparece ao acontecer um erro no Backend (Precisa ser inserido depois do Jquery) -->
-        <?php include_once '../Compartilhado/ModalErroSucesso.php'; ?> 
+        <?php require_once '../Compartilhado/Footer.php'; ?>
 
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../../JavaScript/Geral/bootstrapValidation.js"></script>    
+        <!-- Modal de resposta -->
+        <?php require_once '../Compartilhado/ModalErro.php'; ?> 
+
+        <!-- JQuery - popper - Bootstrap-->
+        <script src="../../JavaScript/jquery-3.4.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="../../bootstrap/js/bootstrap.min.js"></script>  
+
+        <!-- Scripts Personalizados -->
+        <script src="../../JavaScript/Atendimento/listarPacientes.js"></script>   
     </body>
 </html>

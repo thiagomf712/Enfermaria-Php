@@ -10,239 +10,103 @@ require_once(__ROOT__ . '/Services/Connection.php');
 
 class AtendimentoService {
 
-    public static function CadastrarAtendimento(Atendimento $atendimento) {
-        $conn = Connection();
+    private $conn;
 
-        $id = $atendimento->getId();
-        $data = $atendimento->getData();
-        $hora = $atendimento->getHora();
-        $procedimento = $atendimento->getProcedimento();
-        $pacienteId = $atendimento->getPaciente();
-        $funcionarioId = $atendimento->getFuncionario();
+    public function __construct() {
+        $this->conn = new Connection();
+    }
 
-        $sql = "INSERT INTO atendimento VALUES (:id, :data, :hora, :procedimento, :pacienteId, :funcionarioId)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':data', $data);
-        $stmt->bindParam(':hora', $hora);
-        $stmt->bindParam(':procedimento', $procedimento);
-        $stmt->bindParam(':pacienteId', $pacienteId);
-        $stmt->bindParam(':funcionarioId', $funcionarioId);
+    public function Cadastrar(Atendimento $atendimento) {
+        $query = "INSERT INTO atendimento VALUES (:id, :data, :hora, :procedimento, :paciente, :funcionario)";
 
-        try {
-            $stmt->execute();
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $atendimento->id);
+        $stmt->bindValue(':data', $atendimento->data);
+        $stmt->bindValue(':hora', $atendimento->hora);
+        $stmt->bindValue(':procedimento', $atendimento->procedimento);
+        $stmt->bindValue(':paciente', $atendimento->paciente);
+        $stmt->bindValue(':funcionario', $atendimento->funcionario);
 
-            if ($stmt->rowCount() == 0) {
-                throw new Exception("Erro ao tentar cadastrar o atendimento");
-            }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        if (!$stmt->execute()) {
+            throw new Exception("Não é possivel cadastrar o mesmo atendimento duas vezes");
         }
     }
 
-    public static function EditarAtendimento(Atendimento $atendimento) {
-        $conn = Connection();
+    public function Editar(Atendimento $atendimento) {
+        $query = "UPDATE atendimento SET Data = :data, Hora = :hora, Procedimento = :procedimento, FuncionarioId = :funcionario WHERE Id = :id";
+        
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $atendimento->id);
+        $stmt->bindValue(':data', $atendimento->data);
+        $stmt->bindValue(':hora', $atendimento->hora);
+        $stmt->bindValue(':procedimento', $atendimento->procedimento);
+        $stmt->bindValue(':funcionario', $atendimento->funcionario);
 
-        $id = $atendimento->getId();
-        $data = $atendimento->getData();
-        $hora = $atendimento->getHora();
-        $procedimento = $atendimento->getProcedimento();
-        $funcionarioId = $atendimento->getFuncionario();
-
-        $sql = "UPDATE atendimento SET Data = :data, Hora = :hora, Procedimento = :procedimento, FuncionarioId = :funcionarioId WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':data', $data);
-        $stmt->bindParam(':hora', $hora);
-        $stmt->bindParam(':procedimento', $procedimento);
-        $stmt->bindParam(':funcionarioId', $funcionarioId);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erro ao tentar editar o atendiemnto");
-        }
-    }
-    
-    public static function Excluir($id) {
-        $conn = Connection();
-
-        $sql = "DELETE FROM atendimento WHERE Id = :id";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-
-        try {
-            $stmt->execute();
-            if($stmt->rowCount() == 0){
-                throw new Exception("Não foi possivel deletar esse atendimento");
-            }
-        } catch (Exception $e) {
-            throw new Exception("Não foi possivel deletar esse atendimento");
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao tentar editar o atendimento");
         }
     }
 
-    public static function ListarAtendimentos($pacienteId = null) {
-        $conn = Connection();
-    
-        $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
+    public function Excluir($id) {
+        $query = "DELETE FROM atendimento WHERE Id = :id";
+
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Não é possivel deletar esse atendimento");
+        }
+    }
+
+    public function Listar() {
+        $query = "SELECT a.Id, a.Data, a.Hora, p.Nome as Paciente, f.Nome as Funcionario "
                 . "FROM atendimento a "
-                . "INNER JOIN paciente p ON a.PacienteId = p.Id "
+                . "LEFT JOIN paciente p ON a.PacienteId = p.Id "
                 . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id ";
-        
-        if($pacienteId != null) {
-            $sql .= "WHERE a.PacienteId = :pacienteId ";
-        }
-                
-        $sql .= "ORDER BY a.Id";
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam("pacienteId", $pacienteId);
+
+        $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public static function ListarAtendimentosOrdenado($coluna, $ordem, $pacienteId = null) {
-        $conn = Connection();
+    public function GetId(Atendimento $atendimento) {
+        $query = "SELECT Id FROM atendimento WHERE Data = :data AND Hora = :hora AND PacienteId = :pacienteId AND FuncionarioId = :funcionarioId";
 
-        $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
-                . "FROM atendimento a "
-                . "INNER JOIN paciente p ON a.PacienteId = p.Id "
-                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id ";
-        
-        if($pacienteId != null) {
-            $sql .= "WHERE a.PacienteId = :pacienteId ";
-        }
-        
-        $sql .= "ORDER BY " . $coluna . " " . $ordem;
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':data', $atendimento->data);
+        $stmt->bindValue(':hora', $atendimento->hora);
+        $stmt->bindValue(':pacienteId', $atendimento->paciente);
+        $stmt->bindValue(':funcionarioId', $atendimento->funcionario);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam("pacienteId", $pacienteId);
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function Filtrar($valor, $pacienteId = null) {
-        $conn = Connection();
-
-        $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome, p.Id, f.Nome, f.Id "
-                . "FROM atendimento a "
-                . "INNER JOIN paciente p ON a.PacienteId = p.Id "
-                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "
-                . "WHERE ";
-
-        if($pacienteId != null) {
-            $sql .= "a.PacienteId = :pacienteId AND ";
-        }
-        
-        if (count($valor) >= 2) {
-            for ($i = 0; $i < count($valor); $i++) {
-                $sql .= $valor[$i][0];
-
-                if ($valor[$i][0] == "a.Data") {
-                    $sql .= AtendimentoService::DefinirFiltroData($valor[$i]);
-                } else {
-                    $sql .= " LIKE '%" . $valor[$i][1] . "%'";
-                }
-
-                if ($i !== count($valor) - 1) {
-                    $sql .= ' AND ';
-                }
-            }
-        } else {
-            $sql .= $valor[0][0];
-
-            if ($valor[0][0] == "a.Data") {
-                $sql .= AtendimentoService::DefinirFiltroData($valor[0]);
-            } else {
-                $sql .= " LIKE '%" . $valor[0][1] . "%'";
-            }
-        }
-
-        $_SESSION['valorFiltrado'] = $sql;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam("pacienteId", $pacienteId);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    public static function FiltrarOrdenado($coluna, $ordem) {
-        $conn = Connection();
-
-        $sql = $_SESSION['valorFiltrado'] . " ORDER BY " . $coluna . " " . $ordem;
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
-    private static function DefinirFiltroData($valor) {
-        if ($valor['ope'] == 'entre') {
-            $sql = " BETWEEN '" . $valor[1] . "' AND '" . $valor[2] . "'";
-        } else if ($valor['ope'] == 'maior') {
-            $sql = " >= '" . $valor[1] . "'";
-        } else {
-            $sql = " <= '" . $valor[1] . "'";
-        }
-
-        return $sql;
-    }
-
-    public static function RetornarAtendimento(Atendimento $atendimento) {
-        $conn = Connection();
-
-        $data = $atendimento->getData();
-        $hora = $atendimento->getHora();
-        $pacienteId = $atendimento->getPaciente();
-        $funcionarioId = $atendimento->getFuncionario();
-
-        $sql = "SELECT Id FROM atendimento WHERE Data = :data AND Hora = :hora AND PacienteId = :pacienteId AND FuncionarioId = :funcionarioId";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':data', $data);
-        $stmt->bindParam(':hora', $hora);
-        $stmt->bindParam(':pacienteId', $pacienteId);
-        $stmt->bindParam(':funcionarioId', $funcionarioId);
-        $stmt->execute();
-
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
-            throw new Exception("Um erro inesperado aconteceu");
+            throw new Exception("Atendimento não encontrado");
         }
 
-        $atendimento->setId($resultado['Id']);
-
-        return $atendimento;
+        return new Atendimento($resultado->Id);
     }
 
-    public static function RetornarAtendimentoCompleto(int $id) {
-        $conn = Connection();
-
-        $sql = "SELECT * FROM atendimento WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
+    public function GetAtendimento(int $id) {
+        $query = "SELECT Id, Data, Hora, Procedimento, PacienteId, FuncionarioId FROM atendimento WHERE Id = :id";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
+        
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetch();
+        $resultado = $stmt->fetch(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
-            throw new Exception("atendimento não encontrado");
+            throw new Exception("Atendimento não encontrado");
         }
 
-        return new Atendimento($resultado['Id'], $resultado['Data'], $resultado['Hora'], $resultado['Procedimento'], $resultado['PacienteId'], $resultado['FuncionarioId']);
+        return new Atendimento($resultado->Id, $resultado->Data, $resultado->Hora, $resultado->Procedimento, $resultado->PacienteId, $resultado->FuncionarioId);
     }
 
 }

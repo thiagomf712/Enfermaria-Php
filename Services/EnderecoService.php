@@ -56,8 +56,14 @@ class EnderecoService {
         }
     }
     
-    public function GetEndereco(int $id) {
-        $query = "SELECT Id, Regime, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, Cep FROM endereco WHERE Id = :id";
+    public function GetEndereco(int $id, bool $paciente = false) {
+        $query = "SELECT Id, Regime, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, Cep FROM endereco ";
+             
+        if($paciente) {
+            $query .= "WHERE PacienteId = :id";
+        } else {
+            $query .= "WHERE Id = :id";
+        }   
         
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $id);

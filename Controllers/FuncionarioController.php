@@ -119,16 +119,11 @@ class FuncionarioController {
         }
     }
 
-    //Será editado
-    public static function RetornarNomeFuncionarios() {
+    public function ListarNomes() {
         try {
-            $funcionarios = FuncionarioService::RetornarNomesFuncionarios();
-
-            return $funcionarios;
+            $this->retorno->lista = $this->funcionarioService->ListarNomes();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 

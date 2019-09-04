@@ -13,354 +13,204 @@ require_once(__ROOT__ . '/Services/PacienteService.php');
 require_once(__ROOT__ . '/Services/FichaMedicaService.php');
 
 
-if (session_id() == '') {
-    session_start();
-}
+if (isset($_POST["metodoAtendimento"])) {
+    $controller = new AtendimentoController();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['metodoAtendimento'])) {
-    $metodo = $_POST['metodoAtendimento'];
-
-    if (method_exists('AtendimentoController', $metodo)) {
-        AtendimentoController::$metodo($_POST);
-    } else {
-        throw new Exception("Metodo não existe");
-    }
+    $controller->Executar("metodoAtendimento");
 }
 
 class AtendimentoController {
 
-    public static function Cadastrar($dados) {
-        //Paciente
-        $pacienteId = $dados['pacienteId'];
+    public $retorno;
+    private $pacienteService;
+    private $atendimentoService;
+    private $atendimentoSintomaService;
+    private $fichaMedicaService;
 
-        //Atendimento
-        $funcionarioId = $dados['atendente'];
-        $hora = $dados['hora'];
-        $data = $dados['data'];
+    public function __construct() {
+        $this->retorno = new stdClass();
 
-        //sintomas
-        $numeroSintomas = $dados['numeroSintomas'];
-
-        for ($i = 1; $i <= $numeroSintomas; $i++) {
-            $sintomas[] = $dados['sintoma' . $i]; //Armazena o Id do sintoma
-            $especificacoes[] = $dados['especificacao' . $i]; //Armazena o texto da especificação
-        }
-
-        //procedimento
-        $procedimento = $dados['procedimento'];
-
-
-        $atendimento = new Atendimento(0, $data, $hora, $procedimento, $pacienteId, $funcionarioId);
-
-        for ($i = 1; $i <= $numeroSintomas; $i++) {
-            $atendimentoSintoma[] = new AtendimentoSintoma(0, $especificacoes[($i - 1)], $sintomas[($i - 1)]);
-        }
-
-        try {
-            AtendimentoService::CadastrarAtendimento($atendimento);
-
-            $atendimentodb = AtendimentoService::RetornarAtendimento($atendimento);
-
-            for ($i = 0; $i < count($atendimentoSintoma); $i++) {
-                $atendimentoSintoma[$i]->setAtendimento($atendimentodb->getId());
-
-                AtendimentoSintomaService::CadastrarAtendimentoSintoma($atendimentoSintoma[$i]);
-            }
-
-            $_SESSION['sucesso'] = "Atendimento cadastrado com sucesso";
-            header("Location: ../Views/Atendimento/ListaPacientes.php");
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
-        }
+        $this->pacienteService = new PacienteService();
+        $this->atendimentoService = new AtendimentoService();
+        $this->atendimentoSintomaService = new AtendimentoSintomaService();
+        $this->fichaMedicaService = new FichaMedicaService();
     }
 
-    public static function Editar($dados) {
+    //Executa um metodo da class baseado no que foi passado por post
+    public function Executar($idMetodo) {
+        $metodo = $_POST[$idMetodo];
+
+        if (method_exists($this, $metodo)) {
+            $this->$metodo($_POST);
+        } else {
+            $this->retorno->erro = "metodo não encontrado";
+        }
+
+        //Retorn
+        echo json_encode($this->retorno);
+    }
+
+    public function Cadastrar($dados) {
+
         //Atendimento
-        $atendimentoId = $dados['atendimentoId'];
-        $funcionarioId = $dados['atendente'];
+        $paciente = $dados['paciente'];
+        $funcionario = $dados['atendente'];
         $hora = $dados['hora'];
         $data = $dados['data'];
-
-        //sintomas
-        $numeroSintomas = $dados['numeroSintomas'];
-        $numeroSintomasbd = $dados['numeroSintomasbd'];
-
-        for ($i = 1; $i <= $numeroSintomas; $i++) {
-            $id[] = isset($dados['idRegistro' . $i]) ? $dados['idRegistro' . $i] : null; //Armazena o Id do registro
-            $sintomas[] = $dados['sintoma' . $i]; //Armazena o Id do sintoma
-            $especificacoes[] = $dados['especificacao' . $i]; //Armazena o texto da especificação
-        }
-
-        //Procedimento
         $procedimento = $dados['procedimento'];
 
-
-        $atendimento = new Atendimento($atendimentoId, $data, $hora, $procedimento, null, $funcionarioId);
-
-        for ($i = 1; $i <= $numeroSintomas; $i++) {
-            if ($id[($i - 1)] != null) {
-                $atendimentoSintomaEditado[] = new AtendimentoSintoma($id[($i - 1)], $especificacoes[($i - 1)], $sintomas[($i - 1)], $atendimentoId);
-            } else {
-                $atendimentoSintomaNovo[] = new AtendimentoSintoma(0, $especificacoes[($i - 1)], $sintomas[($i - 1)], $atendimentoId);
-            }
-        }
+        $atendimento = new Atendimento(null, $data, $hora, $procedimento, $paciente, $funcionario);
 
         try {
-            AtendimentoService::EditarAtendimento($atendimento);
+            $this->atendimentoService->Cadastrar($atendimento);
 
-            for ($i = 0; $i < count($atendimentoSintomaEditado); $i++) {
-                AtendimentoSintomaService::EditarAtendimentoSintoma($atendimentoSintomaEditado[$i]);
-            }
+            //Para cada sintoma registrado no formulario
+            for ($i = 1; $i <= $dados['numeroSintomas']; $i++) {
+                if (isset($dados["sintoma$i"])) { //Verifica se o sintoma ainda existe (no caso de excluir um sintoma no meio da lista)
+                    $espec = $dados["especificacao$i"];
+                    $sintoma = $dados["sintoma$i"];
+                    $atendimendoCadastrado = $this->atendimentoService->GetId($atendimento);
 
-            for ($i = 0; $i < count($atendimentoSintomaNovo); $i++) {
-                AtendimentoSintomaService::CadastrarAtendimentoSintoma($atendimentoSintomaNovo[$i]);
-            }
+                    $atendimentoSintoma = new AtendimentoSintoma(null, $espec, $sintoma, $atendimendoCadastrado);
 
-            if ($numeroSintomas < $numeroSintomasbd) {
-                $sintomaDeletado = explode("/", $dados['sintomaDeletado']);
-
-
-                for ($i = 1; $i < count($sintomaDeletado); $i++) {
-                    AtendimentoSintomaService::Excluir($sintomaDeletado[$i]);
+                    $this->CadastarSintoma($atendimentoSintoma, $atendimendoCadastrado);
                 }
             }
 
-            header("Location: ../Views/Atendimento/Listar.php");
-            $_SESSION['sucesso'] = "Atendimento editado com sucesso";
-            exit();
+            $this->retorno->sucesso = "Atendimento Cadastrado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function Deletar($dados) {
-
-        $id = $dados['id'];
-
+    private function CadastarSintoma($atendimentoSintoma, $atendimento) {
+        //Tentar cadastrar os sintomas
+        //Se acontecer algum erro vai deletar o atendimento
         try {
-            AtendimentoService::Excluir($id);
-
-            header("Location: ../Views/Atendimento/Listar.php");
-            $_SESSION['sucesso'] = "Atendimento deletado com sucesso";
-            exit();
+            $this->atendimentoSintomaService->Cadastrar($atendimentoSintoma);
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            header("Location: ../Views/Atendimento/Listar.php");
-            exit();
+            $this->atendimentoService->Excluir($atendimento->id);
+            throw new Exception($e->getMessage());
         }
     }
 
-    public static function Listar($pacienteId = null) {
-        try {
-            if ($pacienteId != null) {
-                $atendimentos = AtendimentoService::ListarAtendimentos($pacienteId);
-            } else {
-                $atendimentos = AtendimentoService::ListarAtendimentos();
+    public function Editar($dados) {
+
+        //Atendimento
+        $idAtendimento = $dados['atendimento'];
+        $funcionario = $dados['atendente'];
+        $hora = $dados['hora'];
+        $data = $dados['data'];
+        $procedimento = $dados['procedimento'];
+
+        $atendimento = new Atendimento($idAtendimento, $data, $hora, $procedimento, null, $funcionario);
+
+        $atendimentoSintoma;
+
+        for ($i = 1; $i <= $dados['numeroSintomas']; $i++) {
+            if (isset($dados["sintoma$i"])) { //Verifica se o sintoma ainda existe (no caso de excluir um sintoma no meio da lista)
+                $id = (isset($dados["id$i"])) ? $dados["id$i"] : 0;
+                $espec = $dados["especificacao$i"];
+                $sintoma = $dados["sintoma$i"];
+
+                $atendimentoSintoma[] = new AtendimentoSintoma($id, $espec, $sintoma, $atendimento);
             }
-
-            return $atendimentos;
-        } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
-        }
-    }
-
-    public static function Ordenar($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $pacienteId = isset($dados['pacienteId']) ? $dados['pacienteId'] : null;
-
-        if ($pacienteId != null) {
-            $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem, $pacienteId);
-        } else {
-            $atendimento = AtendimentoService::ListarAtendimentosOrdenado($coluna, $ordem);
         }
 
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
+        try {
+            $sintomasRegistrados = $this->atendimentoSintomaService->GetIds($atendimento->id);
 
-        $_SESSION['ordenado'] = serialize($atendimento);
-
-        if ($pacienteId != null) {
-            header("Location: ../Views/Atendimento/ListaPessoal.php");
-        } else {
-            header("Location: ../Views/Atendimento/Listar.php");
-        }
-
-        exit();
-    }
-
-    public static function Filtrar($dados) {
-        $paciente = isset($dados['paciente']) ? $dados['paciente'] : '';
-        $funcionario = $dados['funcionario'];
-        $inicio = $dados['inicio'];
-        $fim = $dados['fim'];
-
-        $pacienteId = isset($dados['pacienteId']) ? $dados['pacienteId'] : null;
-
-        if ($paciente === '' && $funcionario === "" && $inicio == null && $fim == null) {
-            if ($pacienteId != null) {
-                header("Location: ../Views/Atendimento/ListaPessoal.php");
-            } else {
-                header("Location: ../Views/Atendimento/Listar.php");
+            $sintomasSeparados = $this->SepararSintomas($atendimentoSintoma, $sintomasRegistrados);    
+                  
+            //Editar os sintomas         
+            foreach ($sintomasSeparados['editado'] as $value) {
+                $this->atendimentoSintomaService->Editar($value);
             }
-            exit();
+            
+            //Cadastrar os novos sintomas
+            foreach ($sintomasSeparados['novo'] as $value) {
+                $this->atendimentoSintomaService->Cadastrar($value);
+            }
+            
+            //Excluir sintomas
+            foreach ($sintomasSeparados['excluido'] as $value) {
+                $this->atendimentoSintomaService->Excluir($value->Id);
+            }
+            
+            //Editar os dados do atendimento
+            $this->atendimentoService->Editar($atendimento);
+            
+            $this->retorno->sucesso = "Atendimento Editado com sucesso";       
+        } catch (Exception $e) {
+            $this->retorno->erro = $e->getMessage();
         }
+    }
 
-        if ($paciente !== '') {
-            $valor[] = array('p.Nome', $paciente);
-        }
+    //Separa os sintomas entre editado, novo, excluido
+    private function SepararSintomas($editados, $cadastrados) {          
+        foreach ($cadastrados as $indiceRegistrado => $registrado) {
+            foreach ($editados as $indiceEditado => $editado) {
+                if ($registrado->Id === $editado->id) {
+                    $retorno['editado'][] = $editado;
 
-        if ($funcionario !== '') {
-            $valor[] = array('f.Nome', $funcionario);
-        }
-
-        if ($inicio != null && $fim != null) {
-            $valor[] = array('a.Data', $inicio, $fim, 'ope' => 'entre');
-        } else if ($inicio != null) {
-            $valor[] = array('a.Data', $inicio, 'ope' => 'maior');
-        } else if ($fim != null) {
-            $valor[] = array('a.Data', $fim, 'ope' => 'menor');
+                    unset($cadastrados[$indiceRegistrado]);
+                    unset($editados[$indiceEditado]);
+                }
+            }
         }
         
-        if ($pacienteId != null) {
-            $atendimentos = AtendimentoService::Filtrar($valor, $pacienteId);
-        } else {
-            $atendimentos = AtendimentoService::Filtrar($valor);
-        }  
+        $retorno['novo'] = $editados;
+        $retorno['excluido'] = $cadastrados;
 
-        $_SESSION['filtro'] = serialize($atendimentos);
-        
-        if ($pacienteId != null) {
-            header("Location: ../Views/Atendimento/ListaPessoal.php");
-        } else {
-            header("Location: ../Views/Atendimento/Listar.php");
-        }
-        
-        exit();
+        return $retorno;
     }
 
-    public static function OrdenarFiltro($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
+    public function Deletar($dados) {
+        $id = $dados['atendimento'];
 
-        $atendimentos = AtendimentoService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($atendimentos);
-        header("Location: ../Views/Atendimento/Listar.php");
-        exit();
-    }
-
-    public static function RetornarFichaMedica($id) {
         try {
-            $fichaMedica = FichaMedicaService::RetornarFichaMedica($id);
+            $this->atendimentoService->Excluir($id);
 
-            return $fichaMedica;
+            $this->retorno->sucesso = "Atendimento deletado com sucesso";
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function RetornarAtendimento($id) {
+    public function Listar() {
         try {
-            $atendimento = AtendimentoService::RetornarAtendimentoCompleto($id);
-
-            $paciente = PacienteService::RetornarNomeRa($atendimento->getPaciente());
-
-            $sintomas = AtendimentoSintomaService::RetornarSintomas($id);
-
-            $resultado['atendimento'] = $atendimento;
-
-            $resultado['paciente'] = $paciente;
-            $resultado['sintomas'] = $sintomas;
-
-            return $resultado;
+            $this->retorno->lista = $this->atendimentoService->Listar();
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function ListarPacientes() {
+    public function GetFichaMedica($dados) {
+        $id = $dados['ficha'];
+
         try {
-            $pacientes = PacienteService::ListarPacientes();
-            return $pacientes;
+            $this->retorno->resultado = $this->fichaMedicaService->GetFicha($id);
         } catch (Exception $e) {
-            $_SESSION['erro'] = $e->getMessage();
-            echo "<script language='javascript'>history.go(-1);</script>";
-            exit();
+            $this->retorno->erro = $e->getMessage();
         }
     }
 
-    public static function FiltrarPacientes($dados) {
-        $nome = $dados['nome'];
-        $ra = $dados['ra'];
-        $regime = $dados['regime'];
+    public function GetAtendimento($dados) {
+        $id = $dados['atendimento'];
 
-        if ($nome === '' && $regime === "0" && $ra == null) {
-            header("Location: ../Views/Atendimento/ListaPacientes.php");
-            exit();
+        try {
+            $atendimento = $this->atendimentoService->GetAtendimento($id);
+
+            $paciente = $this->pacienteService->GetNomeRa($atendimento->paciente);
+
+            $sintomas = $this->atendimentoSintomaService->GetSintomas($id);
+
+            $this->retorno->atendimento = $atendimento;
+            $this->retorno->paciente = $paciente;
+            $this->retorno->sintomas = $sintomas;
+        } catch (Exception $e) {
+            $this->retorno->erro = $e->getMessage();
         }
-
-        if ($nome !== '') {
-            $valor[] = array('p.Nome', $nome);
-        }
-
-        if ($regime !== "0") {
-            $valor[] = array('e.Regime', $regime);
-        }
-
-        if ($ra !== null) {
-            $valor[] = array('p.Ra', $ra);
-        }
-
-        $pacientes = PacienteService::Filtrar($valor);
-
-        $_SESSION['filtro'] = serialize($pacientes);
-        header("Location: ../Views/Atendimento/ListaPacientes.php");
-        exit();
-    }
-
-    public static function OrdenarPaciente($dados) {
-        echo Ola;
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $paciente = PacienteService::ListarPacientesOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['ordenado'] = serialize($paciente);
-        header("Location: ../Views/Atendimento/ListaPacientes.php");
-        exit();
-    }
-
-    public static function OrdenarFiltroPaciente($dados) {
-        $coluna = $dados['coluna'];
-        $ordem = $dados['ordem'];
-
-        $pacientes = PacienteService::FiltrarOrdenado($coluna, $ordem);
-
-        $_SESSION['coluna'] = $coluna;
-        $_SESSION['estado'] = $ordem;
-
-        $_SESSION['filtroOrdenado'] = serialize($pacientes);
-        header("Location: ../Views/Atendimento/ListaPacientes.php");
-        exit();
     }
 
 }

@@ -10,100 +10,73 @@ require_once(__ROOT__ . '/Services/Connection.php');
 
 class AtendimentoSintomaService {   
 
-    public static function CadastrarAtendimentoSintoma(AtendimentoSintoma $atendimentoSintoma) {
-        $conn = Connection();
+    private $conn;
 
-        $id = $atendimentoSintoma->getId();        
-        $atendimentoId = $atendimentoSintoma->getAtendimento();
-        $sintomaId = $atendimentoSintoma->getSintoma();
-        $especificacao = $atendimentoSintoma->getEspecificacao();
-
-        $sql = "INSERT INTO atendimentosintoma VALUES (:id, :atendimentoId, :sintomaId, :especificacao)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':atendimentoId', $atendimentoId);
-        $stmt->bindParam(':sintomaId', $sintomaId);
-        $stmt->bindParam(':especificacao', $especificacao);
-
-        try {
-            $stmt->execute();
-            
-            if($stmt->rowCount() == 0){
-                throw new Exception("Não é possivel cadastrar o mesmo sintoma duas vezes");
-            }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
+    public function __construct() {
+        $this->conn = new Connection();
     }
     
-    public static function EditarAtendimentoSintoma(AtendimentoSintoma $atendimentoSintoma) {
-        $conn = Connection();
+    public function Cadastrar(AtendimentoSintoma $atendimentoSintoma) {
+        $query = "INSERT INTO atendimentosintoma VALUES (:id, :atendimento, :sintoma, :especificacao)";
         
-        $id = $atendimentoSintoma->getId();        
-        $sintomaId = $atendimentoSintoma->getSintoma();
-        $especificacao = $atendimentoSintoma->getEspecificacao();
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $atendimentoSintoma->id);
+        $stmt->bindValue(':atendimento', $atendimentoSintoma->atendimento->id);
+        $stmt->bindValue(':sintoma', $atendimentoSintoma->sintoma);
+        $stmt->bindValue(':especificacao', $atendimentoSintoma->especificacao);
 
-        $sql = "UPDATE atendimentosintoma SET SintomaId = :sintomaId, Especificacao = :especificacao WHERE Id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':sintomaId', $sintomaId);
-        $stmt->bindParam(':especificacao', $especificacao);
-
-        try {
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erro ao tentar editar os sintomas");
+        if (!$stmt->execute()) {
+            throw new Exception("Não é possivel registrar o mesmo sintoma duas vezes no mesmo atendimento");
         }
     }
     
-    public static function Excluir($id) {
-        $conn = Connection();
+    public function Editar(AtendimentoSintoma $atendimentoSintoma) { 
+        $query = "UPDATE atendimentosintoma SET SintomaId = :sintoma, Especificacao = :especificacao WHERE Id = :id";
+        
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $atendimentoSintoma->id);
+        $stmt->bindValue(':sintoma', $atendimentoSintoma->sintoma);
+        $stmt->bindValue(':especificacao', $atendimentoSintoma->especificacao);
 
-        $sql = "DELETE FROM atendimentosintoma WHERE Id = :id";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-
-        try {
-            $stmt->execute();
-            if($stmt->rowCount() == 0){
-                throw new Exception("Não foi possivel deletar esse sintoma");
-            }
-        } catch (Exception $e) {
-            throw new Exception("Não foi possivel deletar esse sintoma");
+        if (!$stmt->execute()) {
+            throw new Exception("Não é possivel registrar o mesmo sintoma duas vezes no mesmo atendimento");
         }
     }
     
-    public static function ExcluirAtendimento($atendimentoId) {
-        $conn = Connection();
+    public function Excluir($id) {
+        $query = "DELETE FROM atendimentosintoma WHERE Id = :id";
 
-        $sql = "DELETE FROM atendimentosintoma WHERE AtendimentoId = :atendimentoId";
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':id', $id);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':atendimentoId', $atendimentoId);
-
-        try {
-            $stmt->execute();
-            if($stmt->rowCount() == 0){
-                throw new Exception("Erro inexperado");
-            }
-        } catch (Exception $e) {
-            throw new Exception("Não foi possivel deletar esse sintoma");
+        if (!$stmt->execute()) {
+            throw new Exception("Não é possivel deletar esse sintoma");
         }
     }
     
-    public static function RetornarSintomas(int $atendimentoId) {
-        $conn = Connection();
-
-        $sql = "SELECT Id, SintomaId, Especificacao FROM atendimentosintoma WHERE AtendimentoId = :atendimentoId";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':atendimentoId', $atendimentoId);
+    public function GetIds(int $atendimentoId) {
+        $query = "SELECT Id FROM atendimentosintoma WHERE AtendimentoId = :atendimentoId";
+        
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':atendimentoId', $atendimentoId);
+        
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }  
+
+    public function GetSintomas(int $atendimentoId) {
+        $query = "SELECT Id, SintomaId, Especificacao FROM atendimentosintoma WHERE AtendimentoId = :atendimentoId";
+        
+        $stmt = $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->bindValue(':atendimentoId', $atendimentoId);
+        
+        $stmt->execute();
+
+        $resultado = $stmt->fetchAll(PDO::FETCH_OBJ);
 
         if (empty($resultado)) {
-            throw new Exception("erro inexperado");
+            throw new Exception("Nenhum sintoma encontrado");
         }
 
         return $resultado;

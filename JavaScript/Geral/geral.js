@@ -32,3 +32,13 @@ function AcionarModalErro(titulo, dados, tituloBg) {
     $("#modal").modal();
 }
 
+//Converte parametros (url Get) em um objeto
+function ParametroToObjetct(parametros) {
+    let objeto = new Object();
+
+    $.each(parametros.split("&"), (i, value) => {
+        objeto[value.split("=")[0]] = decodeURIComponent(value.split("=")[1]);
+    });
+
+    return objeto;
+}
