@@ -58,14 +58,21 @@ class AtendimentoService {
         }
     }
 
-    public function Listar() {
+    public function Listar($usuario = null) {
         $query = "SELECT a.Id, a.Data, a.Hora, p.Nome as Paciente, f.Nome as Funcionario "
                 . "FROM atendimento a "
                 . "LEFT JOIN paciente p ON a.PacienteId = p.Id "
                 . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id ";
 
-
+        if($usuario !== null) {
+            $query .= "WHERE p.UsuarioId = :id";
+        }
+        
         $stmt = $this->conn->Conectar()->prepare($query);
+        if($usuario !== null) {
+            $stmt->bindValue(':id', $usuario);
+        }
+        
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_OBJ);

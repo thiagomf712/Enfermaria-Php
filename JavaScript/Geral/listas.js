@@ -87,19 +87,25 @@ function DefinirRegime(regime) {
 }
 
 //Faz a requisição parao backend para conseguir os dados para a tabela
-function GerarDadosTabela(ordenacao, controller, filtroBetween = false) {
+function GerarDadosTabela(ordenacao, controller, filtroBetween = false, parametrosExtra = null) {
     Loading(true);
 
     let metodo = controller.metodo;
     let valor = controller.valor;
     let post = `${metodo}=${valor}`;
-
+    
+    
+    if(parametrosExtra !== null) {
+        post += `&${parametrosExtra}`;
+    }
+    
     $.ajax({
         type: 'POST',
         url: controller.controller,
         data: post,
         dataType: 'json',
         success: dados => {
+            
             if (dados.hasOwnProperty("erro")) {
                 Loading(false);
                 AcionarModalErro("Erro", dados.erro, "bg-danger");

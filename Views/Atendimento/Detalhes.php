@@ -96,7 +96,7 @@
 
                     <!-- Botões -->
                     <div class="form- mt-4">
-                        <a href="Listar.php" class="btn btn-secondary btn-block">Voltar</a>
+                        <button type="button" class="btn btn-secondary btn-block" onclick="history.back()">Voltar</button>
                     </div>
 
                 </form>

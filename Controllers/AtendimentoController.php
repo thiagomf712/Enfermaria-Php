@@ -184,6 +184,16 @@ class AtendimentoController {
             $this->retorno->erro = $e->getMessage();
         }
     }
+    
+    public function ListarPessoal($dados) {
+        $usuario = $dados['usuario'];
+        
+        try {
+            $this->retorno->lista = $this->atendimentoService->Listar($usuario);
+        } catch (Exception $e) {
+            $this->retorno->erro = $e->getMessage();
+        }
+    }
 
     public function GetFichaMedica($dados) {
         $id = $dados['ficha'];
