@@ -65,11 +65,12 @@ function GerarTabela(listaCompleta, pagina) {
             detalhes: {
                 type: 'a',
                 href: `Detalhes.php?atendimento=${atendimento.Id}`,
-                html: "Detalhes"
+                html: "Detalhes",
+                acesso: 1
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions,  $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

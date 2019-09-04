@@ -11,7 +11,7 @@
 //(value: No caso de <button> ele espera qual o valor que esse button terá)
 //(html: Qual vai ser o conteudo visivel desse action)
 //Retorna a linha da tabela
-function CriarLinhaTabela(colunas, action) {
+function CriarLinhaTabela(colunas, action, nivelAcesso) {
     let tr = document.createElement('tr');
     tr.className = "table-light";
 
@@ -25,23 +25,26 @@ function CriarLinhaTabela(colunas, action) {
     let tdAction = document.createElement('td');
 
     $.each(action, (i, valor) => {
-        let action = document.createElement(valor.type);
-        action.innerHTML = valor.html;
-        action.className = "btn btn-primary btn-sm mb-1 mr-1";
 
-        switch (i) {
-            case "detalhes":
-            case "editar":
-                action.href = valor.href;
-                break;
-            case "deletar":
-                action.type = "button";
-                action.value = valor.value;
-                action.className = "btn btn-primary btn-sm mb-1";
-                break;
+        if (nivelAcesso >= valor.acesso) {
+            let action = document.createElement(valor.type);
+            action.innerHTML = valor.html;
+            action.className = "btn btn-primary btn-sm mb-1 mr-1";
+
+            switch (i) {
+                case "detalhes":
+                case "editar":
+                    action.href = valor.href;
+                    break;
+                case "deletar":
+                    action.type = "button";
+                    action.value = valor.value;
+                    action.className = "btn btn-primary btn-sm mb-1";
+                    break;
+            }
+
+            tdAction.appendChild(action);
         }
-
-        tdAction.appendChild(action);
     });
 
     tr.appendChild(tdAction);
@@ -93,19 +96,19 @@ function GerarDadosTabela(ordenacao, controller, filtroBetween = false, parametr
     let metodo = controller.metodo;
     let valor = controller.valor;
     let post = `${metodo}=${valor}`;
-    
-    
-    if(parametrosExtra !== null) {
+
+
+    if (parametrosExtra !== null) {
         post += `&${parametrosExtra}`;
     }
-    
+
     $.ajax({
         type: 'POST',
         url: controller.controller,
         data: post,
         dataType: 'json',
         success: dados => {
-            
+
             if (dados.hasOwnProperty("erro")) {
                 Loading(false);
                 AcionarModalErro("Erro", dados.erro, "bg-danger");
@@ -353,24 +356,24 @@ function FiltrarArray(lista, filtros, filtroBetween = false) {
         for (var i = 0; i < filtros.length; i++) {
             if (filtros[i].name !== "Inicio" && filtros[i].name !== "Fim") {
                 teste = valor[filtros[i].name].toLowerCase().indexOf(filtros[i].value.toLowerCase()) > -1;
-                
+
                 filtro = filtro && teste;
             }
-            
+
             //Pegando os valores iniciais e finais
-            if(filtros[i].name === "Inicio") {
+            if (filtros[i].name === "Inicio") {
                 inicio = filtros[i].value;
-            } else if(filtros[i].name === "Fim") {
+            } else if (filtros[i].name === "Fim") {
                 fim = filtros[i].value;
             }
         }
 
-        if(filtroBetween) {
-            if(inicio !== '') {
+        if (filtroBetween) {
+            if (inicio !== '') {
                 filtro = filtro && valor.Data >= inicio;
             }
-            
-            if(fim !== '') {
+
+            if (fim !== '') {
                 filtro = filtro && valor.Data <= fim;
             }
         }

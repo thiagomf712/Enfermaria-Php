@@ -64,21 +64,24 @@ function GerarTabela(listaCompleta, pagina) {
             detalhes: {
                 type: 'a',
                 href: `Detalhes.php?funcionario=${funcionario.Id}&usuario=${funcionario.UsuarioId}`,
-                html: "Detalhes"
+                html: "Detalhes",
+                acesso: 4
             },
             editar: {
                 type: 'a',
                 href: `Editar.php?funcionario=${funcionario.Id}&usuario=${funcionario.UsuarioId}`,
-                html: "Editar"
+                html: "Editar",
+                acesso: 4
             },
             deletar: {
                 type: 'button',
                 value: `funcionario=${funcionario.Id}&usuario=${funcionario.UsuarioId}&nome=${funcionario.Nome}`,
-                html: "Deletar"
+                html: "Deletar",
+                acesso: 4
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions, $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

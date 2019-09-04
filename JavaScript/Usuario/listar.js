@@ -55,11 +55,12 @@ function GerarTabela(listaCompleta, pagina) {
             editar: {
                 type: 'a',
                 href: `Editar.php?usuario=${usuario.Id}`,
-                html: "Alterar Senha"
+                html: "Alterar Senha",
+                acesso: 3
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions, $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

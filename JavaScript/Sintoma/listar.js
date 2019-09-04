@@ -56,16 +56,18 @@ function GerarTabela(listaCompleta, pagina) {
             editar: {
                 type: 'a',
                 href: `Editar.php?sintoma=${sintoma.Id}`,
-                html: "Editar"
+                html: "Editar",
+                acesso: 3
             },
             deletar: {
                 type: 'button',
                 value: `sintoma=${sintoma.Id}&nome=${sintoma.Nome}`,
-                html: "Deletar"
+                html: "Deletar",
+                acesso: 3
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions, $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

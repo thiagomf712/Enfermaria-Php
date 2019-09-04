@@ -61,16 +61,18 @@ function GerarTabela(listaCompleta, pagina) {
             detalhes: {
                 type: 'a',
                 href: `Cadastrar.php?paciente=${paciente.Id}&nome=${paciente.Nome}&ra=${paciente.Ra}`,
-                html: "Adicionar novo atendimento"
+                html: "Adicionar novo atendimento",
+                acesso: 2
             },
             editar: {
                 type: 'a',
                 href: `FichaMedica.php?ficha=${paciente.FichamedicaId}&nome=${paciente.Nome}&ra=${paciente.Ra}`,
-                html: "Ficha médica"
+                html: "Ficha médica",
+                acesso: 2
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions,  $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

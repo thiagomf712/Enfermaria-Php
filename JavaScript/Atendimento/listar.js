@@ -75,21 +75,24 @@ function GerarTabela(listaCompleta, pagina) {
             detalhes: {
                 type: 'a',
                 href: `Detalhes.php?atendimento=${atendimento.Id}`,
-                html: "Detalhes"
+                html: "Detalhes",
+                acesso: 2
             },
             editar: {
                 type: 'a',
                 href: `Editar.php?atendimento=${atendimento.Id}`,
-                html: "Editar"
+                html: "Editar",
+                acesso: 3
             },
             deletar: {
                 type: 'button',
                 value: `atendimento=${atendimento.Id}&paciente=${atendimento.Paciente}`,
-                html: "Deletar"
+                html: "Deletar",
+                acesso: 3
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions, $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

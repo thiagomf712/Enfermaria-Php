@@ -70,21 +70,24 @@ function GerarTabela(listaCompleta, pagina) {
             detalhes: {
                 type: 'a',
                 href: `Detalhes.php?paciente=${paciente.Id}&ficha=${paciente.FichamedicaId}&endereco=${paciente.EnderecoId}`,
-                html: "Detalhes"
+                html: "Detalhes",
+                acesso: 2
             },
             editar: {
                 type: 'a',
                 href: `Editar.php?paciente=${paciente.Id}&ficha=${paciente.FichamedicaId}&endereco=${paciente.EnderecoId}`,
-                html: "Editar"
+                html: "Editar",
+                acesso: 3
             },
             deletar: {
                 type: 'button',
                 value: `paciente=${paciente.Id}&usuario=${paciente.UsuarioId}&nome=${paciente.Nome}`,
-                html: "Deletar"
+                html: "Deletar",
+                acesso: 3
             }
         };
 
-        let linha = CriarLinhaTabela(colunas, actions);
+        let linha = CriarLinhaTabela(colunas, actions, $('#nivelAcessoAtivo').val());
 
         $('tbody').append(linha);
     });

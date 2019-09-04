@@ -24,6 +24,7 @@
         <div id="area-principal" class="container bg-primary">
 
             <input type="hidden" id="usuarioAtual" value="<?= $usuario->id ?>">
+            <input type="hidden" id="nivelAcessoAtivo" value="<?= $usuario->nivelAcesso ?>">
             
             <!-- Titulo -->
             <header class="mb-4">
