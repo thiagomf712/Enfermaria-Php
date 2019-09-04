@@ -13,6 +13,9 @@ document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" typ
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(3);
+    
     $('form.needs-validation').validate({
         submitHandler: function (form) {
             $(form).trigger("Enviar");

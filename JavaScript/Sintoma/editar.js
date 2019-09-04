@@ -12,8 +12,10 @@ document.write(unescape('%3Cscript src="../../JavaScript/validate.min.js" type="
 document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" type="text/javascript"%3E%3C/script%3E'));
 
 
-
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(3);
+    
     Loading(true);
 
     let metodo = "metodoSintoma";

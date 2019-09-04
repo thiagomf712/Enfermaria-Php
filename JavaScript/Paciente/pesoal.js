@@ -3,6 +3,9 @@
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="text/javascript"%3E%3C/script%3E'));
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(1);
+    
     Loading(true);
 
     let controller = {

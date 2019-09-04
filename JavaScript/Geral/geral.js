@@ -1,3 +1,13 @@
+
+function ValidarNivelAcesso(nivelMinimo) {
+    let nivelAtual = parseInt($('#nivelAcessoAtivo').val());
+    
+    if(nivelAtual < nivelMinimo) {
+        location.href = "../Geral/Home.php";
+    }
+}
+
+
 //Cria o loading e o adiciona no body caso esteja ligado, e o remove caso esteja desligado
 function Loading(ligado) {
     let img = document.createElement('img');

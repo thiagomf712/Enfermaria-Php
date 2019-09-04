@@ -15,6 +15,8 @@ document.write(unescape('%3Cscript src="../../JavaScript/Atendimento/geral.js" t
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(2);
 
     let numeroSintomas = ['ocupado'];
 

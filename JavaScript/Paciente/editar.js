@@ -13,6 +13,9 @@ document.write(unescape('%3Cscript src="../../JavaScript/Geral/editar.js" type="
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(3);
+    
     Loading(true);
 
     let metodo = "metodoPaciente";

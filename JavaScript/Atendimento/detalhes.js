@@ -7,6 +7,9 @@ document.write(unescape('%3Cscript src="../../JavaScript/Atendimento/geral.js" t
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(1);
+    
     Loading(true);
 
     let metodo = "metodoAtendimento";

@@ -6,6 +6,8 @@ document.write(unescape('%3Cscript src="../../JavaScript/Geral/geral.js" type="t
 document.write(unescape('%3Cscript src="../../JavaScript/Geral/listas.js" type="text/javascript"%3E%3C/script%3E'));
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(1);
 
     let ordenacao = {
         Id: {

@@ -13,6 +13,8 @@ document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" typ
 
 $(document).ready(() => {
     
+    ValidarNivelAcesso(4);
+    
     let loginSenha = {
         required: true,
         minlength: 4,

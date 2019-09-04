@@ -16,6 +16,9 @@ document.write(unescape('%3Cscript src="../../JavaScript/Atendimento/geral.js" t
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(3);
+    
     Loading(true);
 
     let numeroSintomas = new Array();

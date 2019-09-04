@@ -22,6 +22,9 @@
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
+            
+            <input type="hidden" id="nivelAcessoAtivo" value="<?= $usuario->nivelAcesso ?>">
+            
             <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                 <form class="needs-validation" novalidate>
                     <!-- Informações do sintoma -->

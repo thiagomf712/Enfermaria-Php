@@ -7,6 +7,8 @@ document.write(unescape('%3Cscript src="../../JavaScript/Geral/listas.js" type="
 
 $(document).ready(() => {
 
+    ValidarNivelAcesso(3);
+
     let ordenacao = {
         Id: {
             id: "order-id",

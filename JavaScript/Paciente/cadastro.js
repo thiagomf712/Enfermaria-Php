@@ -12,6 +12,8 @@ document.write(unescape('%3Cscript src="../../JavaScript/validateMessage.js" typ
 
 
 $(document).ready(() => {
+    
+    ValidarNivelAcesso(2);
 
     AlterarEndereco();
     
