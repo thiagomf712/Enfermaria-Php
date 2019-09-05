@@ -77,6 +77,47 @@ class AtendimentoService {
 
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+    
+    public function ListarQuantidade() {
+        $query = "SELECT Data FROM atendimento";
+        
+        $stmt = $this->conn->Conectar()->prepare($query);
+        
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function ListarAgrupado($inicio, $fim) {
+        $query = "SELECT Data as Data, COUNT(*) as Quantidade "
+                . "FROM atendimento "
+                . "WHERE Id > 0 "; //Preguiça de mudar as condições abaixo
+
+        if ($inicio !== '') {
+            $query .= "AND Data >= :inicio ";
+        }
+
+        if ($fim !== '') {
+            $query .= "AND Data <= :fim ";
+        }
+
+        $query .= "GROUP BY Data "
+                . "ORDER BY Quantidade DESC";
+
+        $stmt = $this->conn->Conectar()->prepare($query);
+
+        if ($inicio !== '') {
+            $stmt->bindValue(':inicio', $inicio);
+        }
+
+        if ($fim !== '') {
+            $stmt->bindValue(':fim', $fim);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 
     public function GetId(Atendimento $atendimento) {
         $query = "SELECT Id FROM atendimento WHERE Data = :data AND Hora = :hora AND PacienteId = :pacienteId AND FuncionarioId = :funcionarioId";

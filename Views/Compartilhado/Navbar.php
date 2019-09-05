@@ -18,7 +18,7 @@ $usuario = unserialize($_SESSION['usuario']);
 
 <header class="bg-primary">
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-dark">
+        <nav class="navbar navbar-expand-xl navbar-dark">
 
             <!-- Principal -->
             <a class="navbar-brand mb-0 h1" href="../Geral/Home.php">UnaspMed</a>
@@ -65,7 +65,6 @@ $usuario = unserialize($_SESSION['usuario']);
                             <div class="dropdown-menu">
                                 <a class="dropdown-item navegacao" href="../Sintoma/Listar.php">Lista de sitomas</a>
                                 <a class="dropdown-item navegacao" href="../Sintoma/Cadastrar.php">Cadastrar novo sintoma</a>
-                                <a class="dropdown-item navegacao" href="../Sintoma/Estatistica.php">Estatística</a>
                             </div>         
                         </li>
                     <?php endif; ?>
@@ -88,6 +87,13 @@ $usuario = unserialize($_SESSION['usuario']);
                             <div class="dropdown-menu">
                                 <a class="dropdown-item navegacao" href="../Usuario/Listar.php">Lista de usuarios</a>
                             </div>         
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Estatistica -->
+                    <?php if ($usuario->nivelAcesso >= NivelAcesso::Adicionar) : ?> 
+                        <li class="nav-item">
+                            <a class="nav-link navegacao" href="../Estatistica/">Estatistica</a>      
                         </li>
                     <?php endif; ?>
 

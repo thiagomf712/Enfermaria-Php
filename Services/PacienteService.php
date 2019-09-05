@@ -38,7 +38,7 @@ class PacienteService {
 
     public function Editar(Paciente $paciente) {
         $query = "UPDATE paciente SET Nome = :nome, Ra = :ra, DataNascimento = :dataNascimento, Email = :email, Telefone = :telefone WHERE Id = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $paciente->id);
         $stmt->bindValue(':nome', $paciente->nome);
@@ -69,6 +69,37 @@ class PacienteService {
                 . "LEFT JOIN fichamedica f ON f.PacienteId = p.Id";
 
         $stmt = $this->conn->Conectar()->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function ListarAgrupado($inicio, $fim) {
+        $query = "SELECT p.Nome as Valor, COUNT(a.Id) as Quantidade "
+                . "FROM paciente p "
+                . "INNER JOIN atendimento a ON a.PacienteId = p.Id ";
+
+        if ($inicio !== '') {
+            $query .= "AND a.Data >= :inicio ";
+        }
+
+        if ($fim !== '') {
+            $query .= "AND a.Data <= :fim ";
+        }
+
+        $query .= "GROUP BY Valor "
+                . "ORDER BY Quantidade DESC";
+
+        $stmt = $this->conn->Conectar()->prepare($query);
+
+        if ($inicio !== '') {
+            $stmt->bindValue(':inicio', $inicio);
+        }
+
+        if ($fim !== '') {
+            $stmt->bindValue(':fim', $fim);
+        }
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -108,10 +139,10 @@ class PacienteService {
 
     public function GetPaciente(int $id) {
         $query = "SELECT Id, Nome, Ra, DataNascimento, Email, Telefone FROM paciente WHERE Id = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $id);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);
@@ -125,10 +156,10 @@ class PacienteService {
 
     public function GetNomeRa(int $id) {
         $query = "SELECT Nome, Ra FROM paciente WHERE Id = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $id);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);
@@ -142,10 +173,10 @@ class PacienteService {
 
     public function GetPacientePessoal(int $usuarioId) {
         $query = "SELECT Id, Nome, Ra, DataNascimento, Email, Telefone FROM paciente WHERE UsuarioId = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $usuarioId);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);

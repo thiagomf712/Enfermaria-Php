@@ -22,32 +22,34 @@ function CriarLinhaTabela(colunas, action, nivelAcesso) {
     });
 
     //Criar ações
-    let tdAction = document.createElement('td');
+    if (action !== null) {
+        let tdAction = document.createElement('td');
 
-    $.each(action, (i, valor) => {
+        $.each(action, (i, valor) => {
 
-        if (nivelAcesso >= valor.acesso) {
-            let action = document.createElement(valor.type);
-            action.innerHTML = valor.html;
-            action.className = "btn btn-primary btn-sm mb-1 mr-1";
+            if (nivelAcesso >= valor.acesso) {
+                let action = document.createElement(valor.type);
+                action.innerHTML = valor.html;
+                action.className = "btn btn-primary btn-sm mb-1 mr-1";
 
-            switch (i) {
-                case "detalhes":
-                case "editar":
-                    action.href = valor.href;
-                    break;
-                case "deletar":
-                    action.type = "button";
-                    action.value = valor.value;
-                    action.className = "btn btn-primary btn-sm mb-1";
-                    break;
+                switch (i) {
+                    case "detalhes":
+                    case "editar":
+                        action.href = valor.href;
+                        break;
+                    case "deletar":
+                        action.type = "button";
+                        action.value = valor.value;
+                        action.className = "btn btn-primary btn-sm mb-1";
+                        break;
+                }
+
+                tdAction.appendChild(action);
             }
+        });
 
-            tdAction.appendChild(action);
-        }
-    });
-
-    tr.appendChild(tdAction);
+        tr.appendChild(tdAction);
+    }
 
     return tr;
 }
@@ -90,7 +92,7 @@ function DefinirRegime(regime) {
 }
 
 //Faz a requisição parao backend para conseguir os dados para a tabela
-function GerarDadosTabela(ordenacao, controller, filtroBetween = false, parametrosExtra = null) {
+function GerarDadosTabela(ordenacao, controller, filtroBetween = false, parametrosExtra = null, filtro = true) {
     Loading(true);
 
     let metodo = controller.metodo;
@@ -117,7 +119,9 @@ function GerarDadosTabela(ordenacao, controller, filtroBetween = false, parametr
 
                 AtualizarPagina(lista, ordenacao);
 
-                HabilitarFiltro(lista, ordenacao, filtroBetween);
+                if (filtro) {
+                    HabilitarFiltro(lista, ordenacao, filtroBetween);
+                }
 
                 Loading(false);
             }

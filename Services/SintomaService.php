@@ -18,7 +18,7 @@ class SintomaService {
 
     public function Cadastrar(Sintoma $sintoma) {
         $query = "INSERT INTO sintoma VALUES (:id, :nome)";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $sintoma->id);
         $stmt->bindValue(':nome', $sintoma->nome);
@@ -30,7 +30,7 @@ class SintomaService {
 
     public function Editar(Sintoma $sintoma) {
         $query = "UPDATE sintoma SET Nome = :nome WHERE Id = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $sintoma->id);
         $stmt->bindValue(':nome', $sintoma->nome);
@@ -55,66 +55,65 @@ class SintomaService {
         $query = "SELECT Id, Nome FROM sintoma ORDER BY Nome";
 
         $stmt = $this->conn->Conectar()->prepare($query);
-        
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
-    
-    //Será editado
-    public static function ListarSintomasEst() {
-        $conn = Connection();
 
-        $sql = "SELECT s.Id, s.Nome, COUNT(ats.Id) as Total "
+    public function ListarQuantidade() {
+        $query = "SELECT a.Data "
                 . "FROM sintoma s "
                 . "LEFT JOIN atendimentosintoma ats ON s.Id = ats.SintomaId "
-                . "WHERE s.Id = ats.SintomaId "
-                . "GROUP BY s.Nome";
+                . "INNER JOIN atendimento a ON ats.AtendimentoId = a.Id "
+                . "WHERE s.Id = ats.SintomaId ";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->Conectar()->prepare($query);
+
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    //Será editado
-    public static function ListarOcorrencias($sintomaId, $data = null) {
-        $conn = Connection();
+    public function ListarAgrupado($inicio, $fim) {
+        $query = "SELECT s.Nome as Valor, COUNT(ats.Id) as Quantidade "
+                . "FROM sintoma s "
+                . "LEFT JOIN atendimentosintoma ats ON s.Id = ats.SintomaId "
+                . "INNER JOIN atendimento a ON ats.AtendimentoId = a.Id "
+                . "WHERE s.Id = ats.SintomaId ";
 
-        $sql = "SELECT a.Id, a.Data, a.Hora, p.Nome as pNome, f.Nome as fNome "
-                . "FROM atendimento a "
-                . "INNER JOIN atendimentosintoma ats ON ats.AtendimentoId = a.Id "
-                . "INNER JOIN sintoma s ON s.Id = ats.SintomaId "
-                . "INNER JOIN paciente p ON a.PacienteId = p.Id "
-                . "INNER JOIN funcionario f ON a.FuncionarioId = f.Id "
-                . "WHERE :sintomaId = s.Id ";
-
-        if ($data != null) {
-
-            $sql .= "AND " . $data[0];
-
-            $sql .= SintomaService::DefinirFiltroData($data);
+        if ($inicio !== '') {
+            $query .= "AND a.Data >= :inicio ";
         }
 
-        $sql .= "ORDER BY a.data ";
+        if ($fim !== '') {
+            $query .= "AND a.Data <= :fim ";
+        }
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam("sintomaId", $sintomaId);
+        $query .= "GROUP BY Valor "
+                . "ORDER BY Quantidade DESC";
+
+        $stmt = $this->conn->Conectar()->prepare($query);
+        
+        if ($inicio !== '') {
+            $stmt->bindValue(':inicio', $inicio);
+        }
+
+        if ($fim !== '') {
+            $stmt->bindValue(':fim', $fim);
+        } 
+
         $stmt->execute();
 
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function GetSintoma(int $id) {
         $query = "SELECT Id, Nome FROM sintoma WHERE Id = :id";
-        
+
         $stmt = $this->conn->Conectar()->prepare($query);
         $stmt->bindValue(':id', $id);
-        
+
         $stmt->execute();
 
         $resultado = $stmt->fetch(PDO::FETCH_OBJ);
@@ -125,18 +124,4 @@ class SintomaService {
 
         return new Sintoma($resultado->Id, $resultado->Nome);
     }
-
-    public static function RetornarNomesSintomas() {
-        $conn = Connection();
-
-        $sql = "SELECT Id, Nome FROM sintoma ORDER BY Nome";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $resultado = $stmt->fetchAll();
-
-        return $resultado;
-    }
-
 }
