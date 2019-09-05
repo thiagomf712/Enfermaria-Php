@@ -1,3 +1,7 @@
+<?php 
+    require_once '../ValidarLogin.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -61,14 +65,14 @@
                             <th scope="col">
                                 <span>#</span> 
                                 <i class="fas fa-sort"></i>
-                                <button id="order-id" type="submit" value="ordenado"></button>
+                                <button id="order-id" type="submit"></button>
                             </th>
 
                             <!-- Ordenar Nome -->
                             <th scope="col">
                                 <span>Nome</span> 
                                 <i class="fas fa-sort"></i>
-                                <button id="order-nome" type="submit"></button>
+                                <button id="order-nome" type="submit" value="ordenado"></button>
                             </th>
 
                             <!-- Açoes -->

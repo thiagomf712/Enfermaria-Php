@@ -1,21 +1,3 @@
-<?php
-if (!defined('__ROOT__')) {
-    define('__ROOT__', dirname(__FILE__, 3));
-}
-
-require_once(__ROOT__ . '/Models/Usuario.php');
-require_once(__ROOT__ . '/Models/Enums/NivelAcesso.php');
-
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    header("Location: ../Usuario/Login.php");
-}
-
-$usuario = unserialize($_SESSION['usuario']);
-?>
-
-
 <header class="bg-primary">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-xl navbar-dark">

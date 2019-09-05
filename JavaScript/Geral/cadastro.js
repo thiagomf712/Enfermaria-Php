@@ -37,6 +37,7 @@ function EfetuarCadastro(controller) {
                 } else {
                     AcionarModalErro("Sucesso", dados.sucesso, "bg-success");
                     LimparForm(e.target);
+                    $('html, body').scrollTop(0);
                 }
             },
             error: erro => {

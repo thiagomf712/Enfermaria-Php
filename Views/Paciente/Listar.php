@@ -1,7 +1,10 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
 require_once(__ROOT__ . '/Models/Enums/Regime.php');
+ 
+require_once '../ValidarLogin.php';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br"> 

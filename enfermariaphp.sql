@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 30-Jul-2019 às 18:39
+-- Generation Time: 05-Set-2019 às 13:59
 -- Versão do servidor: 10.1.40-MariaDB
 -- versão do PHP: 7.3.5
 
@@ -32,10 +32,10 @@ CREATE TABLE `atendimento` (
   `Id` int(11) NOT NULL,
   `Data` date NOT NULL,
   `Hora` time NOT NULL,
-  `Procedimento` varchar(100) DEFAULT NULL,
+  `Procedimento` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `PacienteId` int(11) NOT NULL,
   `FuncionarioId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `atendimento`
@@ -54,7 +54,11 @@ INSERT INTO `atendimento` (`Id`, `Data`, `Hora`, `Procedimento`, `PacienteId`, `
 (18, '2019-07-30', '11:01:00', '123', 6, 10),
 (19, '2019-07-14', '12:12:00', '123', 11, 10),
 (20, '2019-07-02', '14:02:00', '213', 12, 10),
-(21, '2019-06-30', '11:03:00', '123', 4, 10);
+(21, '2019-06-30', '11:03:00', 'Tratamento', 4, 10),
+(28, '2019-09-03', '13:00:00', 'Encaminhado ao hospital de Engenheiro Coelho', 16, 9),
+(36, '2019-09-02', '13:22:00', 'Chá', 15, 10),
+(37, '2019-09-02', '22:07:00', 'Tratamento miraculoso', 15, 40),
+(38, '2019-09-02', '13:48:00', 'Tratamento', 12, 4);
 
 -- --------------------------------------------------------
 
@@ -66,8 +70,8 @@ CREATE TABLE `atendimentosintoma` (
   `Id` int(11) NOT NULL,
   `AtendimentoId` int(11) NOT NULL,
   `SintomaId` int(11) NOT NULL,
-  `Especificacao` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `Especificacao` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `atendimentosintoma`
@@ -97,10 +101,18 @@ INSERT INTO `atendimentosintoma` (`Id`, `AtendimentoId`, `SintomaId`, `Especific
 (36, 20, 5, '321'),
 (37, 20, 64, '123'),
 (38, 20, 54, '123'),
-(39, 21, 5, '321'),
-(40, 21, 30, '123'),
-(41, 21, 42, '321'),
-(42, 21, 21, '321');
+(39, 21, 5, 'Afta'),
+(42, 21, 21, 'Desmaios'),
+(46, 28, 18, ''),
+(47, 28, 42, 'Forte'),
+(48, 28, 52, 'Forte'),
+(57, 36, 43, 'Calaféia'),
+(59, 37, 15, 'Dor de garganta'),
+(60, 37, 10, '39º'),
+(61, 38, 67, 'Dengue'),
+(62, 38, 66, 'Diarreia'),
+(63, 38, 46, 'Resfriado'),
+(64, 38, 5, 'Afta');
 
 -- --------------------------------------------------------
 
@@ -111,26 +123,28 @@ INSERT INTO `atendimentosintoma` (`Id`, `AtendimentoId`, `SintomaId`, `Especific
 CREATE TABLE `endereco` (
   `Id` int(11) NOT NULL,
   `Regime` tinyint(3) UNSIGNED NOT NULL,
-  `Logradouro` varchar(50) DEFAULT NULL,
-  `Numero` varchar(4) DEFAULT NULL,
-  `Complemento` varchar(20) DEFAULT NULL,
-  `Bairro` varchar(50) DEFAULT NULL,
-  `Cidade` varchar(50) DEFAULT NULL,
-  `Estado` varchar(50) DEFAULT NULL,
-  `Cep` varchar(9) DEFAULT NULL,
+  `Logradouro` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Numero` varchar(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Complemento` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Bairro` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Cidade` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Estado` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Cep` varchar(9) COLLATE utf8_unicode_ci DEFAULT NULL,
   `PacienteId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `endereco`
 --
 
 INSERT INTO `endereco` (`Id`, `Regime`, `Logradouro`, `Numero`, `Complemento`, `Bairro`, `Cidade`, `Estado`, `Cep`, `PacienteId`) VALUES
-(2, 2, 'Rua Rosana E. Vargas', '155', 'Apartamento 4', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 4),
+(2, 2, 'Rua Rosana E. Vargas', '155', 'Apartamento 8', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 4),
 (3, 1, 'Estr. Mun. Pastor Walter Boger', '', '', 'Lagoa Bonita I', 'Engenheiro Coelho', 'São Paulo', '13445-970', 5),
 (4, 1, 'Estr. Mun. Pastor Walter Boger', '', '', 'Lagoa Bonita I', 'Engenheiro Coelho', 'São Paulo', '13445-970', 6),
 (9, 2, 'Rua Rosana E. Vargas', '160', 'Apartamento 1', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 11),
-(10, 2, 'Rua Rosana E. Vargas', '155', 'Apartamento 4', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 12);
+(10, 2, 'Rua Rosana E. Vargas', '155', 'Apartamento 4', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 12),
+(11, 2, 'Rua Rosana E. Vargas', '200', '', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 15),
+(12, 2, 'Rua Rosana E. Vargas', '250', 'Casa 2', 'Cidade Universitaria', 'Engenheiro Coelho', 'São paulo', '13449-899', 16);
 
 -- --------------------------------------------------------
 
@@ -140,24 +154,26 @@ INSERT INTO `endereco` (`Id`, `Regime`, `Logradouro`, `Numero`, `Complemento`, `
 
 CREATE TABLE `fichamedica` (
   `Id` int(11) NOT NULL,
-  `PlanoSaude` varchar(100) DEFAULT NULL,
-  `ProblemasSaude` varchar(100) DEFAULT NULL,
-  `Medicamentos` varchar(100) DEFAULT NULL,
-  `Alergias` varchar(100) DEFAULT NULL,
-  `Cirurgias` varchar(100) DEFAULT NULL,
+  `PlanoSaude` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ProblemasSaude` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Medicamentos` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Alergias` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Cirurgias` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `PacienteId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `fichamedica`
 --
 
 INSERT INTO `fichamedica` (`Id`, `PlanoSaude`, `ProblemasSaude`, `Medicamentos`, `Alergias`, `Cirurgias`, `PacienteId`) VALUES
-(2, '', 'Caso leve de epilepsia', 'Carbamazepina', 'Benzetacil', 'Remoção das amígdalas  ', 4),
+(2, '', 'Colesterol alto', 'Carbamazepina', 'Benzetacil', 'Remoção das amígdalas  ', 4),
 (3, 'Qualicorp', 'Diabete e rinite', '', 'pasta de amendoim', 'transplante do rim', 5),
 (4, '', '', '', '', '', 6),
 (9, '', '', '', '', '', 11),
-(10, 'Qualicorp', 'Pressão Alta', '', '', '', 12);
+(10, 'Qualicorp', 'Pressão Alta', '', '', '', 12),
+(11, 'SaudePlus', '', '', 'alergia a frutos do mar', '', 15),
+(12, 'Qualicorp', 'Diabetes', '', '', '', 16);
 
 -- --------------------------------------------------------
 
@@ -167,9 +183,9 @@ INSERT INTO `fichamedica` (`Id`, `PlanoSaude`, `ProblemasSaude`, `Medicamentos`,
 
 CREATE TABLE `funcionario` (
   `Id` int(11) NOT NULL,
-  `Nome` varchar(50) NOT NULL,
+  `Nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `UsuarioId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `funcionario`
@@ -181,7 +197,28 @@ INSERT INTO `funcionario` (`Id`, `Nome`, `UsuarioId`) VALUES
 (8, 'Luan Cordeiro Dandas', 18),
 (9, 'Antonio Carlos Filho', 19),
 (10, 'Administrador', 1),
-(11, 'Adicionar Somente', 26);
+(11, 'Adicionar Somente', 26),
+(12, 'igor ferreira', 27),
+(13, 'teste 1', 28),
+(14, 'teste 2', 29),
+(15, 'teste 3', 30),
+(16, 'teste3', 31),
+(17, 'test4', 32),
+(18, 'test5', 33),
+(19, 'test6', 34),
+(20, 'mateus santos', 35),
+(21, 'test7', 36),
+(22, 'Test10', 37),
+(23, 'Test11', 38),
+(24, 'Test12', 39),
+(25, 'Test13', 40),
+(26, 'Test14', 41),
+(27, 'Test15', 42),
+(28, 'Test16', 43),
+(38, 'teste 40', 53),
+(39, 'Teste 50', 54),
+(40, 'Mateus Perez', 65),
+(41, 'editar', 66);
 
 -- --------------------------------------------------------
 
@@ -191,13 +228,13 @@ INSERT INTO `funcionario` (`Id`, `Nome`, `UsuarioId`) VALUES
 
 CREATE TABLE `paciente` (
   `Id` int(11) NOT NULL,
-  `Nome` varchar(50) NOT NULL,
+  `Nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `Ra` int(11) NOT NULL,
   `DataNascimento` date NOT NULL,
-  `Email` varchar(50) DEFAULT NULL,
-  `Telefone` varchar(15) DEFAULT NULL,
+  `Email` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Telefone` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
   `UsuarioId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `paciente`
@@ -208,7 +245,9 @@ INSERT INTO `paciente` (`Id`, `Nome`, `Ra`, `DataNascimento`, `Email`, `Telefone
 (5, 'Marcos Gustavo Santos', 106783, '1989-08-12', 'marquinhos@gmail.com', '19 99672-8767', 14),
 (6, 'Lucas Shibuya', 62712, '1990-02-28', 'lucasShibuya@gmail.com', '19 98365-9232', 16),
 (11, 'Marcia Cristina Shafer dos Santos', 65132, '1999-08-09', '', '', 24),
-(12, 'João Mendes Ferreira', 1234, '1948-02-19', 'gogomendes@gmail.com', '19 95436-1932', 25);
+(12, 'João Mendes Ferreira', 1234, '1948-02-19', 'gogomendes@gmail.com', '19 95436-1932', 25),
+(15, 'Mateus Santos', 74585, '1998-12-10', 'mateusSantos@gmail.com', '19982879491', 62),
+(16, 'Wallace', 45758, '1990-05-25', 'wallacejunior@gmail.com', '', 63);
 
 -- --------------------------------------------------------
 
@@ -218,8 +257,8 @@ INSERT INTO `paciente` (`Id`, `Nome`, `Ra`, `DataNascimento`, `Email`, `Telefone
 
 CREATE TABLE `sintoma` (
   `Id` int(11) NOT NULL,
-  `Nome` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `Nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `sintoma`
@@ -313,10 +352,10 @@ INSERT INTO `sintoma` (`Id`, `Nome`) VALUES
 
 CREATE TABLE `usuario` (
   `Id` int(11) NOT NULL,
-  `Login` varchar(20) NOT NULL,
-  `Senha` varchar(20) NOT NULL,
+  `Login` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `Senha` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `NivelAcesso` tinyint(3) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Extraindo dados da tabela `usuario`
@@ -324,8 +363,8 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`Id`, `Login`, `Senha`, `NivelAcesso`) VALUES
 (1, 'admin', 'admin', 4),
-(4, 'thiago', '12345', 3),
-(7, 'Cristina.Shafer', '12345', 4),
+(4, 'thiagomf712', 'j454647m', 4),
+(7, 'Cristina.Shafer', '1234', 3),
 (13, 'ec.94961', 'ec.94961', 1),
 (14, 'ec.106783', 'ec.106783', 1),
 (16, 'ec.62712', 'ec.62712', 1),
@@ -333,7 +372,30 @@ INSERT INTO `usuario` (`Id`, `Login`, `Senha`, `NivelAcesso`) VALUES
 (19, 'antonio.carlos', '1234', 2),
 (24, 'ec.65132', 'ec.65132', 1),
 (25, 'ec.1234', 'ec.1234', 1),
-(26, 'adicionar', 'adicionar', 2);
+(26, 'adicionar', '1234', 2),
+(27, 'igor.ferreira', 'j454647m', 2),
+(28, 'teste1', 'j454647m', 2),
+(29, 'teste2', 'j454647m', 2),
+(30, 'test2', '1234', 2),
+(31, 'teste3', 'superteste3', 2),
+(32, 'test4', 'test4', 2),
+(33, 'test5', 'test4', 2),
+(34, 'test6', 'test6', 2),
+(35, 'mateus.santos', 'k7k8k9', 3),
+(36, 'test7', 'test7', 2),
+(37, 'test10', 'test10', 2),
+(38, 'test11', 'test10', 2),
+(39, 'test12', 'test10', 2),
+(40, 'test13', 'test10', 2),
+(41, 'test14', 'test10', 2),
+(42, 'test15', 'test10', 2),
+(43, 'test16', 'test10', 2),
+(53, 'test 40', '1234', 3),
+(54, 'teste50', '1234', 2),
+(62, 'ec.74585', 'ec.74585', 1),
+(63, 'ec.45758', 'ec.45758', 1),
+(65, 'mateus.perez', 'mateus', 2),
+(66, 'editar', '1234', 3);
 
 --
 -- Indexes for dumped tables
@@ -406,37 +468,37 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `atendimento`
 --
 ALTER TABLE `atendimento`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `atendimentosintoma`
 --
 ALTER TABLE `atendimentosintoma`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `endereco`
 --
 ALTER TABLE `endereco`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `fichamedica`
 --
 ALTER TABLE `fichamedica`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `sintoma`
@@ -448,7 +510,7 @@ ALTER TABLE `sintoma`
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- Constraints for dumped tables

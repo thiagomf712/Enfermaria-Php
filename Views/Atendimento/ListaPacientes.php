@@ -1,6 +1,8 @@
 <?php
 define('__ROOT__', dirname(__FILE__, 3));
 require_once(__ROOT__ . '/Models/Enums/Regime.php');
+
+require_once '../ValidarLogin.php';
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +29,7 @@ require_once(__ROOT__ . '/Models/Enums/Regime.php');
 
         <!-- Area da lista -->
         <div id="area-principal" class="container bg-primary">
-            
+
             <input type="hidden" id="nivelAcessoAtivo" value="<?= $usuario->nivelAcesso ?>">
 
             <!-- Titulo -->
@@ -115,7 +117,7 @@ require_once(__ROOT__ . '/Models/Enums/Regime.php');
 
                     <!-- Corpo -->
                     <tbody>
-                        
+
                     </tbody>
                 </table> 
             </div>
